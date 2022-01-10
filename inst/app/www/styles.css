@@ -1,0 +1,53 @@
+
+.small {
+  font-size: 0.8em;
+}
+
+.medium-small {
+  font-size: 0.9em;
+}
+
+.help-note {
+  color: #C0C0C0;
+}
+
+.box-head {
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+
+.box-left {
+  background: #ebedef;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+/* when screen width <768px */
+@media (max-width: 768px) {
+  .box-left {
+    margin-left: 15px;
+    margin-right: 15px;
+  }
+}
+
+/* when screen width >768px */
+@media (min-width: 768px) {
+  .box-left {
+    max-width: 300px;
+  }
+  
+  .box-head {
+    margin-left: -15px;
+  }
+  
+.shiny-input-container:not(.shiny-input-container-inline) {
+    width: 100% !important;
+    max-width: 100%;
+}
+}
+
+.image-display{
+  margin: 10px;
+}

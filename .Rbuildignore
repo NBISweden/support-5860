@@ -1,0 +1,7 @@
+preview.png
+support-5860.Rproj
+.gitignore
+.Rproj.user
+^.*\.Rproj$
+^\.Rproj\.user$
+docs/
