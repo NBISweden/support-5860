@@ -15,7 +15,7 @@ fixedPage(title="Support 5860",
                    span(tags$h4("•",style="margin:0px;margin-left:6px;margin-right:6px;"),style="vertical-align:top;display:inline-block;"),
                    span(tags$h4(strong("Support 5860"),style="margin:0px;"),style="vertical-align:middle;display:inline-block;"),
                    div(style="margin-top:5px;margin-bottom:5px;",
-                       span(class="help-note medium-small","This is a note.")
+                       span(class="help-note medium-small","All results are pre-computed.")
                    )
             ),
             column(3,class="box-left",

@@ -1,9 +1,8 @@
-# support-5860
+# support5860
 
 #' @title Launch interactive shiny application
 #' @description Launches interactive shiny session in the browser.
-#' @param display.mode Display mode. See \code{\link{runApp}}.
-#' @param ... Further arguments are passed to \code{\link{runApp}}.
+#' @param ... Arguments are passed to \code{\link{runApp}}.
 #' @return This function does not return anything
 #' @seealso \code{\link{runApp}}
 #' @examples
@@ -16,11 +15,11 @@
 #' @importFrom readxl read_xlsx
 #' @export
 #' 
-runShiny <- function(display.mode="normal",...) {
+runShiny <- function(...) {
   appDir <- system.file("app", package="support5860")
   if (appDir == "") {
     stop("Could not find app directory. Try re-installing `support5860`.", call. = FALSE)
   }
   
-  runApp(appDir,display.mode=display.mode,...)
+  runApp(appDir,...)
 }
