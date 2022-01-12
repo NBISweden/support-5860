@@ -1,0 +1,6 @@
+title: 5860 Scendothelial
+description: Repository for support issue 5860
+repository: NBISweden/support-5860
+theme: jekyll-theme-cayman
+github:
+  is_project_page: false
