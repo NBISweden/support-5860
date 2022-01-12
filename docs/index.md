@@ -30,6 +30,10 @@ This repository contains project reports and R shiny web application.
 
 - [Trajectory healthy-diseased LEC](report-healthy-diseased-lec-trajectory-port.html)
 
+**12-Jan-2021**
+
+- [Trajectory healthy LEC](report-healthy-lec-trajectory-port.html)
+
 ***
 
 ## Shiny app
