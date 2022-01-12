@@ -6,33 +6,17 @@ This repository contains project reports and R shiny web application.
 
 ## Old reports
 
-**13-Aug-2021**
-
-- Integration of healthy BEC and LEC, Trajectory
-
-**27-Sep-2021**
-
-- Integration of healthy and diseased samples
-- Integration of healthy samples
-- Integration of diseased samples
+- Integration of healthy BEC and LEC, Trajectory <span class="badge">13-Aug-2021</span>
+- Integration of healthy and diseased samples <span class="badge">27-Sep-2021</span>
+- Integration of healthy samples <span class="badge">27-Sep-2021</span>
+- Integration of diseased samples <span class="badge">27-Sep-2021</span>
 
 ## Current reports
 
-**08-Nov-2021**
-
-- [Integration combined](report-combined-integration-port.html) (healthy and diseased, healthy, diseased)
-
-**09-Nov-2021**
-
-- [Comparing different integration methods](report-compare-integration-port.html)
-
-**10-Jan-2021**
-
-- [Trajectory healthy-diseased LEC](report-healthy-diseased-lec-trajectory-port.html)
-
-**12-Jan-2021**
-
-- [Trajectory healthy LEC](report-healthy-lec-trajectory-port.html)
+- [Integration combined](report-combined-integration-port.html) (healthy and diseased, healthy, diseased) <span class="badge">08-Nov-2021</span>
+- [Comparing different integration methods](report-compare-integration-port.html) <span class="badge">09-Nov-2021</span>
+- [Trajectory healthy-diseased LEC](report-healthy-diseased-lec-trajectory-port.html) <span class="badge">10-Jan-2021</span>
+- [Trajectory healthy LEC](report-healthy-lec-trajectory-port.html) <span class="badge">12-Jan-2021</span>
 
 ***
 

@@ -59,6 +59,16 @@ a:hover, a:focus {
  margin-bottom: 1rem;
 }
 
+.badge {
+ border-radius: 4px;
+ padding: 3px 4px 3px 4px;
+ margin: 2px 2px 2px 2px;
+ margin-top: 2px;
+ font-size: small;
+ font-weight: bold;
+ background-color: #dadddb;
+}
+
 /* logo */
 
 .logo {
