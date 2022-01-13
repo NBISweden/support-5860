@@ -7,14 +7,14 @@ source("functions.R")
 
 fixedPage(title="Support 5860",
           theme=shinytheme("flatly"),
-          tags$head(tags$link(rel="stylesheet",type="text/css",href="styles.css")),
+          tags$head(includeCSS("www/styles.css")),
           
           fixedRow(
             column(12,class="box-head",
-                   span(tags$img(src='nbis.png',style="height:18px;"),style="vertical-align:top;display:inline-block;"),
-                   span(tags$h4("•",style="margin:0px;margin-left:6px;margin-right:6px;"),style="vertical-align:top;display:inline-block;"),
-                   span(tags$h4(strong("Support 5860"),style="margin:0px;"),style="vertical-align:middle;display:inline-block;"),
-                   div(style="margin-top:5px;margin-bottom:5px;",
+                   span(class="logo-wrapper",tags$img(class="logo",src='nbis.png')),
+                   span(tags$h4("•",class="sep"),class="sep-wrapper"),
+                   span(tags$h4(strong("Support 5860"),class="app-title"),class="app-title-wrapper"),
+                   div(class="app-subtitle-wrapper",
                        span(class="help-note medium-small","All results are pre-computed.")
                    )
             ),
