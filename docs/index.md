@@ -16,7 +16,7 @@ This repository contains project reports and R shiny web application.
 - [Integration combined](report-combined-integration-port.html) (healthy and diseased, healthy, diseased) <span class="badge">08-Nov-2021</span>
 - [Comparing different integration methods](report-compare-integration-port.html) <span class="badge">09-Nov-2021</span>
 - [Trajectory healthy-diseased LEC](report-healthy-diseased-lec-trajectory-port.html) <span class="badge">10-Jan-2021</span>
-- [Trajectory healthy LEC](report-healthy-lec-trajectory-port.html) <span class="badge">12-Jan-2021</span>
+- [Trajectory healthy LEC](report-healthy-lec-trajectory-port.html) <span class="badge">12-Jan-2022</span>
 
 ***
 
