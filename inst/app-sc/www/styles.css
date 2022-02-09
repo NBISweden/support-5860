@@ -1,0 +1,31 @@
+
+  
+/* easyshiny */
+/* custom css styles */
+
+.page {
+    margin: auto;
+}
+
+.tab-section {
+  margin-bottom: 1.5em;
+}
+
+.input-panel {
+  background-color: #f3f6f4;
+  padding: 15px;
+  border-radius: 6px;
+}
+
+a:hover,
+a:focus,
+a:active,
+.navbar-default .navbar-nav>li>a:hover,
+.navbar-default .navbar-nav>li>a:focus,
+.navbar-default .navbar-nav>li>a:active,
+.navbar-default .navbar-brand:hover,
+.navbar-default .navbar-brand:focus,
+.navbar-default .navbar-brand:active {
+  color: #bcbcbc;
+}
+
