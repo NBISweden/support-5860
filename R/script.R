@@ -15,14 +15,11 @@
 #' @importFrom readxl read_xlsx
 #' @export
 #' 
-runShiny <- function(appDir = NULL, ...) {
-  if(is.null(appDir)) {
-    appDir <- system.file("app-sc", package="support5860")
-  } else {
+runShiny <- function(...) {
+    appDir <- system.file("app", package="support5860")
     if (appDir == "") {
       stop("Could not find app directory. Try re-installing `support5860`.", call. = FALSE)
     }
-  }
 
   runApp(appDir,...)
 }
