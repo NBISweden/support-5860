@@ -5,3 +5,4 @@ support-5860.Rproj
 ^.*\.Rproj$
 ^\.Rproj\.user$
 docs/
+Dockerfile
