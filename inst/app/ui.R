@@ -9,10 +9,13 @@ library(magrittr)
 
 sc1conf = readRDS("sc1conf.rds")
 sc1def  = readRDS("sc1def.rds")
+
 sc2conf = readRDS("sc2conf.rds")
 sc2def  = readRDS("sc2def.rds")
+
 sc3conf = readRDS("sc3conf.rds")
 sc3def  = readRDS("sc3def.rds")
+
 sc4conf = readRDS("sc4conf.rds")
 sc4def  = readRDS("sc4def.rds")
 

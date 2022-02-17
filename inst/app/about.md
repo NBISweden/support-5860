@@ -1,4 +1,4 @@
 
 ### About
 
-Marle & Taija's awesome app.
+Marle and Taija's awesome app.

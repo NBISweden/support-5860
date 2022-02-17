@@ -754,17 +754,10 @@ updateSelectizeInput(session, "sc1c1inp2", server = TRUE,
     updateCheckboxGroupInput(session, inputId = "sc1a1sub2", label = "Select which cells to show", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc1a1oup1 <- renderImage({
+output$sc1a1oup1 <- renderPlot({
   req(input$sc1a1inp1)
-  p <- scDRcell(sc1conf, sc1meta, input$sc1a1drX, input$sc1a1drY, input$sc1a1inp1, input$sc1a1sub1, input$sc1a1sub2, input$sc1a1siz, input$sc1a1col1, input$sc1a1ord1, input$sc1a1fsz, input$sc1a1asp, input$sc1a1txt, input$sc1a1lab1)
-
-  width  <- session$clientData$output_sc1a1oup1_width
-  height <- session$clientData$output_sc1a1oup1_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc1a1oup1")
-}, deleteFile = TRUE)
+  scDRcell(sc1conf, sc1meta, input$sc1a1drX, input$sc1a1drY, input$sc1a1inp1, input$sc1a1sub1, input$sc1a1sub2, input$sc1a1siz, input$sc1a1col1, input$sc1a1ord1, input$sc1a1fsz, input$sc1a1asp, input$sc1a1txt, input$sc1a1lab1)
+})
 
 output$sc1a1oup1.ui <- renderUI({
   imageOutput("sc1a1oup1", height = pList[input$sc1a1psz])
@@ -795,17 +788,10 @@ output$sc1a1.dt <- renderDataTable({
    formatRound(columns = c("pctExpress"), digits = 2)
 })
 
-output$sc1a1oup2 <- renderImage({
+output$sc1a1oup2 <- renderPlot({
  req(input$sc1a1inp2)
- p <- scDRgene(sc1conf, sc1meta, input$sc1a1drX, input$sc1a1drY, input$sc1a1inp2, input$sc1a1sub1, input$sc1a1sub2, "sc1gexpr.h5", sc1gene, input$sc1a1siz, input$sc1a1col2, input$sc1a1ord2, input$sc1a1fsz, input$sc1a1asp, input$sc1a1txt)
- 
-  width  <- session$clientData$output_sc1a1oup2_width
-  height <- session$clientData$output_sc1a1oup2_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc1a1oup2")
-}, deleteFile = TRUE)
+ scDRgene(sc1conf, sc1meta, input$sc1a1drX, input$sc1a1drY, input$sc1a1inp2, input$sc1a1sub1, input$sc1a1sub2, "sc1gexpr.h5", sc1gene, input$sc1a1siz, input$sc1a1col2, input$sc1a1ord2, input$sc1a1fsz, input$sc1a1asp, input$sc1a1txt)
+})
 
 output$sc1a1oup2.ui <- renderUI({
  imageOutput("sc1a1oup2", height = pList[input$sc1a1psz])
@@ -846,17 +832,10 @@ output$sc1a1oup2.png <- downloadHandler(
     updateCheckboxGroupInput(session, inputId = "sc1a2sub2", label = "Select which cells to show", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc1a2oup1 <- renderImage({
+output$sc1a2oup1 <- renderPlot({
   req(input$sc1a2inp1)
-  p <- scDRcell(sc1conf, sc1meta, input$sc1a2drX, input$sc1a2drY, input$sc1a2inp1, input$sc1a2sub1, input$sc1a2sub2, input$sc1a2siz, input$sc1a2col1, input$sc1a2ord1, input$sc1a2fsz, input$sc1a2asp, input$sc1a2txt, input$sc1a2lab1)
-  
-  width  <- session$clientData$output_sc1a2oup1_width
-  height <- session$clientData$output_sc1a2oup1_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc1a2oup1")
-}, deleteFile = TRUE)
+  scDRcell(sc1conf, sc1meta, input$sc1a2drX, input$sc1a2drY, input$sc1a2inp1, input$sc1a2sub1, input$sc1a2sub2, input$sc1a2siz, input$sc1a2col1, input$sc1a2ord1, input$sc1a2fsz, input$sc1a2asp, input$sc1a2txt, input$sc1a2lab1)
+})
 
 output$sc1a2oup1.ui <- renderUI({
   imageOutput("sc1a2oup1", height = pList[input$sc1a2psz])
@@ -878,17 +857,10 @@ output$sc1a2oup1.png <- downloadHandler(
     )
 })
 
-output$sc1a2oup2 <- renderImage({
+output$sc1a2oup2 <- renderPlot({
   req(input$sc1a2inp2)
-  p <- scDRcell(sc1conf, sc1meta, input$sc1a2drX, input$sc1a2drY, input$sc1a2inp2, input$sc1a2sub1, input$sc1a2sub2, input$sc1a2siz, input$sc1a2col2, input$sc1a2ord2, input$sc1a2fsz, input$sc1a2asp, input$sc1a2txt, input$sc1a2lab2)
-  
-  width  <- session$clientData$output_sc1a2oup2_width
-  height <- session$clientData$output_sc1a2oup2_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc1a2oup2")
-}, deleteFile = TRUE)
+  scDRcell(sc1conf, sc1meta, input$sc1a2drX, input$sc1a2drY, input$sc1a2inp2, input$sc1a2sub1, input$sc1a2sub2, input$sc1a2siz, input$sc1a2col2, input$sc1a2ord2, input$sc1a2fsz, input$sc1a2asp, input$sc1a2txt, input$sc1a2lab2)
+})
 
 output$sc1a2oup2.ui <- renderUI({
   imageOutput("sc1a2oup2", height = pList[input$sc1a2psz])
@@ -929,17 +901,10 @@ output$sc1a2oup2.png <- downloadHandler(
     updateCheckboxGroupInput(session, inputId = "sc1a3sub2", label = "Select which cells to show", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc1a3oup1 <- renderImage({
+output$sc1a3oup1 <- renderPlot({
   req(input$sc1a3inp1)
-  p <- scDRgene(sc1conf, sc1meta, input$sc1a3drX, input$sc1a3drY, input$sc1a3inp1, input$sc1a3sub1, input$sc1a3sub2, "sc1gexpr.h5", sc1gene, input$sc1a3siz, input$sc1a3col1, input$sc1a3ord1, input$sc1a3fsz, input$sc1a3asp, input$sc1a3txt)
-  
-  width  <- session$clientData$output_sc1a3oup1_width
-  height <- session$clientData$output_sc1a3oup1_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc1a3oup1")
-}, deleteFile = TRUE)
+  scDRgene(sc1conf, sc1meta, input$sc1a3drX, input$sc1a3drY, input$sc1a3inp1, input$sc1a3sub1, input$sc1a3sub2, "sc1gexpr.h5", sc1gene, input$sc1a3siz, input$sc1a3col1, input$sc1a3ord1, input$sc1a3fsz, input$sc1a3asp, input$sc1a3txt)
+})
 
 output$sc1a3oup1.ui <- renderUI({
   imageOutput("sc1a3oup1", height = pList[input$sc1a3psz])
@@ -967,17 +932,10 @@ output$sc1a3oup1.png <- downloadHandler(
     )
 })
 
-output$sc1a3oup2 <- renderImage({
+output$sc1a3oup2 <- renderPlot({
   req(input$sc1a3inp2)
-  p <- scDRgene(sc1conf, sc1meta, input$sc1a3drX, input$sc1a3drY, input$sc1a3inp2, input$sc1a3sub1, input$sc1a3sub2, "sc1gexpr.h5", sc1gene, input$sc1a3siz, input$sc1a3col2, input$sc1a3ord2, input$sc1a3fsz, input$sc1a3asp, input$sc1a3txt)
-
-  width  <- session$clientData$output_sc1a3oup1_width
-  height <- session$clientData$output_sc1a3oup1_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc1a3oup1")
-}, deleteFile = TRUE)
+  scDRgene(sc1conf, sc1meta, input$sc1a3drX, input$sc1a3drY, input$sc1a3inp2, input$sc1a3sub1, input$sc1a3sub2, "sc1gexpr.h5", sc1gene, input$sc1a3siz, input$sc1a3col2, input$sc1a3ord2, input$sc1a3fsz, input$sc1a3asp, input$sc1a3txt)
+})
 
 output$sc1a3oup2.ui <- renderUI({
   imageOutput("sc1a3oup2", height = pList[input$sc1a3psz])
@@ -1023,16 +981,9 @@ output$sc1a3oup2.png <- downloadHandler(
     updateCheckboxGroupInput(session, inputId = "sc1b2sub2", label = "Select which cells to show", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc1b2oup1 <- renderImage({
-  p <- scDRcoex(sc1conf, sc1meta, input$sc1b2drX, input$sc1b2drY, input$sc1b2inp1, input$sc1b2inp2, input$sc1b2sub1, input$sc1b2sub2, "sc1gexpr.h5", sc1gene, input$sc1b2siz, input$sc1b2col1, input$sc1b2ord1, input$sc1b2fsz, input$sc1b2asp, input$sc1b2txt)
-  
-  width  <- session$clientData$output_sc1b2oup1_width
-  height <- session$clientData$output_sc1b2oup1_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc1b2oup1")
-}, deleteFile = TRUE)
+output$sc1b2oup1 <- renderPlot({
+  scDRcoex(sc1conf, sc1meta, input$sc1b2drX, input$sc1b2drY, input$sc1b2inp1, input$sc1b2inp2, input$sc1b2sub1, input$sc1b2sub2, "sc1gexpr.h5", sc1gene, input$sc1b2siz, input$sc1b2col1, input$sc1b2ord1, input$sc1b2fsz, input$sc1b2asp, input$sc1b2txt)
+})
 
 output$sc1b2oup1.ui <- renderUI({
   imageOutput("sc1b2oup1", height = pList2[input$sc1b2psz])
@@ -1054,16 +1005,9 @@ output$sc1b2oup1.png <- downloadHandler(
     plot = scDRcoex(sc1conf, sc1meta, input$sc1b2drX, input$sc1b2drY, input$sc1b2inp1, input$sc1b2inp2, input$sc1b2sub1, input$sc1b2sub2, "sc1gexpr.h5", sc1gene, input$sc1b2siz, input$sc1b2col1, input$sc1b2ord1, input$sc1b2fsz, input$sc1b2asp, input$sc1b2txt) )
 })
 
-output$sc1b2oup2 <- renderImage({
-  p <- scDRcoexLeg(input$sc1b2inp1, input$sc1b2inp2, input$sc1b2col1, input$sc1b2fsz)
-  
-  width  <- session$clientData$output_sc1b2oup2_width
-  height <- session$clientData$output_sc1b2oup2_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc1b2oup2")
-}, deleteFile = TRUE)
+output$sc1b2oup2 <- renderPlot({
+  scDRcoexLeg(input$sc1b2inp1, input$sc1b2inp2, input$sc1b2col1, input$sc1b2fsz)
+})
 
 output$sc1b2oup2.ui <- renderUI({
   imageOutput("sc1b2oup2", height = "300px")
@@ -1107,16 +1051,9 @@ output$sc1b2.dt <- renderDataTable({
     updateCheckboxGroupInput(session, inputId = "sc1c1sub2", label = "Select which cells to show", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc1c1oup <- renderImage({
-  p <- scVioBox(sc1conf, sc1meta, input$sc1c1inp1, input$sc1c1inp2, input$sc1c1sub1, input$sc1c1sub2, "sc1gexpr.h5", sc1gene, input$sc1c1typ, input$sc1c1pts, input$sc1c1siz, input$sc1c1fsz)
-  
-  width  <- session$clientData$output_sc1c1oup_width
-  height <- session$clientData$output_sc1c1oup_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc1c1oup")
-}, deleteFile = TRUE)
+output$sc1c1oup <- renderPlot({
+  scVioBox(sc1conf, sc1meta, input$sc1c1inp1, input$sc1c1inp2, input$sc1c1sub1, input$sc1c1sub2, "sc1gexpr.h5", sc1gene, input$sc1c1typ, input$sc1c1pts, input$sc1c1siz, input$sc1c1fsz)
+})
 
 output$sc1c1oup.ui <- renderUI({
   imageOutput("sc1c1oup", height = pList2[input$sc1c1psz])
@@ -1158,16 +1095,9 @@ output$sc1c1oup.png <- downloadHandler(
     updateCheckboxGroupInput(session, inputId = "sc1c2sub2", label = "Select which cells to show", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc1c2oup <- renderImage({
-  p <- scProp(sc1conf, sc1meta, input$sc1c2inp1, input$sc1c2inp2, input$sc1c2sub1, input$sc1c2sub2, input$sc1c2typ, input$sc1c2flp, input$sc1c2fsz)
-  
-  width  <- session$clientData$output_sc1c2oup_width
-  height <- session$clientData$output_sc1c2oup_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc1c2oup")
-}, deleteFile = TRUE)
+output$sc1c2oup <- renderPlot({
+  scProp(sc1conf, sc1meta, input$sc1c2inp1, input$sc1c2inp2, input$sc1c2sub1, input$sc1c2sub2, input$sc1c2typ, input$sc1c2flp, input$sc1c2fsz)
+})
 
 output$sc1c2oup.ui <- renderUI({
   imageOutput("sc1c2oup", height = pList2[input$sc1c2psz])
@@ -1222,16 +1152,9 @@ output$sc1d1oupTxt <- renderUI({
   }
 })
 
-output$sc1d1oup <- renderImage({
-  p <- scBubbHeat(sc1conf, sc1meta, input$sc1d1inp, input$sc1d1grp, input$sc1d1plt, input$sc1d1sub1, input$sc1d1sub2, "sc1gexpr.h5", sc1gene, input$sc1d1scl, input$sc1d1row, input$sc1d1col, input$sc1d1cols, input$sc1d1fsz)
-  
-  width  <- session$clientData$output_sc1d1oup_width
-  height <- session$clientData$output_sc1d1oup_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc1d1oup")
-}, deleteFile = TRUE)
+output$sc1d1oup <- renderPlot({
+  scBubbHeat(sc1conf, sc1meta, input$sc1d1inp, input$sc1d1grp, input$sc1d1plt, input$sc1d1sub1, input$sc1d1sub2, "sc1gexpr.h5", sc1gene, input$sc1d1scl, input$sc1d1row, input$sc1d1col, input$sc1d1cols, input$sc1d1fsz)
+})
 
 output$sc1d1oup.ui <- renderUI({
   imageOutput("sc1d1oup", height = pList3[input$sc1d1psz])
@@ -1291,17 +1214,10 @@ updateSelectizeInput(session, "sc2c1inp2", server = TRUE,
     updateCheckboxGroupInput(session, inputId = "sc2a1sub2", label = "Select which cells to show", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc2a1oup1 <- renderImage({
+output$sc2a1oup1 <- renderPlot({
   req(input$sc2a1inp1)
-  p <- scDRcell(sc2conf, sc2meta, input$sc2a1drX, input$sc2a1drY, input$sc2a1inp1, input$sc2a1sub1, input$sc2a1sub2, input$sc2a1siz, input$sc2a1col1, input$sc2a1ord1, input$sc2a1fsz, input$sc2a1asp, input$sc2a1txt, input$sc2a1lab1)
-
-  width  <- session$clientData$output_sc2a1oup1_width
-  height <- session$clientData$output_sc2a1oup1_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc2a1oup1")
-}, deleteFile = TRUE)
+  scDRcell(sc2conf, sc2meta, input$sc2a1drX, input$sc2a1drY, input$sc2a1inp1, input$sc2a1sub1, input$sc2a1sub2, input$sc2a1siz, input$sc2a1col1, input$sc2a1ord1, input$sc2a1fsz, input$sc2a1asp, input$sc2a1txt, input$sc2a1lab1)
+})
 
 output$sc2a1oup1.ui <- renderUI({
   imageOutput("sc2a1oup1", height = pList[input$sc2a1psz])
@@ -1332,17 +1248,10 @@ output$sc2a1.dt <- renderDataTable({
    formatRound(columns = c("pctExpress"), digits = 2)
 })
 
-output$sc2a1oup2 <- renderImage({
+output$sc2a1oup2 <- renderPlot({
  req(input$sc2a1inp2)
- p <- scDRgene(sc2conf, sc2meta, input$sc2a1drX, input$sc2a1drY, input$sc2a1inp2, input$sc2a1sub1, input$sc2a1sub2, "sc2gexpr.h5", sc2gene, input$sc2a1siz, input$sc2a1col2, input$sc2a1ord2, input$sc2a1fsz, input$sc2a1asp, input$sc2a1txt)
- 
-  width  <- session$clientData$output_sc2a1oup2_width
-  height <- session$clientData$output_sc2a1oup2_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc2a1oup2")
-}, deleteFile = TRUE)
+ scDRgene(sc2conf, sc2meta, input$sc2a1drX, input$sc2a1drY, input$sc2a1inp2, input$sc2a1sub1, input$sc2a1sub2, "sc2gexpr.h5", sc2gene, input$sc2a1siz, input$sc2a1col2, input$sc2a1ord2, input$sc2a1fsz, input$sc2a1asp, input$sc2a1txt)
+})
 
 output$sc2a1oup2.ui <- renderUI({
  imageOutput("sc2a1oup2", height = pList[input$sc2a1psz])
@@ -1383,17 +1292,10 @@ output$sc2a1oup2.png <- downloadHandler(
     updateCheckboxGroupInput(session, inputId = "sc2a2sub2", label = "Select which cells to show", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc2a2oup1 <- renderImage({
+output$sc2a2oup1 <- renderPlot({
   req(input$sc2a2inp1)
-  p <- scDRcell(sc2conf, sc2meta, input$sc2a2drX, input$sc2a2drY, input$sc2a2inp1, input$sc2a2sub1, input$sc2a2sub2, input$sc2a2siz, input$sc2a2col1, input$sc2a2ord1, input$sc2a2fsz, input$sc2a2asp, input$sc2a2txt, input$sc2a2lab1)
-  
-  width  <- session$clientData$output_sc2a2oup1_width
-  height <- session$clientData$output_sc2a2oup1_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc2a2oup1")
-}, deleteFile = TRUE)
+  scDRcell(sc2conf, sc2meta, input$sc2a2drX, input$sc2a2drY, input$sc2a2inp1, input$sc2a2sub1, input$sc2a2sub2, input$sc2a2siz, input$sc2a2col1, input$sc2a2ord1, input$sc2a2fsz, input$sc2a2asp, input$sc2a2txt, input$sc2a2lab1)
+})
 
 output$sc2a2oup1.ui <- renderUI({
   imageOutput("sc2a2oup1", height = pList[input$sc2a2psz])
@@ -1415,17 +1317,10 @@ output$sc2a2oup1.png <- downloadHandler(
     )
 })
 
-output$sc2a2oup2 <- renderImage({
+output$sc2a2oup2 <- renderPlot({
   req(input$sc2a2inp2)
-  p <- scDRcell(sc2conf, sc2meta, input$sc2a2drX, input$sc2a2drY, input$sc2a2inp2, input$sc2a2sub1, input$sc2a2sub2, input$sc2a2siz, input$sc2a2col2, input$sc2a2ord2, input$sc2a2fsz, input$sc2a2asp, input$sc2a2txt, input$sc2a2lab2)
-  
-  width  <- session$clientData$output_sc2a2oup2_width
-  height <- session$clientData$output_sc2a2oup2_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc2a2oup2")
-}, deleteFile = TRUE)
+  scDRcell(sc2conf, sc2meta, input$sc2a2drX, input$sc2a2drY, input$sc2a2inp2, input$sc2a2sub1, input$sc2a2sub2, input$sc2a2siz, input$sc2a2col2, input$sc2a2ord2, input$sc2a2fsz, input$sc2a2asp, input$sc2a2txt, input$sc2a2lab2)
+})
 
 output$sc2a2oup2.ui <- renderUI({
   imageOutput("sc2a2oup2", height = pList[input$sc2a2psz])
@@ -1466,17 +1361,10 @@ output$sc2a2oup2.png <- downloadHandler(
     updateCheckboxGroupInput(session, inputId = "sc2a3sub2", label = "Select which cells to show", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc2a3oup1 <- renderImage({
+output$sc2a3oup1 <- renderPlot({
   req(input$sc2a3inp1)
-  p <- scDRgene(sc2conf, sc2meta, input$sc2a3drX, input$sc2a3drY, input$sc2a3inp1, input$sc2a3sub1, input$sc2a3sub2, "sc2gexpr.h5", sc2gene, input$sc2a3siz, input$sc2a3col1, input$sc2a3ord1, input$sc2a3fsz, input$sc2a3asp, input$sc2a3txt)
-  
-  width  <- session$clientData$output_sc2a3oup1_width
-  height <- session$clientData$output_sc2a3oup1_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc2a3oup1")
-}, deleteFile = TRUE)
+  scDRgene(sc2conf, sc2meta, input$sc2a3drX, input$sc2a3drY, input$sc2a3inp1, input$sc2a3sub1, input$sc2a3sub2, "sc2gexpr.h5", sc2gene, input$sc2a3siz, input$sc2a3col1, input$sc2a3ord1, input$sc2a3fsz, input$sc2a3asp, input$sc2a3txt)
+})
 
 output$sc2a3oup1.ui <- renderUI({
   imageOutput("sc2a3oup1", height = pList[input$sc2a3psz])
@@ -1504,17 +1392,10 @@ output$sc2a3oup1.png <- downloadHandler(
     )
 })
 
-output$sc2a3oup2 <- renderImage({
+output$sc2a3oup2 <- renderPlot({
   req(input$sc2a3inp2)
-  p <- scDRgene(sc2conf, sc2meta, input$sc2a3drX, input$sc2a3drY, input$sc2a3inp2, input$sc2a3sub1, input$sc2a3sub2, "sc2gexpr.h5", sc2gene, input$sc2a3siz, input$sc2a3col2, input$sc2a3ord2, input$sc2a3fsz, input$sc2a3asp, input$sc2a3txt)
-
-  width  <- session$clientData$output_sc2a3oup1_width
-  height <- session$clientData$output_sc2a3oup1_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc2a3oup1")
-}, deleteFile = TRUE)
+  scDRgene(sc2conf, sc2meta, input$sc2a3drX, input$sc2a3drY, input$sc2a3inp2, input$sc2a3sub1, input$sc2a3sub2, "sc2gexpr.h5", sc2gene, input$sc2a3siz, input$sc2a3col2, input$sc2a3ord2, input$sc2a3fsz, input$sc2a3asp, input$sc2a3txt)
+})
 
 output$sc2a3oup2.ui <- renderUI({
   imageOutput("sc2a3oup2", height = pList[input$sc2a3psz])
@@ -1560,16 +1441,9 @@ output$sc2a3oup2.png <- downloadHandler(
     updateCheckboxGroupInput(session, inputId = "sc2b2sub2", label = "Select which cells to show", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc2b2oup1 <- renderImage({
-  p <- scDRcoex(sc2conf, sc2meta, input$sc2b2drX, input$sc2b2drY, input$sc2b2inp1, input$sc2b2inp2, input$sc2b2sub1, input$sc2b2sub2, "sc2gexpr.h5", sc2gene, input$sc2b2siz, input$sc2b2col1, input$sc2b2ord1, input$sc2b2fsz, input$sc2b2asp, input$sc2b2txt)
-  
-  width  <- session$clientData$output_sc2b2oup1_width
-  height <- session$clientData$output_sc2b2oup1_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc2b2oup1")
-}, deleteFile = TRUE)
+output$sc2b2oup1 <- renderPlot({
+  scDRcoex(sc2conf, sc2meta, input$sc2b2drX, input$sc2b2drY, input$sc2b2inp1, input$sc2b2inp2, input$sc2b2sub1, input$sc2b2sub2, "sc2gexpr.h5", sc2gene, input$sc2b2siz, input$sc2b2col1, input$sc2b2ord1, input$sc2b2fsz, input$sc2b2asp, input$sc2b2txt)
+})
 
 output$sc2b2oup1.ui <- renderUI({
   imageOutput("sc2b2oup1", height = pList2[input$sc2b2psz])
@@ -1591,16 +1465,9 @@ output$sc2b2oup1.png <- downloadHandler(
     plot = scDRcoex(sc2conf, sc2meta, input$sc2b2drX, input$sc2b2drY, input$sc2b2inp1, input$sc2b2inp2, input$sc2b2sub1, input$sc2b2sub2, "sc2gexpr.h5", sc2gene, input$sc2b2siz, input$sc2b2col1, input$sc2b2ord1, input$sc2b2fsz, input$sc2b2asp, input$sc2b2txt) )
 })
 
-output$sc2b2oup2 <- renderImage({
-  p <- scDRcoexLeg(input$sc2b2inp1, input$sc2b2inp2, input$sc2b2col1, input$sc2b2fsz)
-  
-  width  <- session$clientData$output_sc2b2oup2_width
-  height <- session$clientData$output_sc2b2oup2_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc2b2oup2")
-}, deleteFile = TRUE)
+output$sc2b2oup2 <- renderPlot({
+  scDRcoexLeg(input$sc2b2inp1, input$sc2b2inp2, input$sc2b2col1, input$sc2b2fsz)
+})
 
 output$sc2b2oup2.ui <- renderUI({
   imageOutput("sc2b2oup2", height = "300px")
@@ -1644,16 +1511,9 @@ output$sc2b2.dt <- renderDataTable({
     updateCheckboxGroupInput(session, inputId = "sc2c1sub2", label = "Select which cells to show", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc2c1oup <- renderImage({
-  p <- scVioBox(sc2conf, sc2meta, input$sc2c1inp1, input$sc2c1inp2, input$sc2c1sub1, input$sc2c1sub2, "sc2gexpr.h5", sc2gene, input$sc2c1typ, input$sc2c1pts, input$sc2c1siz, input$sc2c1fsz)
-  
-  width  <- session$clientData$output_sc2c1oup_width
-  height <- session$clientData$output_sc2c1oup_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc2c1oup")
-}, deleteFile = TRUE)
+output$sc2c1oup <- renderPlot({
+  scVioBox(sc2conf, sc2meta, input$sc2c1inp1, input$sc2c1inp2, input$sc2c1sub1, input$sc2c1sub2, "sc2gexpr.h5", sc2gene, input$sc2c1typ, input$sc2c1pts, input$sc2c1siz, input$sc2c1fsz)
+})
 
 output$sc2c1oup.ui <- renderUI({
   imageOutput("sc2c1oup", height = pList2[input$sc2c1psz])
@@ -1695,16 +1555,9 @@ output$sc2c1oup.png <- downloadHandler(
     updateCheckboxGroupInput(session, inputId = "sc2c2sub2", label = "Select which cells to show", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc2c2oup <- renderImage({
-  p <- scProp(sc2conf, sc2meta, input$sc2c2inp1, input$sc2c2inp2, input$sc2c2sub1, input$sc2c2sub2, input$sc2c2typ, input$sc2c2flp, input$sc2c2fsz)
-  
-  width  <- session$clientData$output_sc2c2oup_width
-  height <- session$clientData$output_sc2c2oup_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc2c2oup")
-}, deleteFile = TRUE)
+output$sc2c2oup <- renderPlot({
+  scProp(sc2conf, sc2meta, input$sc2c2inp1, input$sc2c2inp2, input$sc2c2sub1, input$sc2c2sub2, input$sc2c2typ, input$sc2c2flp, input$sc2c2fsz)
+})
 
 output$sc2c2oup.ui <- renderUI({
   imageOutput("sc2c2oup", height = pList2[input$sc2c2psz])
@@ -1759,16 +1612,9 @@ output$sc2d1oupTxt <- renderUI({
   }
 })
 
-output$sc2d1oup <- renderImage({
-  p <- scBubbHeat(sc2conf, sc2meta, input$sc2d1inp, input$sc2d1grp, input$sc2d1plt, input$sc2d1sub1, input$sc2d1sub2, "sc2gexpr.h5", sc2gene, input$sc2d1scl, input$sc2d1row, input$sc2d1col, input$sc2d1cols, input$sc2d1fsz)
-  
-  width  <- session$clientData$output_sc2d1oup_width
-  height <- session$clientData$output_sc2d1oup_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc2d1oup")
-}, deleteFile = TRUE)
+output$sc2d1oup <- renderPlot({
+  scBubbHeat(sc2conf, sc2meta, input$sc2d1inp, input$sc2d1grp, input$sc2d1plt, input$sc2d1sub1, input$sc2d1sub2, "sc2gexpr.h5", sc2gene, input$sc2d1scl, input$sc2d1row, input$sc2d1col, input$sc2d1cols, input$sc2d1fsz)
+})
 
 output$sc2d1oup.ui <- renderUI({
   imageOutput("sc2d1oup", height = pList3[input$sc2d1psz])
@@ -1828,17 +1674,10 @@ updateSelectizeInput(session, "sc3c1inp2", server = TRUE,
     updateCheckboxGroupInput(session, inputId = "sc3a1sub2", label = "Select which cells to show", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc3a1oup1 <- renderImage({
+output$sc3a1oup1 <- renderPlot({
   req(input$sc3a1inp1)
-  p <- scDRcell(sc3conf, sc3meta, input$sc3a1drX, input$sc3a1drY, input$sc3a1inp1, input$sc3a1sub1, input$sc3a1sub2, input$sc3a1siz, input$sc3a1col1, input$sc3a1ord1, input$sc3a1fsz, input$sc3a1asp, input$sc3a1txt, input$sc3a1lab1)
-
-  width  <- session$clientData$output_sc3a1oup1_width
-  height <- session$clientData$output_sc3a1oup1_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc3a1oup1")
-}, deleteFile = TRUE)
+  scDRcell(sc3conf, sc3meta, input$sc3a1drX, input$sc3a1drY, input$sc3a1inp1, input$sc3a1sub1, input$sc3a1sub2, input$sc3a1siz, input$sc3a1col1, input$sc3a1ord1, input$sc3a1fsz, input$sc3a1asp, input$sc3a1txt, input$sc3a1lab1)
+})
 
 output$sc3a1oup1.ui <- renderUI({
   imageOutput("sc3a1oup1", height = pList[input$sc3a1psz])
@@ -1869,17 +1708,10 @@ output$sc3a1.dt <- renderDataTable({
    formatRound(columns = c("pctExpress"), digits = 2)
 })
 
-output$sc3a1oup2 <- renderImage({
+output$sc3a1oup2 <- renderPlot({
  req(input$sc3a1inp2)
- p <- scDRgene(sc3conf, sc3meta, input$sc3a1drX, input$sc3a1drY, input$sc3a1inp2, input$sc3a1sub1, input$sc3a1sub2, "sc3gexpr.h5", sc3gene, input$sc3a1siz, input$sc3a1col2, input$sc3a1ord2, input$sc3a1fsz, input$sc3a1asp, input$sc3a1txt)
- 
-  width  <- session$clientData$output_sc3a1oup2_width
-  height <- session$clientData$output_sc3a1oup2_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc3a1oup2")
-}, deleteFile = TRUE)
+ scDRgene(sc3conf, sc3meta, input$sc3a1drX, input$sc3a1drY, input$sc3a1inp2, input$sc3a1sub1, input$sc3a1sub2, "sc3gexpr.h5", sc3gene, input$sc3a1siz, input$sc3a1col2, input$sc3a1ord2, input$sc3a1fsz, input$sc3a1asp, input$sc3a1txt)
+})
 
 output$sc3a1oup2.ui <- renderUI({
  imageOutput("sc3a1oup2", height = pList[input$sc3a1psz])
@@ -1920,17 +1752,10 @@ output$sc3a1oup2.png <- downloadHandler(
     updateCheckboxGroupInput(session, inputId = "sc3a2sub2", label = "Select which cells to show", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc3a2oup1 <- renderImage({
+output$sc3a2oup1 <- renderPlot({
   req(input$sc3a2inp1)
-  p <- scDRcell(sc3conf, sc3meta, input$sc3a2drX, input$sc3a2drY, input$sc3a2inp1, input$sc3a2sub1, input$sc3a2sub2, input$sc3a2siz, input$sc3a2col1, input$sc3a2ord1, input$sc3a2fsz, input$sc3a2asp, input$sc3a2txt, input$sc3a2lab1)
-  
-  width  <- session$clientData$output_sc3a2oup1_width
-  height <- session$clientData$output_sc3a2oup1_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc3a2oup1")
-}, deleteFile = TRUE)
+  scDRcell(sc3conf, sc3meta, input$sc3a2drX, input$sc3a2drY, input$sc3a2inp1, input$sc3a2sub1, input$sc3a2sub2, input$sc3a2siz, input$sc3a2col1, input$sc3a2ord1, input$sc3a2fsz, input$sc3a2asp, input$sc3a2txt, input$sc3a2lab1)
+})
 
 output$sc3a2oup1.ui <- renderUI({
   imageOutput("sc3a2oup1", height = pList[input$sc3a2psz])
@@ -1952,17 +1777,10 @@ output$sc3a2oup1.png <- downloadHandler(
     )
 })
 
-output$sc3a2oup2 <- renderImage({
+output$sc3a2oup2 <- renderPlot({
   req(input$sc3a2inp2)
-  p <- scDRcell(sc3conf, sc3meta, input$sc3a2drX, input$sc3a2drY, input$sc3a2inp2, input$sc3a2sub1, input$sc3a2sub2, input$sc3a2siz, input$sc3a2col2, input$sc3a2ord2, input$sc3a2fsz, input$sc3a2asp, input$sc3a2txt, input$sc3a2lab2)
-  
-  width  <- session$clientData$output_sc3a2oup2_width
-  height <- session$clientData$output_sc3a2oup2_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc3a2oup2")
-}, deleteFile = TRUE)
+  scDRcell(sc3conf, sc3meta, input$sc3a2drX, input$sc3a2drY, input$sc3a2inp2, input$sc3a2sub1, input$sc3a2sub2, input$sc3a2siz, input$sc3a2col2, input$sc3a2ord2, input$sc3a2fsz, input$sc3a2asp, input$sc3a2txt, input$sc3a2lab2)
+})
 
 output$sc3a2oup2.ui <- renderUI({
   imageOutput("sc3a2oup2", height = pList[input$sc3a2psz])
@@ -2003,17 +1821,10 @@ output$sc3a2oup2.png <- downloadHandler(
     updateCheckboxGroupInput(session, inputId = "sc3a3sub2", label = "Select which cells to show", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc3a3oup1 <- renderImage({
+output$sc3a3oup1 <- renderPlot({
   req(input$sc3a3inp1)
-  p <- scDRgene(sc3conf, sc3meta, input$sc3a3drX, input$sc3a3drY, input$sc3a3inp1, input$sc3a3sub1, input$sc3a3sub2, "sc3gexpr.h5", sc3gene, input$sc3a3siz, input$sc3a3col1, input$sc3a3ord1, input$sc3a3fsz, input$sc3a3asp, input$sc3a3txt)
-  
-  width  <- session$clientData$output_sc3a3oup1_width
-  height <- session$clientData$output_sc3a3oup1_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc3a3oup1")
-}, deleteFile = TRUE)
+  scDRgene(sc3conf, sc3meta, input$sc3a3drX, input$sc3a3drY, input$sc3a3inp1, input$sc3a3sub1, input$sc3a3sub2, "sc3gexpr.h5", sc3gene, input$sc3a3siz, input$sc3a3col1, input$sc3a3ord1, input$sc3a3fsz, input$sc3a3asp, input$sc3a3txt)
+})
 
 output$sc3a3oup1.ui <- renderUI({
   imageOutput("sc3a3oup1", height = pList[input$sc3a3psz])
@@ -2041,17 +1852,10 @@ output$sc3a3oup1.png <- downloadHandler(
     )
 })
 
-output$sc3a3oup2 <- renderImage({
+output$sc3a3oup2 <- renderPlot({
   req(input$sc3a3inp2)
-  p <- scDRgene(sc3conf, sc3meta, input$sc3a3drX, input$sc3a3drY, input$sc3a3inp2, input$sc3a3sub1, input$sc3a3sub2, "sc3gexpr.h5", sc3gene, input$sc3a3siz, input$sc3a3col2, input$sc3a3ord2, input$sc3a3fsz, input$sc3a3asp, input$sc3a3txt)
-
-  width  <- session$clientData$output_sc3a3oup1_width
-  height <- session$clientData$output_sc3a3oup1_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc3a3oup1")
-}, deleteFile = TRUE)
+  scDRgene(sc3conf, sc3meta, input$sc3a3drX, input$sc3a3drY, input$sc3a3inp2, input$sc3a3sub1, input$sc3a3sub2, "sc3gexpr.h5", sc3gene, input$sc3a3siz, input$sc3a3col2, input$sc3a3ord2, input$sc3a3fsz, input$sc3a3asp, input$sc3a3txt)
+})
 
 output$sc3a3oup2.ui <- renderUI({
   imageOutput("sc3a3oup2", height = pList[input$sc3a3psz])
@@ -2097,16 +1901,9 @@ output$sc3a3oup2.png <- downloadHandler(
     updateCheckboxGroupInput(session, inputId = "sc3b2sub2", label = "Select which cells to show", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc3b2oup1 <- renderImage({
-  p <- scDRcoex(sc3conf, sc3meta, input$sc3b2drX, input$sc3b2drY, input$sc3b2inp1, input$sc3b2inp2, input$sc3b2sub1, input$sc3b2sub2, "sc3gexpr.h5", sc3gene, input$sc3b2siz, input$sc3b2col1, input$sc3b2ord1, input$sc3b2fsz, input$sc3b2asp, input$sc3b2txt)
-  
-  width  <- session$clientData$output_sc3b2oup1_width
-  height <- session$clientData$output_sc3b2oup1_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc3b2oup1")
-}, deleteFile = TRUE)
+output$sc3b2oup1 <- renderPlot({
+  scDRcoex(sc3conf, sc3meta, input$sc3b2drX, input$sc3b2drY, input$sc3b2inp1, input$sc3b2inp2, input$sc3b2sub1, input$sc3b2sub2, "sc3gexpr.h5", sc3gene, input$sc3b2siz, input$sc3b2col1, input$sc3b2ord1, input$sc3b2fsz, input$sc3b2asp, input$sc3b2txt)
+})
 
 output$sc3b2oup1.ui <- renderUI({
   imageOutput("sc3b2oup1", height = pList2[input$sc3b2psz])
@@ -2128,16 +1925,9 @@ output$sc3b2oup1.png <- downloadHandler(
     plot = scDRcoex(sc3conf, sc3meta, input$sc3b2drX, input$sc3b2drY, input$sc3b2inp1, input$sc3b2inp2, input$sc3b2sub1, input$sc3b2sub2, "sc3gexpr.h5", sc3gene, input$sc3b2siz, input$sc3b2col1, input$sc3b2ord1, input$sc3b2fsz, input$sc3b2asp, input$sc3b2txt) )
 })
 
-output$sc3b2oup2 <- renderImage({
-  p <- scDRcoexLeg(input$sc3b2inp1, input$sc3b2inp2, input$sc3b2col1, input$sc3b2fsz)
-  
-  width  <- session$clientData$output_sc3b2oup2_width
-  height <- session$clientData$output_sc3b2oup2_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc3b2oup2")
-}, deleteFile = TRUE)
+output$sc3b2oup2 <- renderPlot({
+  scDRcoexLeg(input$sc3b2inp1, input$sc3b2inp2, input$sc3b2col1, input$sc3b2fsz)
+})
 
 output$sc3b2oup2.ui <- renderUI({
   imageOutput("sc3b2oup2", height = "300px")
@@ -2181,16 +1971,9 @@ output$sc3b2.dt <- renderDataTable({
     updateCheckboxGroupInput(session, inputId = "sc3c1sub2", label = "Select which cells to show", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc3c1oup <- renderImage({
-  p <- scVioBox(sc3conf, sc3meta, input$sc3c1inp1, input$sc3c1inp2, input$sc3c1sub1, input$sc3c1sub2, "sc3gexpr.h5", sc3gene, input$sc3c1typ, input$sc3c1pts, input$sc3c1siz, input$sc3c1fsz)
-  
-  width  <- session$clientData$output_sc3c1oup_width
-  height <- session$clientData$output_sc3c1oup_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc3c1oup")
-}, deleteFile = TRUE)
+output$sc3c1oup <- renderPlot({
+  scVioBox(sc3conf, sc3meta, input$sc3c1inp1, input$sc3c1inp2, input$sc3c1sub1, input$sc3c1sub2, "sc3gexpr.h5", sc3gene, input$sc3c1typ, input$sc3c1pts, input$sc3c1siz, input$sc3c1fsz)
+})
 
 output$sc3c1oup.ui <- renderUI({
   imageOutput("sc3c1oup", height = pList2[input$sc3c1psz])
@@ -2232,16 +2015,9 @@ output$sc3c1oup.png <- downloadHandler(
     updateCheckboxGroupInput(session, inputId = "sc3c2sub2", label = "Select which cells to show", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc3c2oup <- renderImage({
-  p <- scProp(sc3conf, sc3meta, input$sc3c2inp1, input$sc3c2inp2, input$sc3c2sub1, input$sc3c2sub2, input$sc3c2typ, input$sc3c2flp, input$sc3c2fsz)
-  
-  width  <- session$clientData$output_sc3c2oup_width
-  height <- session$clientData$output_sc3c2oup_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc3c2oup")
-}, deleteFile = TRUE)
+output$sc3c2oup <- renderPlot({
+  scProp(sc3conf, sc3meta, input$sc3c2inp1, input$sc3c2inp2, input$sc3c2sub1, input$sc3c2sub2, input$sc3c2typ, input$sc3c2flp, input$sc3c2fsz)
+})
 
 output$sc3c2oup.ui <- renderUI({
   imageOutput("sc3c2oup", height = pList2[input$sc3c2psz])
@@ -2296,16 +2072,9 @@ output$sc3d1oupTxt <- renderUI({
   }
 })
 
-output$sc3d1oup <- renderImage({
-  p <- scBubbHeat(sc3conf, sc3meta, input$sc3d1inp, input$sc3d1grp, input$sc3d1plt, input$sc3d1sub1, input$sc3d1sub2, "sc3gexpr.h5", sc3gene, input$sc3d1scl, input$sc3d1row, input$sc3d1col, input$sc3d1cols, input$sc3d1fsz)
-  
-  width  <- session$clientData$output_sc3d1oup_width
-  height <- session$clientData$output_sc3d1oup_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc3d1oup")
-}, deleteFile = TRUE)
+output$sc3d1oup <- renderPlot({
+  scBubbHeat(sc3conf, sc3meta, input$sc3d1inp, input$sc3d1grp, input$sc3d1plt, input$sc3d1sub1, input$sc3d1sub2, "sc3gexpr.h5", sc3gene, input$sc3d1scl, input$sc3d1row, input$sc3d1col, input$sc3d1cols, input$sc3d1fsz)
+})
 
 output$sc3d1oup.ui <- renderUI({
   imageOutput("sc3d1oup", height = pList3[input$sc3d1psz])
@@ -2365,17 +2134,10 @@ updateSelectizeInput(session, "sc4c1inp2", server = TRUE,
     updateCheckboxGroupInput(session, inputId = "sc4a1sub2", label = "Select which cells to show", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc4a1oup1 <- renderImage({
+output$sc4a1oup1 <- renderPlot({
   req(input$sc4a1inp1)
-  p <- scDRcell(sc4conf, sc4meta, input$sc4a1drX, input$sc4a1drY, input$sc4a1inp1, input$sc4a1sub1, input$sc4a1sub2, input$sc4a1siz, input$sc4a1col1, input$sc4a1ord1, input$sc4a1fsz, input$sc4a1asp, input$sc4a1txt, input$sc4a1lab1)
-
-  width  <- session$clientData$output_sc4a1oup1_width
-  height <- session$clientData$output_sc4a1oup1_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc4a1oup1")
-}, deleteFile = TRUE)
+  scDRcell(sc4conf, sc4meta, input$sc4a1drX, input$sc4a1drY, input$sc4a1inp1, input$sc4a1sub1, input$sc4a1sub2, input$sc4a1siz, input$sc4a1col1, input$sc4a1ord1, input$sc4a1fsz, input$sc4a1asp, input$sc4a1txt, input$sc4a1lab1)
+})
 
 output$sc4a1oup1.ui <- renderUI({
   imageOutput("sc4a1oup1", height = pList[input$sc4a1psz])
@@ -2406,17 +2168,10 @@ output$sc4a1.dt <- renderDataTable({
    formatRound(columns = c("pctExpress"), digits = 2)
 })
 
-output$sc4a1oup2 <- renderImage({
+output$sc4a1oup2 <- renderPlot({
  req(input$sc4a1inp2)
- p <- scDRgene(sc4conf, sc4meta, input$sc4a1drX, input$sc4a1drY, input$sc4a1inp2, input$sc4a1sub1, input$sc4a1sub2, "sc4gexpr.h5", sc4gene, input$sc4a1siz, input$sc4a1col2, input$sc4a1ord2, input$sc4a1fsz, input$sc4a1asp, input$sc4a1txt)
- 
-  width  <- session$clientData$output_sc4a1oup2_width
-  height <- session$clientData$output_sc4a1oup2_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc4a1oup2")
-}, deleteFile = TRUE)
+ scDRgene(sc4conf, sc4meta, input$sc4a1drX, input$sc4a1drY, input$sc4a1inp2, input$sc4a1sub1, input$sc4a1sub2, "sc4gexpr.h5", sc4gene, input$sc4a1siz, input$sc4a1col2, input$sc4a1ord2, input$sc4a1fsz, input$sc4a1asp, input$sc4a1txt)
+})
 
 output$sc4a1oup2.ui <- renderUI({
  imageOutput("sc4a1oup2", height = pList[input$sc4a1psz])
@@ -2457,17 +2212,10 @@ output$sc4a1oup2.png <- downloadHandler(
     updateCheckboxGroupInput(session, inputId = "sc4a2sub2", label = "Select which cells to show", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc4a2oup1 <- renderImage({
+output$sc4a2oup1 <- renderPlot({
   req(input$sc4a2inp1)
-  p <- scDRcell(sc4conf, sc4meta, input$sc4a2drX, input$sc4a2drY, input$sc4a2inp1, input$sc4a2sub1, input$sc4a2sub2, input$sc4a2siz, input$sc4a2col1, input$sc4a2ord1, input$sc4a2fsz, input$sc4a2asp, input$sc4a2txt, input$sc4a2lab1)
-  
-  width  <- session$clientData$output_sc4a2oup1_width
-  height <- session$clientData$output_sc4a2oup1_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc4a2oup1")
-}, deleteFile = TRUE)
+  scDRcell(sc4conf, sc4meta, input$sc4a2drX, input$sc4a2drY, input$sc4a2inp1, input$sc4a2sub1, input$sc4a2sub2, input$sc4a2siz, input$sc4a2col1, input$sc4a2ord1, input$sc4a2fsz, input$sc4a2asp, input$sc4a2txt, input$sc4a2lab1)
+})
 
 output$sc4a2oup1.ui <- renderUI({
   imageOutput("sc4a2oup1", height = pList[input$sc4a2psz])
@@ -2489,17 +2237,10 @@ output$sc4a2oup1.png <- downloadHandler(
     )
 })
 
-output$sc4a2oup2 <- renderImage({
+output$sc4a2oup2 <- renderPlot({
   req(input$sc4a2inp2)
-  p <- scDRcell(sc4conf, sc4meta, input$sc4a2drX, input$sc4a2drY, input$sc4a2inp2, input$sc4a2sub1, input$sc4a2sub2, input$sc4a2siz, input$sc4a2col2, input$sc4a2ord2, input$sc4a2fsz, input$sc4a2asp, input$sc4a2txt, input$sc4a2lab2)
-  
-  width  <- session$clientData$output_sc4a2oup2_width
-  height <- session$clientData$output_sc4a2oup2_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc4a2oup2")
-}, deleteFile = TRUE)
+  scDRcell(sc4conf, sc4meta, input$sc4a2drX, input$sc4a2drY, input$sc4a2inp2, input$sc4a2sub1, input$sc4a2sub2, input$sc4a2siz, input$sc4a2col2, input$sc4a2ord2, input$sc4a2fsz, input$sc4a2asp, input$sc4a2txt, input$sc4a2lab2)
+})
 
 output$sc4a2oup2.ui <- renderUI({
   imageOutput("sc4a2oup2", height = pList[input$sc4a2psz])
@@ -2540,17 +2281,10 @@ output$sc4a2oup2.png <- downloadHandler(
     updateCheckboxGroupInput(session, inputId = "sc4a3sub2", label = "Select which cells to show", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc4a3oup1 <- renderImage({
+output$sc4a3oup1 <- renderPlot({
   req(input$sc4a3inp1)
-  p <- scDRgene(sc4conf, sc4meta, input$sc4a3drX, input$sc4a3drY, input$sc4a3inp1, input$sc4a3sub1, input$sc4a3sub2, "sc4gexpr.h5", sc4gene, input$sc4a3siz, input$sc4a3col1, input$sc4a3ord1, input$sc4a3fsz, input$sc4a3asp, input$sc4a3txt)
-  
-  width  <- session$clientData$output_sc4a3oup1_width
-  height <- session$clientData$output_sc4a3oup1_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc4a3oup1")
-}, deleteFile = TRUE)
+  scDRgene(sc4conf, sc4meta, input$sc4a3drX, input$sc4a3drY, input$sc4a3inp1, input$sc4a3sub1, input$sc4a3sub2, "sc4gexpr.h5", sc4gene, input$sc4a3siz, input$sc4a3col1, input$sc4a3ord1, input$sc4a3fsz, input$sc4a3asp, input$sc4a3txt)
+})
 
 output$sc4a3oup1.ui <- renderUI({
   imageOutput("sc4a3oup1", height = pList[input$sc4a3psz])
@@ -2578,17 +2312,10 @@ output$sc4a3oup1.png <- downloadHandler(
     )
 })
 
-output$sc4a3oup2 <- renderImage({
+output$sc4a3oup2 <- renderPlot({
   req(input$sc4a3inp2)
-  p <- scDRgene(sc4conf, sc4meta, input$sc4a3drX, input$sc4a3drY, input$sc4a3inp2, input$sc4a3sub1, input$sc4a3sub2, "sc4gexpr.h5", sc4gene, input$sc4a3siz, input$sc4a3col2, input$sc4a3ord2, input$sc4a3fsz, input$sc4a3asp, input$sc4a3txt)
-
-  width  <- session$clientData$output_sc4a3oup1_width
-  height <- session$clientData$output_sc4a3oup1_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc4a3oup1")
-}, deleteFile = TRUE)
+  scDRgene(sc4conf, sc4meta, input$sc4a3drX, input$sc4a3drY, input$sc4a3inp2, input$sc4a3sub1, input$sc4a3sub2, "sc4gexpr.h5", sc4gene, input$sc4a3siz, input$sc4a3col2, input$sc4a3ord2, input$sc4a3fsz, input$sc4a3asp, input$sc4a3txt)
+})
 
 output$sc4a3oup2.ui <- renderUI({
   imageOutput("sc4a3oup2", height = pList[input$sc4a3psz])
@@ -2634,16 +2361,9 @@ output$sc4a3oup2.png <- downloadHandler(
     updateCheckboxGroupInput(session, inputId = "sc4b2sub2", label = "Select which cells to show", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc4b2oup1 <- renderImage({
-  p <- scDRcoex(sc4conf, sc4meta, input$sc4b2drX, input$sc4b2drY, input$sc4b2inp1, input$sc4b2inp2, input$sc4b2sub1, input$sc4b2sub2, "sc4gexpr.h5", sc4gene, input$sc4b2siz, input$sc4b2col1, input$sc4b2ord1, input$sc4b2fsz, input$sc4b2asp, input$sc4b2txt)
-  
-  width  <- session$clientData$output_sc4b2oup1_width
-  height <- session$clientData$output_sc4b2oup1_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc4b2oup1")
-}, deleteFile = TRUE)
+output$sc4b2oup1 <- renderPlot({
+  scDRcoex(sc4conf, sc4meta, input$sc4b2drX, input$sc4b2drY, input$sc4b2inp1, input$sc4b2inp2, input$sc4b2sub1, input$sc4b2sub2, "sc4gexpr.h5", sc4gene, input$sc4b2siz, input$sc4b2col1, input$sc4b2ord1, input$sc4b2fsz, input$sc4b2asp, input$sc4b2txt)
+})
 
 output$sc4b2oup1.ui <- renderUI({
   imageOutput("sc4b2oup1", height = pList2[input$sc4b2psz])
@@ -2665,16 +2385,9 @@ output$sc4b2oup1.png <- downloadHandler(
     plot = scDRcoex(sc4conf, sc4meta, input$sc4b2drX, input$sc4b2drY, input$sc4b2inp1, input$sc4b2inp2, input$sc4b2sub1, input$sc4b2sub2, "sc4gexpr.h5", sc4gene, input$sc4b2siz, input$sc4b2col1, input$sc4b2ord1, input$sc4b2fsz, input$sc4b2asp, input$sc4b2txt) )
 })
 
-output$sc4b2oup2 <- renderImage({
-  p <- scDRcoexLeg(input$sc4b2inp1, input$sc4b2inp2, input$sc4b2col1, input$sc4b2fsz)
-  
-  width  <- session$clientData$output_sc4b2oup2_width
-  height <- session$clientData$output_sc4b2oup2_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc4b2oup2")
-}, deleteFile = TRUE)
+output$sc4b2oup2 <- renderPlot({
+  scDRcoexLeg(input$sc4b2inp1, input$sc4b2inp2, input$sc4b2col1, input$sc4b2fsz)
+})
 
 output$sc4b2oup2.ui <- renderUI({
   imageOutput("sc4b2oup2", height = "300px")
@@ -2718,16 +2431,9 @@ output$sc4b2.dt <- renderDataTable({
     updateCheckboxGroupInput(session, inputId = "sc4c1sub2", label = "Select which cells to show", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc4c1oup <- renderImage({
-  p <- scVioBox(sc4conf, sc4meta, input$sc4c1inp1, input$sc4c1inp2, input$sc4c1sub1, input$sc4c1sub2, "sc4gexpr.h5", sc4gene, input$sc4c1typ, input$sc4c1pts, input$sc4c1siz, input$sc4c1fsz)
-  
-  width  <- session$clientData$output_sc4c1oup_width
-  height <- session$clientData$output_sc4c1oup_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc4c1oup")
-}, deleteFile = TRUE)
+output$sc4c1oup <- renderPlot({
+  scVioBox(sc4conf, sc4meta, input$sc4c1inp1, input$sc4c1inp2, input$sc4c1sub1, input$sc4c1sub2, "sc4gexpr.h5", sc4gene, input$sc4c1typ, input$sc4c1pts, input$sc4c1siz, input$sc4c1fsz)
+})
 
 output$sc4c1oup.ui <- renderUI({
   imageOutput("sc4c1oup", height = pList2[input$sc4c1psz])
@@ -2769,16 +2475,9 @@ output$sc4c1oup.png <- downloadHandler(
     updateCheckboxGroupInput(session, inputId = "sc4c2sub2", label = "Select which cells to show", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc4c2oup <- renderImage({
-  p <- scProp(sc4conf, sc4meta, input$sc4c2inp1, input$sc4c2inp2, input$sc4c2sub1, input$sc4c2sub2, input$sc4c2typ, input$sc4c2flp, input$sc4c2fsz)
-  
-  width  <- session$clientData$output_sc4c2oup_width
-  height <- session$clientData$output_sc4c2oup_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc4c2oup")
-}, deleteFile = TRUE)
+output$sc4c2oup <- renderPlot({
+  scProp(sc4conf, sc4meta, input$sc4c2inp1, input$sc4c2inp2, input$sc4c2sub1, input$sc4c2sub2, input$sc4c2typ, input$sc4c2flp, input$sc4c2fsz)
+})
 
 output$sc4c2oup.ui <- renderUI({
   imageOutput("sc4c2oup", height = pList2[input$sc4c2psz])
@@ -2833,16 +2532,9 @@ output$sc4d1oupTxt <- renderUI({
   }
 })
 
-output$sc4d1oup <- renderImage({
-  p <- scBubbHeat(sc4conf, sc4meta, input$sc4d1inp, input$sc4d1grp, input$sc4d1plt, input$sc4d1sub1, input$sc4d1sub2, "sc4gexpr.h5", sc4gene, input$sc4d1scl, input$sc4d1row, input$sc4d1col, input$sc4d1cols, input$sc4d1fsz)
-  
-  width  <- session$clientData$output_sc4d1oup_width
-  height <- session$clientData$output_sc4d1oup_height
-  pr <- session$clientData$pixelratio
-  outfile <- tempfile(fileext=".png")
-  ggsave(outfile, p, width=width*pr, height=height*pr, dpi=72*pr, units = "px")
-  list(src = outfile, width = width, height = height, alt = "sc4d1oup")
-}, deleteFile = TRUE)
+output$sc4d1oup <- renderPlot({
+  scBubbHeat(sc4conf, sc4meta, input$sc4d1inp, input$sc4d1grp, input$sc4d1plt, input$sc4d1sub1, input$sc4d1sub2, "sc4gexpr.h5", sc4gene, input$sc4d1scl, input$sc4d1row, input$sc4d1col, input$sc4d1cols, input$sc4d1fsz)
+})
 
 output$sc4d1oup.ui <- renderUI({
   imageOutput("sc4d1oup", height = pList3[input$sc4d1psz])
