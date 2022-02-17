@@ -10,12 +10,31 @@ Description: Interactive interface for scRNA-Seq.
 URL: https://github.com/NBISweden/support-5860
 Depends:
     R(>= 3.5.0),
+    data.table   (>= 1.12.2),
+    hdf5r        (>= 1.2.0),
+    reticulate   (>= 1.13),
+    ggplot2      (>= 3.3.0),
     shiny
 Imports:
     DT,
+    ggdendro,
+    glue,
+    grid,
+    gridExtra,
+    magrittr,
+    Matrix,
+    methods,
+    RColorBrewer,
+    readr,
     readxl,
-    shinythemes
+    shinyhelper,
+    shinythemes,
+    showtext,
+    SummarizedExperiment,
+    utils
 Suggests:
+    Seurat               (>= 3.0.0),
+    SingleCellExperiment (>= 1.4.1)
 License: GPL-3
 Encoding: UTF-8
 BugReports: https://github.com/NBISweden/support-5860/issues

@@ -2,6 +2,7 @@
 
 export(runShiny)
 import(shiny)
+import(shinyhelper)
 import(shinythemes)
 importFrom(DT,DTOutput)
 importFrom(DT,renderDT)

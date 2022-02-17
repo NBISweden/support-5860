@@ -4,12 +4,10 @@
 \alias{runShiny}
 \title{Launch interactive shiny application}
 \usage{
-runShiny(display.mode = "normal", ...)
+runShiny(...)
 }
 \arguments{
-\item{display.mode}{Display mode. See \code{\link{runApp}}.}
-
-\item{...}{Further arguments are passed to \code{\link{runApp}}.}
+\item{...}{Arguments are passed to \code{\link{runApp}}.}
 }
 \value{
 This function does not return anything

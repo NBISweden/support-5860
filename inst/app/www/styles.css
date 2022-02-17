@@ -1,5 +1,4 @@
 
-  
 /* easyshiny */
 /* custom css styles */
 
@@ -27,5 +26,13 @@ a:active,
 .navbar-default .navbar-brand:focus,
 .navbar-default .navbar-brand:active {
   color: #bcbcbc;
+}
+
+.btn {
+  margin: 5px 0px;
+}
+
+.dt-buttons {
+  margin: 1em 0em;
 }
 
