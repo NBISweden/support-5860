@@ -155,9 +155,9 @@ scDRcell <- function(inpConf, inpMeta, inpdrX, inpdrY, inp1, inpsub1, inpsub2, i
   # Actual ggplot
   ggOut <- ggplot(ggData, aes(X, Y, color = val))
   if (bgCells) { ggOut <- ggOut +
-    geom_point(data = ggData2, color = "snow2", size = inpsiz, shape = 16) }
+    geom_point(data = ggData2, color = "snow2", size = inpsiz, shape = 20) }
   ggOut <- ggOut +
-    geom_point(size = inpsiz, shape = 16) +
+    geom_point(size = inpsiz, shape = 20) +
     xlab(inpdrX) +
     ylab(inpdrY) +
     sctheme(base_size = sList[inpfsz], XYval = inptxt)
@@ -287,10 +287,10 @@ scDRgene <- function(inpConf, inpMeta, inpdrX, inpdrY, inp1, inpsub1, inpsub2, i
   # Actual ggplot
   ggOut <- ggplot(ggData, aes(X, Y, color = val))
   if (bgCells) { ggOut <- ggOut +
-    geom_point(data = ggData2, color = "snow2", size = inpsiz, shape = 16) }
+    geom_point(data = ggData2, color = "snow2", size = inpsiz, shape = 20) }
 
   ggOut <- ggOut +
-    geom_point(size = inpsiz, shape = 16) + xlab(inpdrX) + ylab(inpdrY) +
+    geom_point(size = inpsiz, shape = 20) + xlab(inpdrX) + ylab(inpdrY) +
     sctheme(base_size = sList[inpfsz], XYval = inptxt) +
     scale_color_gradientn(inp1, colours = cList[[inpcol]]) +
     guides(color = guide_colorbar(barwidth = 20))
@@ -373,9 +373,9 @@ scDRcoex <- function(inpConf, inpMeta, inpdrX, inpdrY, inp1, inp2, inpsub1,
   # Actual ggplot
   ggOut <- ggplot(ggData, aes(X, Y))
   if (bgCells) { ggOut <- ggOut +
-    geom_point(data = ggData2, color = "snow2", size = inpsiz, shape = 16) }
+    geom_point(data = ggData2, color = "snow2", size = inpsiz, shape = 20) }
   ggOut <- ggOut +
-    geom_point(size = inpsiz, shape = 16, color = ggData$cMix) +
+    geom_point(size = inpsiz, shape = 20, color = ggData$cMix) +
     xlab(inpdrX) + ylab(inpdrY) +
     sctheme(base_size = sList[inpfsz], XYval = inptxt) +
     scale_color_gradientn(inp1, colours = cList[[1]]) +
@@ -497,7 +497,7 @@ scVioBox <- function(inpConf, inpMeta, inp1, inp2, inpsub1, inpsub2, inpH5, inpG
     ggOut <- ggplot(ggData, aes(X, val, fill = X)) +
     geom_boxplot()
   }
-  if (inppts) { ggOut <- ggOut + geom_jitter(size = inpsiz, shape = 16) }
+  if (inppts) { ggOut <- ggOut + geom_jitter(size = inpsiz, shape = 20) }
 
   ggOut <- ggOut + xlab(inp1) + ylab(inp2) +
     sctheme(base_size = sList[inpfsz], Xang = 45, XjusH = 1) +
