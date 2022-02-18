@@ -21,11 +21,12 @@ sc4def  = readRDS("sc4def.rds")
 
 ### UI code
 shinyUI(
-navbarPage(
-"Support 8560",
-
+fluidPage(style="margin:0;padding:0;",
 tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "styles.css")),
-theme = shinythemes::shinytheme("flatly")
+
+theme = shinythemes::shinytheme("flatly"),
+navbarPage(
+"Support 8560"
 ,navbarMenu("Combined LEC",
 # tab 1 ----
 tabPanel(
@@ -4600,4 +4601,5 @@ tabPanel(
   )
 )
 ))
+)
 )
