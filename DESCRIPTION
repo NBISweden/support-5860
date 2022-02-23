@@ -19,6 +19,7 @@ Imports:
     DT,
     ggdendro,
     glue,
+    ggplotify,
     grid,
     gridExtra,
     magrittr,

@@ -16,6 +16,10 @@
   border-radius: 6px;
 }
 
+.input-panel-section {
+  margin-bottom: 1em;
+}
+
 a:hover,
 a:focus,
 a:active,

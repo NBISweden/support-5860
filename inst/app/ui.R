@@ -28,7 +28,7 @@ theme = shinythemes::shinytheme("flatly"),
 navbarPage(
 "Support 8560"
 ,navbarMenu("Combined LEC",
-# tab 1 ----
+# tab civge ----
 tabPanel(
   "CellInfo vs GeneExpr",
   fluidRow(
@@ -53,11 +53,11 @@ tabPanel(
           div(
             class = "input-panel",
             h4("Dimension Reduction"),
-            selectInput("sc1a1drX", "X-axis:",
+            selectInput("sc1_civge_drX", "X-axis:",
               choices = sc1conf[dimred == TRUE]$UI,
               selected = sc1def$dimred[1]
             ),
-            selectInput("sc1a1drY", "Y-axis:",
+            selectInput("sc1_civge_drY", "Y-axis:",
               choices = sc1conf[dimred == TRUE]$UI,
               selected = sc1def$dimred[2]
             )
@@ -68,16 +68,16 @@ tabPanel(
           4,
           div(
             class = "input-panel",
-            checkboxInput("sc1a1togL", "Subset cells"),
+            checkboxInput("sc1_civge_togL", "Subset cells"),
             conditionalPanel(
-              condition = "input.sc1a1togL == true",
-              selectInput("sc1a1sub1", "Cell information to subset:",
+              condition = "input.sc1_civge_togL == true",
+              selectInput("sc1_civge_sub1", "Cell info to subset:",
                 choices = sc1conf[grp == TRUE]$UI,
                 selected = sc1def$grp1
               ),
-              uiOutput("sc1a1sub1.ui"),
-              actionButton("sc1a1sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
-              actionButton("sc1a1sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
+              uiOutput("sc1_civge_sub1.ui"),
+              actionButton("sc1_civge_sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
+              actionButton("sc1_civge_sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
             )
           )
         ), # End of column
@@ -86,25 +86,25 @@ tabPanel(
           4,
           div(
             class = "input-panel",
-            checkboxInput("sc1a1tog0", "Adjust graphics"),
+            checkboxInput("sc1_civge_tog0", "Adjust graphics"),
             conditionalPanel(
-              condition = "input.sc1a1tog0 == true",
-              sliderInput("sc1a1siz", "Point size:",
+              condition = "input.sc1_civge_tog0 == true",
+              sliderInput("sc1_civge_siz", "Point size:",
                 min = 0, max = 4, value = 1.25, step = 0.25
               ),
-              radioButtons("sc1a1psz", "Plot size:",
+              radioButtons("sc1_civge_psz", "Plot size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Medium", inline = TRUE
               ),
-              radioButtons("sc1a1fsz", "Font size:",
+              radioButtons("sc1_civge_fsz", "Font size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Small", inline = TRUE
               ),
-              radioButtons("sc1a1asp", "Aspect ratio:",
+              radioButtons("sc1_civge_asp", "Aspect ratio:",
                 choices = c("Square", "Fixed", "Free"),
                 selected = "Square", inline = TRUE
               ),
-              checkboxInput("sc1a1txt", "Show axis text", value = FALSE)
+              checkboxInput("sc1_civge_txt", "Show axis text", value = FALSE)
             )
           )
         ) # row 2 col 3
@@ -123,15 +123,15 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                selectInput("sc1a1inp1", "Cell info:",
+                selectInput("sc1_civge_inp1", "Cell info:",
                   choices = sc1conf$UI,
                   selected = sc1def$meta1
                 ) %>%
                   helper(
                     type = "inline", size = "m", fade = TRUE,
-                    title = "Cell information to colour cells by",
+                    title = "Cell info to colour cells by",
                     content = c(
-                      "Select cell information to colour cells",
+                      "Select cell info to colour cells",
                       "- Categorical covariates have a fixed colour palette",
                       paste0(
                         "- Continuous covariates are coloured in a ",
@@ -146,18 +146,18 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                checkboxInput("sc1a1tog1", "Adjust graphics"),
+                checkboxInput("sc1_civge_tog1", "Adjust graphics"),
                 conditionalPanel(
-                  condition = "input.sc1a1tog1 == true",
-                  radioButtons("sc1a1col1", "Colour (Continuous data):",
+                  condition = "input.sc1_civge_tog1 == true",
+                  radioButtons("sc1_civge_col1", "Colour (Continuous data):",
                     choices = c("White-Red", "Blue-Yellow-Red", "Yellow-Green-Purple"),
                     selected = "Blue-Yellow-Red"
                   ),
-                  radioButtons("sc1a1ord1", "Plot order:",
-                    choices = c("Max-1st", "Min-1st", "Original", "Random"),
+                  radioButtons("sc1_civge_ord1", "Plot order:",
+                    choices = c("Max", "Min", "Original", "Random"),
                     selected = "Original", inline = TRUE
                   ),
-                  checkboxInput("sc1a1lab1", "Show cell info labels", value = TRUE)
+                  checkboxInput("sc1_civge_lab1", "Show cell info labels", value = TRUE)
                 )
               )
             )
@@ -167,7 +167,7 @@ tabPanel(
             class = "tab-section",
             column(
               12,
-              uiOutput("sc1a1oup1.ui")
+              uiOutput("sc1_civge_oup1.ui")
             )
           ),
           # row 3 col 1 row 3
@@ -177,21 +177,21 @@ tabPanel(
               12,
               div(
                 class = "input-panel",
-                numericInput("sc1a1oup1.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-                downloadButton("sc1a1oup1.pdf", "Download PDF", class = "btn-sm"),
-                downloadButton("sc1a1oup1.png", "Download PNG", class = "btn-sm"),
-                checkboxInput("sc1a1tog9", "Show cell numbers / statistics")
+                numericInput("sc1_civge_oup1.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+                downloadButton("sc1_civge_oup1.pdf", "Download PDF", class = "btn-sm"),
+                downloadButton("sc1_civge_oup1.png", "Download PNG", class = "btn-sm"),
+                checkboxInput("sc1_civge_tog9", "Show cell numbers / statistics")
               )
             )
           ),
           conditionalPanel(
-            condition = "input.sc1a1tog9 == true",
+            condition = "input.sc1_civge_tog9 == true",
             h4("Cell numbers / statistics"),
-            radioButtons("sc1a1splt", "Split continuous cell info into:",
+            radioButtons("sc1_civge_splt", "Split continuous cell info into:",
               choices = c("Quartile", "Decile"),
               selected = "Decile", inline = TRUE
             ),
-            dataTableOutput("sc1a1.dt")
+            dataTableOutput("sc1_civge_.dt")
           )
         ), # row 3 col 1
         # row 3 col 2
@@ -204,7 +204,7 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                selectInput("sc1a1inp2", "Gene name:", choices = NULL) %>%
+                selectInput("sc1_civge_inp2", "Gene name:", choices = NULL) %>%
                   helper(
                     type = "inline", size = "m", fade = TRUE,
                     title = "Gene expression to colour cells by",
@@ -223,16 +223,16 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                checkboxInput("sc1a1tog2", "Adjust graphics"),
+                checkboxInput("sc1_civge_tog2", "Adjust graphics"),
                 conditionalPanel(
-                  condition = "input.sc1a1tog2 == true",
-                  radioButtons("sc1a1col2", "Colour:",
+                  condition = "input.sc1_civge_tog2 == true",
+                  radioButtons("sc1_civge_col2", "Colour:",
                     choices = c("White-Red", "Blue-Yellow-Red", "Yellow-Green-Purple"),
                     selected = "White-Red"
                   ),
-                  radioButtons("sc1a1ord2", "Plot order:",
-                    choices = c("Max-1st", "Min-1st", "Original", "Random"),
-                    selected = "Max-1st", inline = TRUE
+                  radioButtons("sc1_civge_ord2", "Plot order:",
+                    choices = c("Max", "Min", "Original", "Random"),
+                    selected = "Max", inline = TRUE
                   )
                 )
               )
@@ -242,7 +242,7 @@ tabPanel(
             class = "tab-section",
             column(
               12,
-              uiOutput("sc1a1oup2.ui")
+              uiOutput("sc1_civge_oup2.ui")
             )
           ),
           fluidRow(
@@ -251,9 +251,9 @@ tabPanel(
               12,
               div(
                 class = "input-panel",
-                numericInput("sc1a1oup2.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-                downloadButton("sc1a1oup2.pdf", "Download PDF", class = "btn-sm"),
-                downloadButton("sc1a1oup2.png", "Download PNG", class = "btn-sm")
+                numericInput("sc1_civge_oup2.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+                downloadButton("sc1_civge_oup2.pdf", "Download PDF", class = "btn-sm"),
+                downloadButton("sc1_civge_oup2.png", "Download PNG", class = "btn-sm")
               )
             )
           )
@@ -262,9 +262,10 @@ tabPanel(
       hr()
     )
   )
-) # End of tab 1
+) # End of tab civge
+
 ,
-# tab 2 ----
+# tab civci ----
 tabPanel(
   "CellInfo vs CellInfo",
   fluidRow(
@@ -277,7 +278,7 @@ tabPanel(
         column(
           12,
           h3("Cell info vs cell info"),
-          p("Two cell informations side-by-side on low-dimensional represention.")
+          p("Two cell infos side-by-side on low-dimensional represention.")
         ) # row 1 col 1
       ), # row 1
       # row 2 ----
@@ -288,11 +289,11 @@ tabPanel(
           div(
             class = "input-panel",
             h4("Dimension Reduction"),
-            selectInput("sc1a2drX", "X-axis:",
+            selectInput("sc1_civci_drX", "X-axis:",
               choices = sc1conf[dimred == TRUE]$UI,
               selected = sc1def$dimred[1]
             ),
-            selectInput("sc1a2drY", "Y-axis:",
+            selectInput("sc1_civci_drY", "Y-axis:",
               choices = sc1conf[dimred == TRUE]$UI,
               selected = sc1def$dimred[2]
             )
@@ -302,16 +303,16 @@ tabPanel(
         column(4,
           div(
             class = "input-panel",
-            checkboxInput("sc1a2togL", "Subset cells"),
+            checkboxInput("sc1_civci_togL", "Subset cells"),
             conditionalPanel(
-              condition = "input.sc1a2togL == true",
-              selectInput("sc1a2sub1", "Cell information to subset:",
+              condition = "input.sc1_civci_togL == true",
+              selectInput("sc1_civci_sub1", "Cell info to subset:",
                 choices = sc1conf[grp == TRUE]$UI,
                 selected = sc1def$grp1
               ),
-              uiOutput("sc1a2sub1.ui"),
-              actionButton("sc1a2sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
-              actionButton("sc1a2sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
+              uiOutput("sc1_civci_sub1.ui"),
+              actionButton("sc1_civci_sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
+              actionButton("sc1_civci_sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
             )
           )
         ), # row 2 col 2
@@ -320,25 +321,25 @@ tabPanel(
           4,
           div(
             class = "input-panel",
-            checkboxInput("sc1a2tog0", "Adjust graphics"),
+            checkboxInput("sc1_civci_tog0", "Adjust graphics"),
             conditionalPanel(
-              condition = "input.sc1a2tog0 == true",
-              sliderInput("sc1a2siz", "Point size:",
+              condition = "input.sc1_civci_tog0 == true",
+              sliderInput("sc1_civci_siz", "Point size:",
                 min = 0, max = 4, value = 1.25, step = 0.25
               ),
-              radioButtons("sc1a2psz", "Plot size:",
+              radioButtons("sc1_civci_psz", "Plot size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Medium", inline = TRUE
               ),
-              radioButtons("sc1a2fsz", "Font size:",
+              radioButtons("sc1_civci_fsz", "Font size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Small", inline = TRUE
               ),
-              radioButtons("sc1a2asp", "Aspect ratio:",
+              radioButtons("sc1_civci_asp", "Aspect ratio:",
                 choices = c("Square", "Fixed", "Free"),
                 selected = "Square", inline = TRUE
               ),
-              checkboxInput("sc1a2txt", "Show axis text", value = FALSE)
+              checkboxInput("sc1_civci_txt", "Show axis text", value = FALSE)
             )
           )
         ) # row 2 col 3
@@ -358,15 +359,15 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                selectInput("sc1a2inp1", "Cell info:",
+                selectInput("sc1_civci_inp1", "Cell info:",
                   choices = sc1conf$UI,
                   selected = sc1def$meta1
                 ) %>%
                   helper(
                     type = "inline", size = "m", fade = TRUE,
-                    title = "Cell information to colour cells by",
+                    title = "Cell info to colour cells by",
                     content = c(
-                      "Select cell information to colour cells",
+                      "Select cell info to colour cells",
                       "- Categorical covariates have a fixed colour palette",
                       paste0(
                         "- Continuous covariates are coloured in a ",
@@ -381,27 +382,27 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                checkboxInput("sc1a2tog1", "Adjust graphics"),
+                checkboxInput("sc1_civci_tog1", "Adjust graphics"),
                 conditionalPanel(
-                  condition = "input.sc1a2tog1 == true",
-                  radioButtons("sc1a2col1", "Colour (Continuous data):",
+                  condition = "input.sc1_civci_tog1 == true",
+                  radioButtons("sc1_civci_col1", "Colour (Continuous data):",
                     choices = c(
                       "White-Red", "Blue-Yellow-Red",
                       "Yellow-Green-Purple"
                     ),
                     selected = "Blue-Yellow-Red"
                   ),
-                  radioButtons("sc1a2ord1", "Plot order:",
-                    choices = c("Max-1st", "Min-1st", "Original", "Random"),
+                  radioButtons("sc1_civci_ord1", "Plot order:",
+                    choices = c("Max", "Min", "Original", "Random"),
                     selected = "Original", inline = TRUE
                   ),
-                  checkboxInput("sc1a2lab1", "Show cell info labels", value = TRUE)
+                  checkboxInput("sc1_civci_lab1", "Show cell info labels", value = TRUE)
                 )
               )
             )
           ),
           # row 3 col 1 row 2
-          fluidRow(column(12, uiOutput("sc1a2oup1.ui"))),
+          fluidRow(column(12, uiOutput("sc1_civci_oup1.ui"))),
           # row 3 col 1 row 3
           fluidRow(
             class = "tab-section",
@@ -409,9 +410,9 @@ tabPanel(
               12,
               div(
                 class = "input-panel",
-                numericInput("sc1a2oup1.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-                downloadButton("sc1a2oup1.pdf", "Download PDF", class = "btn-sm"),
-                downloadButton("sc1a2oup1.png", "Download PNG", class = "btn-sm")
+                numericInput("sc1_civci_oup1.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+                downloadButton("sc1_civci_oup1.pdf", "Download PDF", class = "btn-sm"),
+                downloadButton("sc1_civci_oup1.png", "Download PNG", class = "btn-sm")
               )
             )
           )
@@ -425,15 +426,15 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                selectInput("sc1a2inp2", "Cell info:",
+                selectInput("sc1_civci_inp2", "Cell info:",
                   choices = sc1conf$UI,
                   selected = sc1def$meta2
                 ) %>%
                   helper(
                     type = "inline", size = "m", fade = TRUE,
-                    title = "Cell information to colour cells by",
+                    title = "Cell info to colour cells by",
                     content = c(
-                      "Select cell information to colour cells",
+                      "Select cell info to colour cells",
                       "- Categorical covariates have a fixed colour palette",
                       paste0(
                         "- Continuous covariates are coloured in a ",
@@ -448,35 +449,35 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                checkboxInput("sc1a2tog2", "Adjust graphics"),
+                checkboxInput("sc1_civci_tog2", "Adjust graphics"),
                 conditionalPanel(
-                  condition = "input.sc1a2tog2 == true",
-                  radioButtons("sc1a2col2", "Colour (Continuous data):",
+                  condition = "input.sc1_civci_tog2 == true",
+                  radioButtons("sc1_civci_col2", "Colour (Continuous data):",
                     choices = c(
                       "White-Red", "Blue-Yellow-Red",
                       "Yellow-Green-Purple"
                     ),
                     selected = "Blue-Yellow-Red"
                   ),
-                  radioButtons("sc1a2ord2", "Plot order:",
-                    choices = c("Max-1st", "Min-1st", "Original", "Random"),
+                  radioButtons("sc1_civci_ord2", "Plot order:",
+                    choices = c("Max", "Min", "Original", "Random"),
                     selected = "Original", inline = TRUE
                   ),
-                  checkboxInput("sc1a2lab2", "Show cell info labels", value = TRUE)
+                  checkboxInput("sc1_civci_lab2", "Show cell info labels", value = TRUE)
                 )
               )
             )
           ),
-          fluidRow(column(12, uiOutput("sc1a2oup2.ui"))),
+          fluidRow(column(12, uiOutput("sc1_civci_oup2.ui"))),
           fluidRow(
             class = "tab-section",
             column(
               12,
               div(
                 class = "input-panel",
-                numericInput("sc1a2oup2.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-                downloadButton("sc1a2oup2.pdf", "Download PDF", class = "btn-sm"),
-                downloadButton("sc1a2oup2.png", "Download PNG", class = "btn-sm")
+                numericInput("sc1_civci_oup2.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+                downloadButton("sc1_civci_oup2.pdf", "Download PDF", class = "btn-sm"),
+                downloadButton("sc1_civci_oup2.png", "Download PNG", class = "btn-sm")
               )
             )
           )
@@ -485,9 +486,10 @@ tabPanel(
       hr()
     )
   )
-) # End of tab 2
+) # End of tab civci
+
 ,
-# tab 3 ----
+# tab gevge ----
 tabPanel(
   "GeneExpr vs GeneExpr",
   fluidRow(
@@ -512,11 +514,11 @@ tabPanel(
           div(
             class = "input-panel",
             h4("Dimension Reduction"),
-            selectInput("sc1a3drX", "X-axis:",
+            selectInput("sc1_gevge_drX", "X-axis:",
               choices = sc1conf[dimred == TRUE]$UI,
               selected = sc1def$dimred[1]
             ),
-            selectInput("sc1a3drY", "Y-axis:",
+            selectInput("sc1_gevge_drY", "Y-axis:",
               choices = sc1conf[dimred == TRUE]$UI,
               selected = sc1def$dimred[2]
             )
@@ -526,16 +528,16 @@ tabPanel(
         column(4,
           div(
             class = "input-panel",
-            checkboxInput("sc1a3togL", "Subset cells"),
+            checkboxInput("sc1_gevge_togL", "Subset cells"),
             conditionalPanel(
-              condition = "input.sc1a3togL == true",
-              selectInput("sc1a3sub1", "Cell information to subset:",
+              condition = "input.sc1_gevge_togL == true",
+              selectInput("sc1_gevge_sub1", "Cell info to subset:",
                 choices = sc1conf[grp == TRUE]$UI,
                 selected = sc1def$grp1
               ),
-              uiOutput("sc1a3sub1.ui"),
-              actionButton("sc1a3sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
-              actionButton("sc1a3sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
+              uiOutput("sc1_gevge_sub1.ui"),
+              actionButton("sc1_gevge_sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
+              actionButton("sc1_gevge_sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
             )
           )
         ), # End of column
@@ -544,25 +546,25 @@ tabPanel(
           4,
           div(
             class = "input-panel",
-            checkboxInput("sc1a3tog0", "Adjust graphics"),
+            checkboxInput("sc1_gevge_tog0", "Adjust graphics"),
             conditionalPanel(
-              condition = "input.sc1a3tog0 == true",
-              sliderInput("sc1a3siz", "Point size:",
+              condition = "input.sc1_gevge_tog0 == true",
+              sliderInput("sc1_gevge_siz", "Point size:",
                 min = 0, max = 4, value = 1.25, step = 0.25
               ),
-              radioButtons("sc1a3psz", "Plot size:",
+              radioButtons("sc1_gevge_psz", "Plot size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Medium", inline = TRUE
               ),
-              radioButtons("sc1a3fsz", "Font size:",
+              radioButtons("sc1_gevge_fsz", "Font size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Small", inline = TRUE
               ),
-              radioButtons("sc1a3asp", "Aspect ratio:",
+              radioButtons("sc1_gevge_asp", "Aspect ratio:",
                 choices = c("Square", "Fixed", "Free"),
                 selected = "Square", inline = TRUE
               ),
-              checkboxInput("sc1a3txt", "Show axis text", value = FALSE)
+              checkboxInput("sc1_gevge_txt", "Show axis text", value = FALSE)
             )
           )
         ) # row 2 col 3
@@ -580,7 +582,7 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                selectInput("sc1a3inp1", "Gene name:", choices = NULL) %>%
+                selectInput("sc1_gevge_inp1", "Gene name:", choices = NULL) %>%
                   helper(
                     type = "inline", size = "m", fade = TRUE,
                     title = "Gene expression to colour cells by",
@@ -599,19 +601,19 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                checkboxInput("sc1a3tog1", "Adjust graphics"),
+                checkboxInput("sc1_gevge_tog1", "Adjust graphics"),
                 conditionalPanel(
-                  condition = "input.sc1a3tog1 == true",
-                  radioButtons("sc1a3col1", "Colour:",
+                  condition = "input.sc1_gevge_tog1 == true",
+                  radioButtons("sc1_gevge_col1", "Colour:",
                     choices = c(
                       "White-Red", "Blue-Yellow-Red",
                       "Yellow-Green-Purple"
                     ),
                     selected = "White-Red"
                   ),
-                  radioButtons("sc1a3ord1", "Plot order:",
-                    choices = c("Max-1st", "Min-1st", "Original", "Random"),
-                    selected = "Max-1st", inline = TRUE
+                  radioButtons("sc1_gevge_ord1", "Plot order:",
+                    choices = c("Max", "Min", "Original", "Random"),
+                    selected = "Max", inline = TRUE
                   )
                 )
               )
@@ -620,7 +622,7 @@ tabPanel(
           # row 3 col 1 row 2
           fluidRow(
             class = "tab-section",
-            column(12, uiOutput("sc1a3oup1.ui"))
+            column(12, uiOutput("sc1_gevge_oup1.ui"))
           ),
           # row 3 col 1 row 3
           fluidRow(
@@ -629,9 +631,9 @@ tabPanel(
               12,
               div(
                 class = "input-panel",
-                numericInput("sc1a3oup1.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-                downloadButton("sc1a3oup1.pdf", "Download PDF", class = "btn-sm"),
-                downloadButton("sc1a3oup1.png", "Download PNG", class = "btn-sm")
+                numericInput("sc1_gevge_oup1.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+                downloadButton("sc1_gevge_oup1.pdf", "Download PDF", class = "btn-sm"),
+                downloadButton("sc1_gevge_oup1.png", "Download PNG", class = "btn-sm")
               )
             )
           )
@@ -645,7 +647,7 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                selectInput("sc1a3inp2", "Gene name:", choices = NULL) %>%
+                selectInput("sc1_gevge_inp2", "Gene name:", choices = NULL) %>%
                   helper(
                     type = "inline", size = "m", fade = TRUE,
                     title = "Gene expression to colour cells by",
@@ -664,19 +666,19 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                checkboxInput("sc1a3tog2", "Adjust graphics"),
+                checkboxInput("sc1_gevge_tog2", "Adjust graphics"),
                 conditionalPanel(
-                  condition = "input.sc1a3tog2 == true",
-                  radioButtons("sc1a3col2", "Colour:",
+                  condition = "input.sc1_gevge_tog2 == true",
+                  radioButtons("sc1_gevge_col2", "Colour:",
                     choices = c(
                       "White-Red", "Blue-Yellow-Red",
                       "Yellow-Green-Purple"
                     ),
                     selected = "White-Red"
                   ),
-                  radioButtons("sc1a3ord2", "Plot order:",
-                    choices = c("Max-1st", "Min-1st", "Original", "Random"),
-                    selected = "Max-1st", inline = TRUE
+                  radioButtons("sc1_gevge_ord2", "Plot order:",
+                    choices = c("Max", "Min", "Original", "Random"),
+                    selected = "Max", inline = TRUE
                   )
                 )
               )
@@ -684,7 +686,7 @@ tabPanel(
           ),
           fluidRow(
             class = "tab-section",
-            column(12, uiOutput("sc1a3oup2.ui"))
+            column(12, uiOutput("sc1_gevge_oup2.ui"))
           ),
           fluidRow(
             class = "tab-section",
@@ -692,9 +694,9 @@ tabPanel(
               12,
               div(
                 class = "input-panel",
-                  numericInput("sc1a3oup2.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-                  downloadButton("sc1a3oup2.pdf", "Download PDF", class = "btn-sm"),
-                  downloadButton("sc1a3oup2.png", "Download PNG", class = "btn-sm")
+                  numericInput("sc1_gevge_oup2.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+                  downloadButton("sc1_gevge_oup2.pdf", "Download PDF", class = "btn-sm"),
+                  downloadButton("sc1_gevge_oup2.png", "Download PNG", class = "btn-sm")
               )
             )
           )
@@ -703,9 +705,129 @@ tabPanel(
       hr()
     )
   )
-) # End of tab 3
+) # End of tab gevge
+
 ,
-# tab 4 ----
+# tab gem ----
+tabPanel(
+  "Expression",
+  fluidRow(
+    class = "container page",
+    column(
+      12,
+      # row 1 ----
+      fluidRow(
+        class = "tab-section",
+        column(
+          12,
+          h3("Gene expression"),
+          p("Explore gene expression on low-dimensional represention.")
+        ) # row 1 col 1
+      ), # row 1
+      # row 2 ----
+      fluidRow(
+        class = "tab-section",
+        column(4,
+               fluidRow(
+        column(
+          12,
+          div(
+            class = "input-panel input-panel-section",
+            textAreaInput("sc1_gem_inp", "Gene names:",
+                          height = "100px",
+                          value = paste0(sc1def$genes, collapse = ", ")
+            ) %>%
+              helper(
+                type = "inline", size = "m", fade = TRUE,
+                title = "List of genes to plot on bubbleplot / heatmap",
+                content = c(
+                  "Input genes to plot",
+                  "- Maximum 16 genes (due to ploting space limitations)",
+                  "- Genes should be separated by comma, semicolon or newline"
+                )
+              ),
+            selectInput("sc1_gem_drX", "X-axis:",
+                        choices = sc1conf[dimred == TRUE]$UI,
+                        selected = sc1def$dimred[1]
+            ),
+            selectInput("sc1_gem_drY", "Y-axis:",
+                        choices = sc1conf[dimred == TRUE]$UI,
+                        selected = sc1def$dimred[2]
+            ),
+            checkboxInput("sc1_gem_togL", "Subset cells"),
+            conditionalPanel(
+              condition = "input.sc1_gem_togL == true",
+              selectInput("sc1_gem_sub1", "Cell info to subset:",
+                          choices = sc1conf[grp == TRUE]$UI,
+                          selected = sc1def$grp1
+              ),
+              uiOutput("sc1_gem_sub1.ui"),
+              actionButton("sc1_gem_sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
+              actionButton("sc1_gem_sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
+            ),
+            checkboxInput("sc1_gem_tog0", "Adjust graphics"),
+            conditionalPanel(
+              condition = "input.sc1_gem_tog0 == true",
+              sliderInput("sc1_gem_siz", "Point size:",
+                          min = 0, max = 3, value = 0.5, step = 0.1
+              ),
+              radioButtons("sc1_gem_psz", "Plot size:",
+                           choices = c("Small", "Medium", "Large"),
+                           selected = "Medium", inline = TRUE
+              ),
+              radioButtons("sc1_gem_fsz", "Font size:",
+                           choices = c("Smaller", "Small", "Medium", "Large"),
+                           selected = "Small", inline = TRUE
+              ),
+              radioButtons("sc1_gem_asp", "Aspect ratio:",
+                           choices = c("Square", "Fixed", "Free"),
+                           selected = "Square", inline = TRUE
+              ),
+              checkboxInput("sc1_gem_txt", "Show axis text", value = FALSE),
+              radioButtons("sc1_gem_col", "Colour (Continuous data):",
+                           choices = c(
+                             "White-Red", "Blue-Yellow-Red",
+                             "Yellow-Green-Purple"
+                           ),
+                           selected = "Blue-Yellow-Red"
+              ),
+              radioButtons("sc1_gem_ord", "Plot order:",
+                           choices = c("Max", "Min", "Original", "Random"),
+                           selected = "Max", inline = TRUE
+              ),
+              numericInput("sc1_gem_ncol", "Number of columns", value = 0, min = 0, step = 1)
+            )
+          ),
+          div(
+            class = "input-panel",
+            fluidRow(
+            column(4,
+              numericInput("sc1_gem_oup1.height", "Height:", min = 1, max = 50, value = 25, step = 2)
+            ),
+            column(4,
+              numericInput("sc1_gem_oup1.width", "Width:", min = 1, max = 50, value = 25, step = 2)
+            ),
+            column(4,
+              numericInput("sc1_gem_oup1.res", "Res:", min = 72, max = 600, value = 150, step = 5)
+            )
+            ),
+            downloadButton("sc1_gem_oup1.pdf", "Download PDF", class = "btn-sm"),
+            downloadButton("sc1_gem_oup1.png", "Download PNG", class = "btn-sm")
+          )
+        )
+               )
+      ),
+      column(8,
+             uiOutput("sc1_gem_oup1.ui")
+      )
+      ),
+      hr()
+    )
+  )
+) # End of tab gem
+
+,
+# tab gec ----
 tabPanel(
   "Gene coexpression",
   fluidRow(
@@ -725,149 +847,112 @@ tabPanel(
       fluidRow(
         class = "tab-section",
         # row 2 col 1
-        column(
-          4,
-          div(
-            class = "input-panel",
-            h4("Dimension Reduction"),
-            selectInput("sc1b2drX", "X-axis:",
-              choices = sc1conf[dimred == TRUE]$UI,
-              selected = sc1def$dimred[1]
-            ),
-            selectInput("sc1b2drY", "Y-axis:",
-              choices = sc1conf[dimred == TRUE]$UI,
-              selected = sc1def$dimred[2]
-            )
-          )
-        ), # row 1 col 1
-        # row 2 col 2
         column(4,
-          div(
-            class = "input-panel",
-            checkboxInput("sc1b2togL", "Subset cells"),
-            conditionalPanel(
-              condition = "input.sc1b2togL == true",
-              selectInput("sc1b2sub1", "Cell information to subset:",
-                choices = sc1conf[grp == TRUE]$UI,
-                selected = sc1def$grp1
-              ),
-              uiOutput("sc1b2sub1.ui"),
-              actionButton("sc1b2sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
-              actionButton("sc1b2sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
-            )
-          )
-        ), # End of column
-        # row 2 col 3
+               column(
+                 12,
+                 div(
+                   class = "input-panel input-panel-section",
+                   h4("Dimension Reduction"),
+                   selectInput("sc1_gec_drX", "X-axis:",
+                               choices = sc1conf[dimred == TRUE]$UI,
+                               selected = sc1def$dimred[1]
+                   ),
+                   selectInput("sc1_gec_drY", "Y-axis:",
+                               choices = sc1conf[dimred == TRUE]$UI,
+                               selected = sc1def$dimred[2]
+                   ),
+                   selectInput("sc1_gec_inp1", "Gene 1:", choices = NULL) %>%
+                     helper(
+                       type = "inline", size = "m", fade = TRUE,
+                       title = "Gene expression to colour cells by",
+                       content = c(
+                         "Select gene to colour cells by gene expression",
+                         paste0(
+                           "- Gene expression are coloured in a ",
+                           "White-Red colour scheme which can be ",
+                           "changed in the plot controls"
+                         )
+                       )
+                     ),
+                   selectInput("sc1_gec_inp2", "Gene 2:", choices = NULL) %>%
+                     helper(
+                       type = "inline", size = "m", fade = TRUE,
+                       title = "Gene expression to colour cells by",
+                       content = c(
+                         "Select gene to colour cells by gene expression",
+                         paste0(
+                           "- Gene expression are coloured in a ",
+                           "White-Blue colour scheme which can be ",
+                           "changed in the plot controls"
+                         )
+                       )
+                     ),
+                   checkboxInput("sc1_gec_togL", "Subset cells"),
+                   conditionalPanel(
+                    condition = "input.sc1_gec_togL == true",
+                    selectInput("sc1_gec_sub1", "Cell info to subset:", choices = sc1conf[grp == TRUE]$UI, selected = sc1def$grp1),
+                     uiOutput("sc1_gec_sub1.ui"),
+                     actionButton("sc1_gec_sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
+                     actionButton("sc1_gec_sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
+                   ),
+                   checkboxInput("sc1_gec_tog0", "Adjust graphics"),
+                   conditionalPanel(
+                     condition = "input.sc1_gec_tog0 == true",
+                     radioButtons("sc1_gec_col1", "Colour:",
+                                  choices = c(
+                                    "Red (Gene1); Blue (Gene2)",
+                                    "Orange (Gene1); Blue (Gene2)",
+                                    "Red (Gene1); Green (Gene2)",
+                                    "Green (Gene1); Blue (Gene2)"
+                                  ),
+                                  selected = "Red (Gene1); Blue (Gene2)"
+                     ),
+                     radioButtons("sc1_gec_ord1", "Plot order:",
+                                  choices = c("Max", "Min", "Original", "Random"),
+                                  selected = "Max", inline = TRUE
+                     ),
+                     sliderInput("sc1_gec_siz", "Point size:",
+                                 min = 0, max = 4, value = 1.25, step = 0.25
+                     ),
+                     radioButtons("sc1_gec_psz", "Plot size:",
+                                  choices = c("Small", "Medium", "Large"),
+                                  selected = "Medium", inline = TRUE
+                     ),
+                     radioButtons("sc1_gec_fsz", "Font size:",
+                                  choices = c("Small", "Medium", "Large"),
+                                  selected = "Small", inline = TRUE
+                     ),
+                     radioButtons("sc1_gec_asp", "Aspect ratio:",
+                                  choices = c("Square", "Fixed", "Free"),
+                                  selected = "Square", inline = TRUE
+                     ),
+                     checkboxInput("sc1_gec_txt", "Show axis text", value = FALSE)
+                   )
+                 ),
+                 div(class="input-panel input-panel-section",
+                     numericInput("sc1_gec_oup1.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+                     downloadButton("sc1_gec_oup1.pdf", "Download PDF", class = "btn-sm"),
+                     downloadButton("sc1_gec_oup1.png", "Download PNG", class = "btn-sm")
+                 ),
+                 div(class="input-panel-section",
+                     h4("Cell numbers"),
+                     dataTableOutput("sc1_gec_.dt")
+                 )
+               )
+        ), # row 2 col 1
+        # row 2 col 2
         column(
-          4,
-          div(
-            class = "input-panel",
-            checkboxInput("sc1b2tog0", "Adjust graphics"),
-            conditionalPanel(
-              condition = "input.sc1b2tog0 == true",
-              sliderInput("sc1b2siz", "Point size:",
-                min = 0, max = 4, value = 1.25, step = 0.25
-              ),
-              radioButtons("sc1b2psz", "Plot size:",
-                choices = c("Small", "Medium", "Large"),
-                selected = "Medium", inline = TRUE
-              ),
-              radioButtons("sc1b2fsz", "Font size:",
-                choices = c("Small", "Medium", "Large"),
-                selected = "Small", inline = TRUE
-              ),
-              radioButtons("sc1b2asp", "Aspect ratio:",
-                choices = c("Square", "Fixed", "Free"),
-                selected = "Square", inline = TRUE
-              ),
-              checkboxInput("sc1b2txt", "Show axis text", value = FALSE)
-            )
-          )
-        ) # row 2 col 3
-      ), # row 2
-      # row 3 ----
-      fluidRow(
-        class = "tab-section",
-        # row 3 col 1
-        column(
-          3,
-          style = "border-right: 2px solid #f3f6f4",
-          div(
-            class = "input-panel",
-            h4("Gene Expression"),
-            selectInput("sc1b2inp1", "Gene 1:", choices = NULL) %>%
-              helper(
-                type = "inline", size = "m", fade = TRUE,
-                title = "Gene expression to colour cells by",
-                content = c(
-                  "Select gene to colour cells by gene expression",
-                  paste0(
-                    "- Gene expression are coloured in a ",
-                    "White-Red colour scheme which can be ",
-                    "changed in the plot controls"
-                  )
-                )
-              ),
-            selectInput("sc1b2inp2", "Gene 2:", choices = NULL) %>%
-              helper(
-                type = "inline", size = "m", fade = TRUE,
-                title = "Gene expression to colour cells by",
-                content = c(
-                  "Select gene to colour cells by gene expression",
-                  paste0(
-                    "- Gene expression are coloured in a ",
-                    "White-Blue colour scheme which can be ",
-                    "changed in the plot controls"
-                  )
-                )
-              ),
-            checkboxInput("sc1b2tog1", "Adjust graphics"),
-            conditionalPanel(
-              condition = "input.sc1b2tog1 == true",
-              radioButtons("sc1b2col1", "Colour:",
-                choices = c(
-                  "Red (Gene1); Blue (Gene2)",
-                  "Orange (Gene1); Blue (Gene2)",
-                  "Red (Gene1); Green (Gene2)",
-                  "Green (Gene1); Blue (Gene2)"
-                ),
-                selected = "Red (Gene1); Blue (Gene2)"
-              ),
-              radioButtons("sc1b2ord1", "Plot order:",
-                choices = c("Max-1st", "Min-1st", "Original", "Random"),
-                selected = "Max-1st", inline = TRUE
-              )
-            )
-          )
-        ), # row 3 col 1
-        # row 3 col 2
-        column(
-          6,
-          style = "border-right: 2px solid #f3f6f4",
-          uiOutput("sc1b2oup1.ui"),
-          div(
-            class = "input-panel",
-            numericInput("sc1b2oup1.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-            downloadButton("sc1b2oup1.pdf", "Download PDF", class = "btn-sm"),
-            downloadButton("sc1b2oup1.png", "Download PNG", class = "btn-sm")
-          )
-        ), # row 3 col 2
-        # row 3 col 3
-        column(
-          3,
-          uiOutput("sc1b2oup2.ui"),
-          downloadButton("sc1b2oup2.pdf", "Download PDF", class = "btn-sm"),
-          downloadButton("sc1b2oup2.png", "Download PNG", class = "btn-sm"),
-          h4("Cell numbers"),
-          dataTableOutput("sc1b2.dt")
-        ) # row 3 col 3
-      ), # row 3
+          8,
+          uiOutput("sc1_gec_oup1.ui"),
+        )
+      ), # end of row 2
       hr()
-    )
-  )
-) # End of tab 4
+    ) # col
+  ) # row
+) # End of tab gec
+
 ,
-# tab 5 ----
+# tab vio ----
 tabPanel(
   "Violinplot / Boxplot",
   fluidRow(
@@ -892,79 +977,84 @@ tabPanel(
           div(
             class = "input-panel",
             style = "border-right: 2px solid #f3f6f4",
-            selectInput("sc1c1inp1", "Cell information (X-axis):",
+            selectInput("sc1_vio_inp1", "Cell info (X-axis):",
               choices = sc1conf[grp == TRUE]$UI,
               selected = sc1def$grp1
             ) %>%
               helper(
                 type = "inline", size = "m", fade = TRUE,
-                title = "Cell information to group cells by",
+                title = "Cell info to group cells by",
                 content = c(
-                  "Select categorical cell information to group cells by",
+                  "Select categorical cell info to group cells by",
                   "- Single cells are grouped by this categorical covariate",
                   "- Plotted as the X-axis of the violin plot / box plot"
                 )
               ),
-            selectInput("sc1c1inp2", "Cell Info / Gene name (Y-axis):", choices = NULL) %>%
+            selectInput("sc1_vio_inp2", "Cell info / Gene (Y-axis):", choices = NULL) %>%
               helper(
                 type = "inline", size = "m", fade = TRUE,
                 title = "Cell Info / Gene to plot",
                 content = c(
                   "Select cell info / gene to plot on Y-axis",
-                  "- Can be continuous cell information (e.g. nUMIs / scores)",
+                  "- Can be continuous cell info (e.g. nUMIs / scores)",
                   "- Can also be gene expression"
                 )
               ),
-            radioButtons("sc1c1typ", "Plot type:",
-              choices = c("violin", "boxplot"),
+            radioButtons("sc1_vio_typ", "Plot type:",
+              choices = c("violin", "boxplot", "lineplot"),
               selected = "violin", inline = TRUE
             ),
-            checkboxInput("sc1c1pts", "Show data points", value = FALSE),
-            checkboxInput("sc1c1togL", "Subset cells"),
+            checkboxInput("sc1_vio_pts", "Show data points", value = FALSE),
+            checkboxInput("sc1_vio_togL", "Subset cells"),
             conditionalPanel(
-              condition = "input.sc1c1togL == true",
-              selectInput("sc1c1sub1", "Cell information to subset:",
+              condition = "input.sc1_vio_togL == true",
+              selectInput("sc1_vio_sub1", "Cell info to subset:",
                 choices = sc1conf[grp == TRUE]$UI,
                 selected = sc1def$grp1
               ),
-              uiOutput("sc1c1sub1.ui"),
-              actionButton("sc1c1sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
-              actionButton("sc1c1sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
+              uiOutput("sc1_vio_sub1.ui"),
+              actionButton("sc1_vio_sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
+              actionButton("sc1_vio_sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
             ),
-            checkboxInput("sc1c1tog", "Adjust graphics"),
+            checkboxInput("sc1_vio_tog", "Adjust graphics"),
             conditionalPanel(
-              condition = "input.sc1c1tog == true",
-              sliderInput("sc1c1siz", "Data point size:",
+              condition = "input.sc1_vio_tog == true",
+              sliderInput("sc1_vio_siz", "Data point size:",
                 min = 0, max = 4, value = 1.25, step = 0.25
               ),
-              radioButtons("sc1c1psz", "Plot size:",
+              radioButtons("sc1_vio_psz", "Plot size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Small", inline = TRUE
               ),
-              radioButtons("sc1c1fsz", "Font size:",
+              radioButtons("sc1_vio_fsz", "Font size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Small", inline = TRUE
+              ),
+              conditionalPanel(
+              condition = "input.sc1_vio_typ == 'lineplot'",
+              sliderInput("sc1_vio_barsz", "Line size", min = 0.05, max = 0.5, step = 0.01, value = 0.3)
               )
             )
           ),
           div(
             class = "input-panel",
-            numericInput("sc1c1oup.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-            downloadButton("sc1c1oup.pdf", "Download PDF", class = "btn-sm"),
-            downloadButton("sc1c1oup.png", "Download PNG", class = "btn-sm")
+            numericInput("sc1_vio_oup.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+            downloadButton("sc1_vio_oup.pdf", "Download PDF", class = "btn-sm"),
+            downloadButton("sc1_vio_oup.png", "Download PNG", class = "btn-sm")
           )
         ), # row 2 col 1
         # row 2 col 2
         column(
-          9, uiOutput("sc1c1oup.ui")
+          9, uiOutput("sc1_vio_oup.ui")
         ) # row 2 col 2
       ), # row 2
       hr()
     )
   )
-) # End of tab 5
+) # End of tab vio
+
 ,
-# tab 6 ----
+# tab pro ----
 tabPanel(
   "Proportion plot",
   fluidRow(
@@ -977,7 +1067,7 @@ tabPanel(
         column(
           12,
           h3("Proportion / cell numbers across different cell information"),
-          p("Visualise the composition of single cells based on one discrete cell information across another discrete cell information. Usage examples include the library or cellcycle composition across clusters.")
+          p("Visualise the composition of single cells based on one discrete cell information across another discrete cell information.")
         )
       ),
       # row 2 ----
@@ -986,57 +1076,56 @@ tabPanel(
         # row 2 col 1
         column(
           3,
-          style = "border-right: 2px solid #f3f6f4",
           div(
             class = "input-panel",
-            selectInput("sc1c2inp1", "Cell information to plot (X-axis):",
+            selectInput("sc1_pro_inp1", "Cell info to plot (X-axis):",
               choices = sc1conf[grp == TRUE]$UI,
               selected = sc1def$grp2
             ) %>%
               helper(
                 type = "inline", size = "m", fade = TRUE,
-                title = "Cell information to plot cells by",
+                title = "Cell info to plot cells by",
                 content = c(
-                  "Select categorical cell information to plot cells by",
+                  "Select categorical cell info to plot cells by",
                   "- Plotted as the X-axis of the proportion plot"
                 )
               ),
-            selectInput("sc1c2inp2", "Cell information to group / colour by:",
+            selectInput("sc1_pro_inp2", "Cell info to group / colour by:",
               choices = sc1conf[grp == TRUE]$UI,
               selected = sc1def$grp1
             ) %>%
               helper(
                 type = "inline", size = "m", fade = TRUE,
-                title = "Cell information to group / colour cells by",
+                title = "Cell info to group / colour cells by",
                 content = c(
-                  "Select categorical cell information to group / colour cells by",
+                  "Select categorical cell info to group / colour cells by",
                   "- Proportion / cell numbers are shown in different colours"
                 )
               ),
-            radioButtons("sc1c2typ", "Plot value:",
+            radioButtons("sc1_pro_typ", "Plot value:",
               choices = c("Proportion", "CellNumbers"),
               selected = "Proportion", inline = TRUE
             ),
-            checkboxInput("sc1c2flp", "Flip X/Y", value = FALSE),
-            checkboxInput("sc1c2togL", "Subset cells"),
+            checkboxInput("sc1_pro_flp", "Flip X/Y", value = FALSE),
+            checkboxInput("sc1_pro_togL", "Subset cells"),
             conditionalPanel(
-              condition = "input.sc1c2togL == true",
-              selectInput("sc1c2sub1", "Cell information to subset:",
+              condition = "input.sc1_pro_togL == true",
+              selectInput("sc1_pro_sub1", "Cell info to subset:",
                 choices = sc1conf[grp == TRUE]$UI,
                 selected = sc1def$grp1
               ),
-              uiOutput("sc1c2sub1.ui"),
-              actionButton("sc1c2sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
-              actionButton("sc1c2sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
+              uiOutput("sc1_pro_sub1.ui"),
+              actionButton("sc1_pro_sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
+              actionButton("sc1_pro_sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
             ),
-            checkboxInput("sc1c2tog", "Adjust graphics"),
+            checkboxInput("sc1_pro_tog", "Adjust graphics"),
             conditionalPanel(
-              condition = "input.sc1c2tog == true",
-              radioButtons("sc1c2psz", "Plot size:",
+              condition = "input.sc1_pro_tog == true",
+              radioButtons("sc1_pro_psz", "Plot size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Medium", inline = TRUE
               ),
-              radioButtons("sc1c2fsz", "Font size:",
+              radioButtons("sc1_pro_fsz", "Font size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Small", inline = TRUE
               )
@@ -1044,22 +1133,23 @@ tabPanel(
           ),
           div(
             class = "input-panel",
-            numericInput("sc1c2oup.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-            downloadButton("sc1c2oup.pdf", "Download PDF", class = "btn-sm"),
-            downloadButton("sc1c2oup.png", "Download PNG", class = "btn-sm")
+            numericInput("sc1_pro_oup.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+            downloadButton("sc1_pro_oup.pdf", "Download PDF", class = "btn-sm"),
+            downloadButton("sc1_pro_oup.png", "Download PNG", class = "btn-sm")
           )
         ), # row 2 col 1
         # row 2 col 2
         column(
-          9, uiOutput("sc1c2oup.ui")
+          9, uiOutput("sc1_pro_oup.ui")
         ) # row 2 col 2
       ), # row 2
       hr()
     )
   )
-) # End of tab 6
+) # End of tab pro
+
 ,
-# tab 7 ----
+# tab hea ----
 tabPanel(
   "Bubbleplot / Heatmap",
   fluidRow(
@@ -1080,13 +1170,10 @@ tabPanel(
         class = "tab-section",
         column(
           3,
-          style = "border-right: 2px solid #f3f6f4",
           div(
             class = "input-panel",
-            textAreaInput("sc1d1inp", HTML("List of gene names <br />
-                                        (Max 50 genes, separated <br />
-                                         by , or ; or newline):"),
-              height = "200px",
+            textAreaInput("sc1_hea_inp", "Gene names",
+              height = "100px",
               value = paste0(sc1def$genes, collapse = ", ")
             ) %>%
               helper(
@@ -1098,52 +1185,52 @@ tabPanel(
                   "- Genes should be separated by comma, semicolon or newline"
                 )
               ),
-            selectInput("sc1d1grp", "Group by:",
+            selectInput("sc1_hea_grp", "Group by:",
               choices = sc1conf[grp == TRUE]$UI,
               selected = sc1conf[grp == TRUE]$UI[1]
             ) %>%
               helper(
                 type = "inline", size = "m", fade = TRUE,
-                title = "Cell information to group cells by",
+                title = "Cell info to group cells by",
                 content = c(
-                  "Select categorical cell information to group cells by",
+                  "Select categorical cell info to group cells by",
                   "- Single cells are grouped by this categorical covariate",
                   "- Plotted as the X-axis of the bubbleplot / heatmap"
                 )
               ),
-            radioButtons("sc1d1plt", "Plot type:",
+            radioButtons("sc1_hea_plt", "Plot type:",
               choices = c("Bubbleplot", "Heatmap"),
               selected = "Bubbleplot", inline = TRUE
             ),
-            checkboxInput("sc1d1scl", "Scale gene expression", value = TRUE),
-            checkboxInput("sc1d1row", "Cluster rows (genes)", value = TRUE),
-            checkboxInput("sc1d1col", "Cluster columns (samples)", value = FALSE),
-            checkboxInput("sc1d1togL", "Subset cells"),
+            checkboxInput("sc1_hea_scl", "Scale gene expression", value = TRUE),
+            checkboxInput("sc1_hea_row", "Cluster rows (genes)", value = TRUE),
+            checkboxInput("sc1_hea_col", "Cluster columns (samples)", value = FALSE),
+            checkboxInput("sc1_hea_togL", "Subset cells"),
             conditionalPanel(
-              condition = "input.sc1d1togL == true",
-              selectInput("sc1d1sub1", "Cell information to subset:",
+              condition = "input.sc1_hea_togL == true",
+              selectInput("sc1_hea_sub1", "Cell info to subset:",
                 choices = sc1conf[grp == TRUE]$UI,
                 selected = sc1def$grp1
               ),
-              uiOutput("sc1d1sub1.ui"),
-              actionButton("sc1d1sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
-              actionButton("sc1d1sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
+              uiOutput("sc1_hea_sub1.ui"),
+              actionButton("sc1_hea_sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
+              actionButton("sc1_hea_sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
             ),
-            checkboxInput("sc1d1tog", "Adjust graphics"),
+            checkboxInput("sc1_hea_tog", "Adjust graphics"),
             conditionalPanel(
-              condition = "input.sc1d1tog == true",
-              radioButtons("sc1d1cols", "Colour scheme:",
+              condition = "input.sc1_hea_tog == true",
+              radioButtons("sc1_hea_cols", "Colour scheme:",
                 choices = c(
                   "White-Red", "Blue-Yellow-Red",
                   "Yellow-Green-Purple"
                 ),
                 selected = "Blue-Yellow-Red"
               ),
-              radioButtons("sc1d1psz", "Plot size:",
+              radioButtons("sc1_hea_psz", "Plot size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Medium", inline = TRUE
               ),
-              radioButtons("sc1d1fsz", "Font size:",
+              radioButtons("sc1_hea_fsz", "Font size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Small", inline = TRUE
               )
@@ -1151,24 +1238,25 @@ tabPanel(
           ),
           div(
             class = "input-panel",
-            numericInput("sc1d1oup.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-            downloadButton("sc1d1oup.pdf", "Download PDF", class = "btn-sm"),
-            downloadButton("sc1d1oup.png", "Download PNG", class = "btn-sm")
+            numericInput("sc1_hea_oup.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+            downloadButton("sc1_hea_oup.pdf", "Download PDF", class = "btn-sm"),
+            downloadButton("sc1_hea_oup.png", "Download PNG", class = "btn-sm")
           )
         ), # row 2 col 1
         # row 2 col 2
         column(
-          9, h4(htmlOutput("sc1d1oupTxt")),
-          uiOutput("sc1d1oup.ui")
+          9, h4(htmlOutput("sc1_hea_oupTxt")),
+          uiOutput("sc1_hea_oup.ui")
         ) # row 2 col 2
       ), # row 2
       hr()
     )
   )
-) # End of tab 7
+) # End of tab hea
+
 )
 ,navbarMenu("Diseased",
-# tab 1 ----
+# tab civge ----
 tabPanel(
   "CellInfo vs GeneExpr",
   fluidRow(
@@ -1193,11 +1281,11 @@ tabPanel(
           div(
             class = "input-panel",
             h4("Dimension Reduction"),
-            selectInput("sc2a1drX", "X-axis:",
+            selectInput("sc2_civge_drX", "X-axis:",
               choices = sc2conf[dimred == TRUE]$UI,
               selected = sc2def$dimred[1]
             ),
-            selectInput("sc2a1drY", "Y-axis:",
+            selectInput("sc2_civge_drY", "Y-axis:",
               choices = sc2conf[dimred == TRUE]$UI,
               selected = sc2def$dimred[2]
             )
@@ -1208,16 +1296,16 @@ tabPanel(
           4,
           div(
             class = "input-panel",
-            checkboxInput("sc2a1togL", "Subset cells"),
+            checkboxInput("sc2_civge_togL", "Subset cells"),
             conditionalPanel(
-              condition = "input.sc2a1togL == true",
-              selectInput("sc2a1sub1", "Cell information to subset:",
+              condition = "input.sc2_civge_togL == true",
+              selectInput("sc2_civge_sub1", "Cell info to subset:",
                 choices = sc2conf[grp == TRUE]$UI,
                 selected = sc2def$grp1
               ),
-              uiOutput("sc2a1sub1.ui"),
-              actionButton("sc2a1sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
-              actionButton("sc2a1sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
+              uiOutput("sc2_civge_sub1.ui"),
+              actionButton("sc2_civge_sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
+              actionButton("sc2_civge_sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
             )
           )
         ), # End of column
@@ -1226,25 +1314,25 @@ tabPanel(
           4,
           div(
             class = "input-panel",
-            checkboxInput("sc2a1tog0", "Adjust graphics"),
+            checkboxInput("sc2_civge_tog0", "Adjust graphics"),
             conditionalPanel(
-              condition = "input.sc2a1tog0 == true",
-              sliderInput("sc2a1siz", "Point size:",
+              condition = "input.sc2_civge_tog0 == true",
+              sliderInput("sc2_civge_siz", "Point size:",
                 min = 0, max = 4, value = 1.25, step = 0.25
               ),
-              radioButtons("sc2a1psz", "Plot size:",
+              radioButtons("sc2_civge_psz", "Plot size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Medium", inline = TRUE
               ),
-              radioButtons("sc2a1fsz", "Font size:",
+              radioButtons("sc2_civge_fsz", "Font size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Small", inline = TRUE
               ),
-              radioButtons("sc2a1asp", "Aspect ratio:",
+              radioButtons("sc2_civge_asp", "Aspect ratio:",
                 choices = c("Square", "Fixed", "Free"),
                 selected = "Square", inline = TRUE
               ),
-              checkboxInput("sc2a1txt", "Show axis text", value = FALSE)
+              checkboxInput("sc2_civge_txt", "Show axis text", value = FALSE)
             )
           )
         ) # row 2 col 3
@@ -1263,15 +1351,15 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                selectInput("sc2a1inp1", "Cell info:",
+                selectInput("sc2_civge_inp1", "Cell info:",
                   choices = sc2conf$UI,
                   selected = sc2def$meta1
                 ) %>%
                   helper(
                     type = "inline", size = "m", fade = TRUE,
-                    title = "Cell information to colour cells by",
+                    title = "Cell info to colour cells by",
                     content = c(
-                      "Select cell information to colour cells",
+                      "Select cell info to colour cells",
                       "- Categorical covariates have a fixed colour palette",
                       paste0(
                         "- Continuous covariates are coloured in a ",
@@ -1286,18 +1374,18 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                checkboxInput("sc2a1tog1", "Adjust graphics"),
+                checkboxInput("sc2_civge_tog1", "Adjust graphics"),
                 conditionalPanel(
-                  condition = "input.sc2a1tog1 == true",
-                  radioButtons("sc2a1col1", "Colour (Continuous data):",
+                  condition = "input.sc2_civge_tog1 == true",
+                  radioButtons("sc2_civge_col1", "Colour (Continuous data):",
                     choices = c("White-Red", "Blue-Yellow-Red", "Yellow-Green-Purple"),
                     selected = "Blue-Yellow-Red"
                   ),
-                  radioButtons("sc2a1ord1", "Plot order:",
-                    choices = c("Max-1st", "Min-1st", "Original", "Random"),
+                  radioButtons("sc2_civge_ord1", "Plot order:",
+                    choices = c("Max", "Min", "Original", "Random"),
                     selected = "Original", inline = TRUE
                   ),
-                  checkboxInput("sc2a1lab1", "Show cell info labels", value = TRUE)
+                  checkboxInput("sc2_civge_lab1", "Show cell info labels", value = TRUE)
                 )
               )
             )
@@ -1307,7 +1395,7 @@ tabPanel(
             class = "tab-section",
             column(
               12,
-              uiOutput("sc2a1oup1.ui")
+              uiOutput("sc2_civge_oup1.ui")
             )
           ),
           # row 3 col 1 row 3
@@ -1317,21 +1405,21 @@ tabPanel(
               12,
               div(
                 class = "input-panel",
-                numericInput("sc2a1oup1.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-                downloadButton("sc2a1oup1.pdf", "Download PDF", class = "btn-sm"),
-                downloadButton("sc2a1oup1.png", "Download PNG", class = "btn-sm"),
-                checkboxInput("sc2a1tog9", "Show cell numbers / statistics")
+                numericInput("sc2_civge_oup1.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+                downloadButton("sc2_civge_oup1.pdf", "Download PDF", class = "btn-sm"),
+                downloadButton("sc2_civge_oup1.png", "Download PNG", class = "btn-sm"),
+                checkboxInput("sc2_civge_tog9", "Show cell numbers / statistics")
               )
             )
           ),
           conditionalPanel(
-            condition = "input.sc2a1tog9 == true",
+            condition = "input.sc2_civge_tog9 == true",
             h4("Cell numbers / statistics"),
-            radioButtons("sc2a1splt", "Split continuous cell info into:",
+            radioButtons("sc2_civge_splt", "Split continuous cell info into:",
               choices = c("Quartile", "Decile"),
               selected = "Decile", inline = TRUE
             ),
-            dataTableOutput("sc2a1.dt")
+            dataTableOutput("sc2_civge_.dt")
           )
         ), # row 3 col 1
         # row 3 col 2
@@ -1344,7 +1432,7 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                selectInput("sc2a1inp2", "Gene name:", choices = NULL) %>%
+                selectInput("sc2_civge_inp2", "Gene name:", choices = NULL) %>%
                   helper(
                     type = "inline", size = "m", fade = TRUE,
                     title = "Gene expression to colour cells by",
@@ -1363,16 +1451,16 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                checkboxInput("sc2a1tog2", "Adjust graphics"),
+                checkboxInput("sc2_civge_tog2", "Adjust graphics"),
                 conditionalPanel(
-                  condition = "input.sc2a1tog2 == true",
-                  radioButtons("sc2a1col2", "Colour:",
+                  condition = "input.sc2_civge_tog2 == true",
+                  radioButtons("sc2_civge_col2", "Colour:",
                     choices = c("White-Red", "Blue-Yellow-Red", "Yellow-Green-Purple"),
                     selected = "White-Red"
                   ),
-                  radioButtons("sc2a1ord2", "Plot order:",
-                    choices = c("Max-1st", "Min-1st", "Original", "Random"),
-                    selected = "Max-1st", inline = TRUE
+                  radioButtons("sc2_civge_ord2", "Plot order:",
+                    choices = c("Max", "Min", "Original", "Random"),
+                    selected = "Max", inline = TRUE
                   )
                 )
               )
@@ -1382,7 +1470,7 @@ tabPanel(
             class = "tab-section",
             column(
               12,
-              uiOutput("sc2a1oup2.ui")
+              uiOutput("sc2_civge_oup2.ui")
             )
           ),
           fluidRow(
@@ -1391,9 +1479,9 @@ tabPanel(
               12,
               div(
                 class = "input-panel",
-                numericInput("sc2a1oup2.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-                downloadButton("sc2a1oup2.pdf", "Download PDF", class = "btn-sm"),
-                downloadButton("sc2a1oup2.png", "Download PNG", class = "btn-sm")
+                numericInput("sc2_civge_oup2.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+                downloadButton("sc2_civge_oup2.pdf", "Download PDF", class = "btn-sm"),
+                downloadButton("sc2_civge_oup2.png", "Download PNG", class = "btn-sm")
               )
             )
           )
@@ -1402,9 +1490,10 @@ tabPanel(
       hr()
     )
   )
-) # End of tab 1
+) # End of tab civge
+
 ,
-# tab 2 ----
+# tab civci ----
 tabPanel(
   "CellInfo vs CellInfo",
   fluidRow(
@@ -1417,7 +1506,7 @@ tabPanel(
         column(
           12,
           h3("Cell info vs cell info"),
-          p("Two cell informations side-by-side on low-dimensional represention.")
+          p("Two cell infos side-by-side on low-dimensional represention.")
         ) # row 1 col 1
       ), # row 1
       # row 2 ----
@@ -1428,11 +1517,11 @@ tabPanel(
           div(
             class = "input-panel",
             h4("Dimension Reduction"),
-            selectInput("sc2a2drX", "X-axis:",
+            selectInput("sc2_civci_drX", "X-axis:",
               choices = sc2conf[dimred == TRUE]$UI,
               selected = sc2def$dimred[1]
             ),
-            selectInput("sc2a2drY", "Y-axis:",
+            selectInput("sc2_civci_drY", "Y-axis:",
               choices = sc2conf[dimred == TRUE]$UI,
               selected = sc2def$dimred[2]
             )
@@ -1442,16 +1531,16 @@ tabPanel(
         column(4,
           div(
             class = "input-panel",
-            checkboxInput("sc2a2togL", "Subset cells"),
+            checkboxInput("sc2_civci_togL", "Subset cells"),
             conditionalPanel(
-              condition = "input.sc2a2togL == true",
-              selectInput("sc2a2sub1", "Cell information to subset:",
+              condition = "input.sc2_civci_togL == true",
+              selectInput("sc2_civci_sub1", "Cell info to subset:",
                 choices = sc2conf[grp == TRUE]$UI,
                 selected = sc2def$grp1
               ),
-              uiOutput("sc2a2sub1.ui"),
-              actionButton("sc2a2sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
-              actionButton("sc2a2sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
+              uiOutput("sc2_civci_sub1.ui"),
+              actionButton("sc2_civci_sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
+              actionButton("sc2_civci_sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
             )
           )
         ), # row 2 col 2
@@ -1460,25 +1549,25 @@ tabPanel(
           4,
           div(
             class = "input-panel",
-            checkboxInput("sc2a2tog0", "Adjust graphics"),
+            checkboxInput("sc2_civci_tog0", "Adjust graphics"),
             conditionalPanel(
-              condition = "input.sc2a2tog0 == true",
-              sliderInput("sc2a2siz", "Point size:",
+              condition = "input.sc2_civci_tog0 == true",
+              sliderInput("sc2_civci_siz", "Point size:",
                 min = 0, max = 4, value = 1.25, step = 0.25
               ),
-              radioButtons("sc2a2psz", "Plot size:",
+              radioButtons("sc2_civci_psz", "Plot size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Medium", inline = TRUE
               ),
-              radioButtons("sc2a2fsz", "Font size:",
+              radioButtons("sc2_civci_fsz", "Font size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Small", inline = TRUE
               ),
-              radioButtons("sc2a2asp", "Aspect ratio:",
+              radioButtons("sc2_civci_asp", "Aspect ratio:",
                 choices = c("Square", "Fixed", "Free"),
                 selected = "Square", inline = TRUE
               ),
-              checkboxInput("sc2a2txt", "Show axis text", value = FALSE)
+              checkboxInput("sc2_civci_txt", "Show axis text", value = FALSE)
             )
           )
         ) # row 2 col 3
@@ -1498,15 +1587,15 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                selectInput("sc2a2inp1", "Cell info:",
+                selectInput("sc2_civci_inp1", "Cell info:",
                   choices = sc2conf$UI,
                   selected = sc2def$meta1
                 ) %>%
                   helper(
                     type = "inline", size = "m", fade = TRUE,
-                    title = "Cell information to colour cells by",
+                    title = "Cell info to colour cells by",
                     content = c(
-                      "Select cell information to colour cells",
+                      "Select cell info to colour cells",
                       "- Categorical covariates have a fixed colour palette",
                       paste0(
                         "- Continuous covariates are coloured in a ",
@@ -1521,27 +1610,27 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                checkboxInput("sc2a2tog1", "Adjust graphics"),
+                checkboxInput("sc2_civci_tog1", "Adjust graphics"),
                 conditionalPanel(
-                  condition = "input.sc2a2tog1 == true",
-                  radioButtons("sc2a2col1", "Colour (Continuous data):",
+                  condition = "input.sc2_civci_tog1 == true",
+                  radioButtons("sc2_civci_col1", "Colour (Continuous data):",
                     choices = c(
                       "White-Red", "Blue-Yellow-Red",
                       "Yellow-Green-Purple"
                     ),
                     selected = "Blue-Yellow-Red"
                   ),
-                  radioButtons("sc2a2ord1", "Plot order:",
-                    choices = c("Max-1st", "Min-1st", "Original", "Random"),
+                  radioButtons("sc2_civci_ord1", "Plot order:",
+                    choices = c("Max", "Min", "Original", "Random"),
                     selected = "Original", inline = TRUE
                   ),
-                  checkboxInput("sc2a2lab1", "Show cell info labels", value = TRUE)
+                  checkboxInput("sc2_civci_lab1", "Show cell info labels", value = TRUE)
                 )
               )
             )
           ),
           # row 3 col 1 row 2
-          fluidRow(column(12, uiOutput("sc2a2oup1.ui"))),
+          fluidRow(column(12, uiOutput("sc2_civci_oup1.ui"))),
           # row 3 col 1 row 3
           fluidRow(
             class = "tab-section",
@@ -1549,9 +1638,9 @@ tabPanel(
               12,
               div(
                 class = "input-panel",
-                numericInput("sc2a2oup1.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-                downloadButton("sc2a2oup1.pdf", "Download PDF", class = "btn-sm"),
-                downloadButton("sc2a2oup1.png", "Download PNG", class = "btn-sm")
+                numericInput("sc2_civci_oup1.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+                downloadButton("sc2_civci_oup1.pdf", "Download PDF", class = "btn-sm"),
+                downloadButton("sc2_civci_oup1.png", "Download PNG", class = "btn-sm")
               )
             )
           )
@@ -1565,15 +1654,15 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                selectInput("sc2a2inp2", "Cell info:",
+                selectInput("sc2_civci_inp2", "Cell info:",
                   choices = sc2conf$UI,
                   selected = sc2def$meta2
                 ) %>%
                   helper(
                     type = "inline", size = "m", fade = TRUE,
-                    title = "Cell information to colour cells by",
+                    title = "Cell info to colour cells by",
                     content = c(
-                      "Select cell information to colour cells",
+                      "Select cell info to colour cells",
                       "- Categorical covariates have a fixed colour palette",
                       paste0(
                         "- Continuous covariates are coloured in a ",
@@ -1588,35 +1677,35 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                checkboxInput("sc2a2tog2", "Adjust graphics"),
+                checkboxInput("sc2_civci_tog2", "Adjust graphics"),
                 conditionalPanel(
-                  condition = "input.sc2a2tog2 == true",
-                  radioButtons("sc2a2col2", "Colour (Continuous data):",
+                  condition = "input.sc2_civci_tog2 == true",
+                  radioButtons("sc2_civci_col2", "Colour (Continuous data):",
                     choices = c(
                       "White-Red", "Blue-Yellow-Red",
                       "Yellow-Green-Purple"
                     ),
                     selected = "Blue-Yellow-Red"
                   ),
-                  radioButtons("sc2a2ord2", "Plot order:",
-                    choices = c("Max-1st", "Min-1st", "Original", "Random"),
+                  radioButtons("sc2_civci_ord2", "Plot order:",
+                    choices = c("Max", "Min", "Original", "Random"),
                     selected = "Original", inline = TRUE
                   ),
-                  checkboxInput("sc2a2lab2", "Show cell info labels", value = TRUE)
+                  checkboxInput("sc2_civci_lab2", "Show cell info labels", value = TRUE)
                 )
               )
             )
           ),
-          fluidRow(column(12, uiOutput("sc2a2oup2.ui"))),
+          fluidRow(column(12, uiOutput("sc2_civci_oup2.ui"))),
           fluidRow(
             class = "tab-section",
             column(
               12,
               div(
                 class = "input-panel",
-                numericInput("sc2a2oup2.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-                downloadButton("sc2a2oup2.pdf", "Download PDF", class = "btn-sm"),
-                downloadButton("sc2a2oup2.png", "Download PNG", class = "btn-sm")
+                numericInput("sc2_civci_oup2.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+                downloadButton("sc2_civci_oup2.pdf", "Download PDF", class = "btn-sm"),
+                downloadButton("sc2_civci_oup2.png", "Download PNG", class = "btn-sm")
               )
             )
           )
@@ -1625,9 +1714,10 @@ tabPanel(
       hr()
     )
   )
-) # End of tab 2
+) # End of tab civci
+
 ,
-# tab 3 ----
+# tab gevge ----
 tabPanel(
   "GeneExpr vs GeneExpr",
   fluidRow(
@@ -1652,11 +1742,11 @@ tabPanel(
           div(
             class = "input-panel",
             h4("Dimension Reduction"),
-            selectInput("sc2a3drX", "X-axis:",
+            selectInput("sc2_gevge_drX", "X-axis:",
               choices = sc2conf[dimred == TRUE]$UI,
               selected = sc2def$dimred[1]
             ),
-            selectInput("sc2a3drY", "Y-axis:",
+            selectInput("sc2_gevge_drY", "Y-axis:",
               choices = sc2conf[dimred == TRUE]$UI,
               selected = sc2def$dimred[2]
             )
@@ -1666,16 +1756,16 @@ tabPanel(
         column(4,
           div(
             class = "input-panel",
-            checkboxInput("sc2a3togL", "Subset cells"),
+            checkboxInput("sc2_gevge_togL", "Subset cells"),
             conditionalPanel(
-              condition = "input.sc2a3togL == true",
-              selectInput("sc2a3sub1", "Cell information to subset:",
+              condition = "input.sc2_gevge_togL == true",
+              selectInput("sc2_gevge_sub1", "Cell info to subset:",
                 choices = sc2conf[grp == TRUE]$UI,
                 selected = sc2def$grp1
               ),
-              uiOutput("sc2a3sub1.ui"),
-              actionButton("sc2a3sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
-              actionButton("sc2a3sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
+              uiOutput("sc2_gevge_sub1.ui"),
+              actionButton("sc2_gevge_sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
+              actionButton("sc2_gevge_sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
             )
           )
         ), # End of column
@@ -1684,25 +1774,25 @@ tabPanel(
           4,
           div(
             class = "input-panel",
-            checkboxInput("sc2a3tog0", "Adjust graphics"),
+            checkboxInput("sc2_gevge_tog0", "Adjust graphics"),
             conditionalPanel(
-              condition = "input.sc2a3tog0 == true",
-              sliderInput("sc2a3siz", "Point size:",
+              condition = "input.sc2_gevge_tog0 == true",
+              sliderInput("sc2_gevge_siz", "Point size:",
                 min = 0, max = 4, value = 1.25, step = 0.25
               ),
-              radioButtons("sc2a3psz", "Plot size:",
+              radioButtons("sc2_gevge_psz", "Plot size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Medium", inline = TRUE
               ),
-              radioButtons("sc2a3fsz", "Font size:",
+              radioButtons("sc2_gevge_fsz", "Font size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Small", inline = TRUE
               ),
-              radioButtons("sc2a3asp", "Aspect ratio:",
+              radioButtons("sc2_gevge_asp", "Aspect ratio:",
                 choices = c("Square", "Fixed", "Free"),
                 selected = "Square", inline = TRUE
               ),
-              checkboxInput("sc2a3txt", "Show axis text", value = FALSE)
+              checkboxInput("sc2_gevge_txt", "Show axis text", value = FALSE)
             )
           )
         ) # row 2 col 3
@@ -1720,7 +1810,7 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                selectInput("sc2a3inp1", "Gene name:", choices = NULL) %>%
+                selectInput("sc2_gevge_inp1", "Gene name:", choices = NULL) %>%
                   helper(
                     type = "inline", size = "m", fade = TRUE,
                     title = "Gene expression to colour cells by",
@@ -1739,19 +1829,19 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                checkboxInput("sc2a3tog1", "Adjust graphics"),
+                checkboxInput("sc2_gevge_tog1", "Adjust graphics"),
                 conditionalPanel(
-                  condition = "input.sc2a3tog1 == true",
-                  radioButtons("sc2a3col1", "Colour:",
+                  condition = "input.sc2_gevge_tog1 == true",
+                  radioButtons("sc2_gevge_col1", "Colour:",
                     choices = c(
                       "White-Red", "Blue-Yellow-Red",
                       "Yellow-Green-Purple"
                     ),
                     selected = "White-Red"
                   ),
-                  radioButtons("sc2a3ord1", "Plot order:",
-                    choices = c("Max-1st", "Min-1st", "Original", "Random"),
-                    selected = "Max-1st", inline = TRUE
+                  radioButtons("sc2_gevge_ord1", "Plot order:",
+                    choices = c("Max", "Min", "Original", "Random"),
+                    selected = "Max", inline = TRUE
                   )
                 )
               )
@@ -1760,7 +1850,7 @@ tabPanel(
           # row 3 col 1 row 2
           fluidRow(
             class = "tab-section",
-            column(12, uiOutput("sc2a3oup1.ui"))
+            column(12, uiOutput("sc2_gevge_oup1.ui"))
           ),
           # row 3 col 1 row 3
           fluidRow(
@@ -1769,9 +1859,9 @@ tabPanel(
               12,
               div(
                 class = "input-panel",
-                numericInput("sc2a3oup1.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-                downloadButton("sc2a3oup1.pdf", "Download PDF", class = "btn-sm"),
-                downloadButton("sc2a3oup1.png", "Download PNG", class = "btn-sm")
+                numericInput("sc2_gevge_oup1.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+                downloadButton("sc2_gevge_oup1.pdf", "Download PDF", class = "btn-sm"),
+                downloadButton("sc2_gevge_oup1.png", "Download PNG", class = "btn-sm")
               )
             )
           )
@@ -1785,7 +1875,7 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                selectInput("sc2a3inp2", "Gene name:", choices = NULL) %>%
+                selectInput("sc2_gevge_inp2", "Gene name:", choices = NULL) %>%
                   helper(
                     type = "inline", size = "m", fade = TRUE,
                     title = "Gene expression to colour cells by",
@@ -1804,19 +1894,19 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                checkboxInput("sc2a3tog2", "Adjust graphics"),
+                checkboxInput("sc2_gevge_tog2", "Adjust graphics"),
                 conditionalPanel(
-                  condition = "input.sc2a3tog2 == true",
-                  radioButtons("sc2a3col2", "Colour:",
+                  condition = "input.sc2_gevge_tog2 == true",
+                  radioButtons("sc2_gevge_col2", "Colour:",
                     choices = c(
                       "White-Red", "Blue-Yellow-Red",
                       "Yellow-Green-Purple"
                     ),
                     selected = "White-Red"
                   ),
-                  radioButtons("sc2a3ord2", "Plot order:",
-                    choices = c("Max-1st", "Min-1st", "Original", "Random"),
-                    selected = "Max-1st", inline = TRUE
+                  radioButtons("sc2_gevge_ord2", "Plot order:",
+                    choices = c("Max", "Min", "Original", "Random"),
+                    selected = "Max", inline = TRUE
                   )
                 )
               )
@@ -1824,7 +1914,7 @@ tabPanel(
           ),
           fluidRow(
             class = "tab-section",
-            column(12, uiOutput("sc2a3oup2.ui"))
+            column(12, uiOutput("sc2_gevge_oup2.ui"))
           ),
           fluidRow(
             class = "tab-section",
@@ -1832,9 +1922,9 @@ tabPanel(
               12,
               div(
                 class = "input-panel",
-                  numericInput("sc2a3oup2.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-                  downloadButton("sc2a3oup2.pdf", "Download PDF", class = "btn-sm"),
-                  downloadButton("sc2a3oup2.png", "Download PNG", class = "btn-sm")
+                  numericInput("sc2_gevge_oup2.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+                  downloadButton("sc2_gevge_oup2.pdf", "Download PDF", class = "btn-sm"),
+                  downloadButton("sc2_gevge_oup2.png", "Download PNG", class = "btn-sm")
               )
             )
           )
@@ -1843,9 +1933,129 @@ tabPanel(
       hr()
     )
   )
-) # End of tab 3
+) # End of tab gevge
+
 ,
-# tab 4 ----
+# tab gem ----
+tabPanel(
+  "Expression",
+  fluidRow(
+    class = "container page",
+    column(
+      12,
+      # row 1 ----
+      fluidRow(
+        class = "tab-section",
+        column(
+          12,
+          h3("Gene expression"),
+          p("Explore gene expression on low-dimensional represention.")
+        ) # row 1 col 1
+      ), # row 1
+      # row 2 ----
+      fluidRow(
+        class = "tab-section",
+        column(4,
+               fluidRow(
+        column(
+          12,
+          div(
+            class = "input-panel input-panel-section",
+            textAreaInput("sc2_gem_inp", "Gene names:",
+                          height = "100px",
+                          value = paste0(sc2def$genes, collapse = ", ")
+            ) %>%
+              helper(
+                type = "inline", size = "m", fade = TRUE,
+                title = "List of genes to plot on bubbleplot / heatmap",
+                content = c(
+                  "Input genes to plot",
+                  "- Maximum 16 genes (due to ploting space limitations)",
+                  "- Genes should be separated by comma, semicolon or newline"
+                )
+              ),
+            selectInput("sc2_gem_drX", "X-axis:",
+                        choices = sc2conf[dimred == TRUE]$UI,
+                        selected = sc2def$dimred[1]
+            ),
+            selectInput("sc2_gem_drY", "Y-axis:",
+                        choices = sc2conf[dimred == TRUE]$UI,
+                        selected = sc2def$dimred[2]
+            ),
+            checkboxInput("sc2_gem_togL", "Subset cells"),
+            conditionalPanel(
+              condition = "input.sc2_gem_togL == true",
+              selectInput("sc2_gem_sub1", "Cell info to subset:",
+                          choices = sc2conf[grp == TRUE]$UI,
+                          selected = sc2def$grp1
+              ),
+              uiOutput("sc2_gem_sub1.ui"),
+              actionButton("sc2_gem_sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
+              actionButton("sc2_gem_sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
+            ),
+            checkboxInput("sc2_gem_tog0", "Adjust graphics"),
+            conditionalPanel(
+              condition = "input.sc2_gem_tog0 == true",
+              sliderInput("sc2_gem_siz", "Point size:",
+                          min = 0, max = 3, value = 0.5, step = 0.1
+              ),
+              radioButtons("sc2_gem_psz", "Plot size:",
+                           choices = c("Small", "Medium", "Large"),
+                           selected = "Medium", inline = TRUE
+              ),
+              radioButtons("sc2_gem_fsz", "Font size:",
+                           choices = c("Smaller", "Small", "Medium", "Large"),
+                           selected = "Small", inline = TRUE
+              ),
+              radioButtons("sc2_gem_asp", "Aspect ratio:",
+                           choices = c("Square", "Fixed", "Free"),
+                           selected = "Square", inline = TRUE
+              ),
+              checkboxInput("sc2_gem_txt", "Show axis text", value = FALSE),
+              radioButtons("sc2_gem_col", "Colour (Continuous data):",
+                           choices = c(
+                             "White-Red", "Blue-Yellow-Red",
+                             "Yellow-Green-Purple"
+                           ),
+                           selected = "Blue-Yellow-Red"
+              ),
+              radioButtons("sc2_gem_ord", "Plot order:",
+                           choices = c("Max", "Min", "Original", "Random"),
+                           selected = "Max", inline = TRUE
+              ),
+              numericInput("sc2_gem_ncol", "Number of columns", value = 0, min = 0, step = 1)
+            )
+          ),
+          div(
+            class = "input-panel",
+            fluidRow(
+            column(4,
+              numericInput("sc2_gem_oup1.height", "Height:", min = 1, max = 50, value = 25, step = 2)
+            ),
+            column(4,
+              numericInput("sc2_gem_oup1.width", "Width:", min = 1, max = 50, value = 25, step = 2)
+            ),
+            column(4,
+              numericInput("sc2_gem_oup1.res", "Res:", min = 72, max = 600, value = 150, step = 5)
+            )
+            ),
+            downloadButton("sc2_gem_oup1.pdf", "Download PDF", class = "btn-sm"),
+            downloadButton("sc2_gem_oup1.png", "Download PNG", class = "btn-sm")
+          )
+        )
+               )
+      ),
+      column(8,
+             uiOutput("sc2_gem_oup1.ui")
+      )
+      ),
+      hr()
+    )
+  )
+) # End of tab gem
+
+,
+# tab gec ----
 tabPanel(
   "Gene coexpression",
   fluidRow(
@@ -1865,149 +2075,112 @@ tabPanel(
       fluidRow(
         class = "tab-section",
         # row 2 col 1
-        column(
-          4,
-          div(
-            class = "input-panel",
-            h4("Dimension Reduction"),
-            selectInput("sc2b2drX", "X-axis:",
-              choices = sc2conf[dimred == TRUE]$UI,
-              selected = sc2def$dimred[1]
-            ),
-            selectInput("sc2b2drY", "Y-axis:",
-              choices = sc2conf[dimred == TRUE]$UI,
-              selected = sc2def$dimred[2]
-            )
-          )
-        ), # row 1 col 1
-        # row 2 col 2
         column(4,
-          div(
-            class = "input-panel",
-            checkboxInput("sc2b2togL", "Subset cells"),
-            conditionalPanel(
-              condition = "input.sc2b2togL == true",
-              selectInput("sc2b2sub1", "Cell information to subset:",
-                choices = sc2conf[grp == TRUE]$UI,
-                selected = sc2def$grp1
-              ),
-              uiOutput("sc2b2sub1.ui"),
-              actionButton("sc2b2sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
-              actionButton("sc2b2sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
-            )
-          )
-        ), # End of column
-        # row 2 col 3
+               column(
+                 12,
+                 div(
+                   class = "input-panel input-panel-section",
+                   h4("Dimension Reduction"),
+                   selectInput("sc2_gec_drX", "X-axis:",
+                               choices = sc2conf[dimred == TRUE]$UI,
+                               selected = sc2def$dimred[1]
+                   ),
+                   selectInput("sc2_gec_drY", "Y-axis:",
+                               choices = sc2conf[dimred == TRUE]$UI,
+                               selected = sc2def$dimred[2]
+                   ),
+                   selectInput("sc2_gec_inp1", "Gene 1:", choices = NULL) %>%
+                     helper(
+                       type = "inline", size = "m", fade = TRUE,
+                       title = "Gene expression to colour cells by",
+                       content = c(
+                         "Select gene to colour cells by gene expression",
+                         paste0(
+                           "- Gene expression are coloured in a ",
+                           "White-Red colour scheme which can be ",
+                           "changed in the plot controls"
+                         )
+                       )
+                     ),
+                   selectInput("sc2_gec_inp2", "Gene 2:", choices = NULL) %>%
+                     helper(
+                       type = "inline", size = "m", fade = TRUE,
+                       title = "Gene expression to colour cells by",
+                       content = c(
+                         "Select gene to colour cells by gene expression",
+                         paste0(
+                           "- Gene expression are coloured in a ",
+                           "White-Blue colour scheme which can be ",
+                           "changed in the plot controls"
+                         )
+                       )
+                     ),
+                   checkboxInput("sc2_gec_togL", "Subset cells"),
+                   conditionalPanel(
+                    condition = "input.sc2_gec_togL == true",
+                    selectInput("sc2_gec_sub1", "Cell info to subset:", choices = sc2conf[grp == TRUE]$UI, selected = sc2def$grp1),
+                     uiOutput("sc2_gec_sub1.ui"),
+                     actionButton("sc2_gec_sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
+                     actionButton("sc2_gec_sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
+                   ),
+                   checkboxInput("sc2_gec_tog0", "Adjust graphics"),
+                   conditionalPanel(
+                     condition = "input.sc2_gec_tog0 == true",
+                     radioButtons("sc2_gec_col1", "Colour:",
+                                  choices = c(
+                                    "Red (Gene1); Blue (Gene2)",
+                                    "Orange (Gene1); Blue (Gene2)",
+                                    "Red (Gene1); Green (Gene2)",
+                                    "Green (Gene1); Blue (Gene2)"
+                                  ),
+                                  selected = "Red (Gene1); Blue (Gene2)"
+                     ),
+                     radioButtons("sc2_gec_ord1", "Plot order:",
+                                  choices = c("Max", "Min", "Original", "Random"),
+                                  selected = "Max", inline = TRUE
+                     ),
+                     sliderInput("sc2_gec_siz", "Point size:",
+                                 min = 0, max = 4, value = 1.25, step = 0.25
+                     ),
+                     radioButtons("sc2_gec_psz", "Plot size:",
+                                  choices = c("Small", "Medium", "Large"),
+                                  selected = "Medium", inline = TRUE
+                     ),
+                     radioButtons("sc2_gec_fsz", "Font size:",
+                                  choices = c("Small", "Medium", "Large"),
+                                  selected = "Small", inline = TRUE
+                     ),
+                     radioButtons("sc2_gec_asp", "Aspect ratio:",
+                                  choices = c("Square", "Fixed", "Free"),
+                                  selected = "Square", inline = TRUE
+                     ),
+                     checkboxInput("sc2_gec_txt", "Show axis text", value = FALSE)
+                   )
+                 ),
+                 div(class="input-panel input-panel-section",
+                     numericInput("sc2_gec_oup1.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+                     downloadButton("sc2_gec_oup1.pdf", "Download PDF", class = "btn-sm"),
+                     downloadButton("sc2_gec_oup1.png", "Download PNG", class = "btn-sm")
+                 ),
+                 div(class="input-panel-section",
+                     h4("Cell numbers"),
+                     dataTableOutput("sc2_gec_.dt")
+                 )
+               )
+        ), # row 2 col 1
+        # row 2 col 2
         column(
-          4,
-          div(
-            class = "input-panel",
-            checkboxInput("sc2b2tog0", "Adjust graphics"),
-            conditionalPanel(
-              condition = "input.sc2b2tog0 == true",
-              sliderInput("sc2b2siz", "Point size:",
-                min = 0, max = 4, value = 1.25, step = 0.25
-              ),
-              radioButtons("sc2b2psz", "Plot size:",
-                choices = c("Small", "Medium", "Large"),
-                selected = "Medium", inline = TRUE
-              ),
-              radioButtons("sc2b2fsz", "Font size:",
-                choices = c("Small", "Medium", "Large"),
-                selected = "Small", inline = TRUE
-              ),
-              radioButtons("sc2b2asp", "Aspect ratio:",
-                choices = c("Square", "Fixed", "Free"),
-                selected = "Square", inline = TRUE
-              ),
-              checkboxInput("sc2b2txt", "Show axis text", value = FALSE)
-            )
-          )
-        ) # row 2 col 3
-      ), # row 2
-      # row 3 ----
-      fluidRow(
-        class = "tab-section",
-        # row 3 col 1
-        column(
-          3,
-          style = "border-right: 2px solid #f3f6f4",
-          div(
-            class = "input-panel",
-            h4("Gene Expression"),
-            selectInput("sc2b2inp1", "Gene 1:", choices = NULL) %>%
-              helper(
-                type = "inline", size = "m", fade = TRUE,
-                title = "Gene expression to colour cells by",
-                content = c(
-                  "Select gene to colour cells by gene expression",
-                  paste0(
-                    "- Gene expression are coloured in a ",
-                    "White-Red colour scheme which can be ",
-                    "changed in the plot controls"
-                  )
-                )
-              ),
-            selectInput("sc2b2inp2", "Gene 2:", choices = NULL) %>%
-              helper(
-                type = "inline", size = "m", fade = TRUE,
-                title = "Gene expression to colour cells by",
-                content = c(
-                  "Select gene to colour cells by gene expression",
-                  paste0(
-                    "- Gene expression are coloured in a ",
-                    "White-Blue colour scheme which can be ",
-                    "changed in the plot controls"
-                  )
-                )
-              ),
-            checkboxInput("sc2b2tog1", "Adjust graphics"),
-            conditionalPanel(
-              condition = "input.sc2b2tog1 == true",
-              radioButtons("sc2b2col1", "Colour:",
-                choices = c(
-                  "Red (Gene1); Blue (Gene2)",
-                  "Orange (Gene1); Blue (Gene2)",
-                  "Red (Gene1); Green (Gene2)",
-                  "Green (Gene1); Blue (Gene2)"
-                ),
-                selected = "Red (Gene1); Blue (Gene2)"
-              ),
-              radioButtons("sc2b2ord1", "Plot order:",
-                choices = c("Max-1st", "Min-1st", "Original", "Random"),
-                selected = "Max-1st", inline = TRUE
-              )
-            )
-          )
-        ), # row 3 col 1
-        # row 3 col 2
-        column(
-          6,
-          style = "border-right: 2px solid #f3f6f4",
-          uiOutput("sc2b2oup1.ui"),
-          div(
-            class = "input-panel",
-            numericInput("sc2b2oup1.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-            downloadButton("sc2b2oup1.pdf", "Download PDF", class = "btn-sm"),
-            downloadButton("sc2b2oup1.png", "Download PNG", class = "btn-sm")
-          )
-        ), # row 3 col 2
-        # row 3 col 3
-        column(
-          3,
-          uiOutput("sc2b2oup2.ui"),
-          downloadButton("sc2b2oup2.pdf", "Download PDF", class = "btn-sm"),
-          downloadButton("sc2b2oup2.png", "Download PNG", class = "btn-sm"),
-          h4("Cell numbers"),
-          dataTableOutput("sc2b2.dt")
-        ) # row 3 col 3
-      ), # row 3
+          8,
+          uiOutput("sc2_gec_oup1.ui"),
+        )
+      ), # end of row 2
       hr()
-    )
-  )
-) # End of tab 4
+    ) # col
+  ) # row
+) # End of tab gec
+
 ,
-# tab 5 ----
+# tab vio ----
 tabPanel(
   "Violinplot / Boxplot",
   fluidRow(
@@ -2032,79 +2205,84 @@ tabPanel(
           div(
             class = "input-panel",
             style = "border-right: 2px solid #f3f6f4",
-            selectInput("sc2c1inp1", "Cell information (X-axis):",
+            selectInput("sc2_vio_inp1", "Cell info (X-axis):",
               choices = sc2conf[grp == TRUE]$UI,
               selected = sc2def$grp1
             ) %>%
               helper(
                 type = "inline", size = "m", fade = TRUE,
-                title = "Cell information to group cells by",
+                title = "Cell info to group cells by",
                 content = c(
-                  "Select categorical cell information to group cells by",
+                  "Select categorical cell info to group cells by",
                   "- Single cells are grouped by this categorical covariate",
                   "- Plotted as the X-axis of the violin plot / box plot"
                 )
               ),
-            selectInput("sc2c1inp2", "Cell Info / Gene name (Y-axis):", choices = NULL) %>%
+            selectInput("sc2_vio_inp2", "Cell info / Gene (Y-axis):", choices = NULL) %>%
               helper(
                 type = "inline", size = "m", fade = TRUE,
                 title = "Cell Info / Gene to plot",
                 content = c(
                   "Select cell info / gene to plot on Y-axis",
-                  "- Can be continuous cell information (e.g. nUMIs / scores)",
+                  "- Can be continuous cell info (e.g. nUMIs / scores)",
                   "- Can also be gene expression"
                 )
               ),
-            radioButtons("sc2c1typ", "Plot type:",
-              choices = c("violin", "boxplot"),
+            radioButtons("sc2_vio_typ", "Plot type:",
+              choices = c("violin", "boxplot", "lineplot"),
               selected = "violin", inline = TRUE
             ),
-            checkboxInput("sc2c1pts", "Show data points", value = FALSE),
-            checkboxInput("sc2c1togL", "Subset cells"),
+            checkboxInput("sc2_vio_pts", "Show data points", value = FALSE),
+            checkboxInput("sc2_vio_togL", "Subset cells"),
             conditionalPanel(
-              condition = "input.sc2c1togL == true",
-              selectInput("sc2c1sub1", "Cell information to subset:",
+              condition = "input.sc2_vio_togL == true",
+              selectInput("sc2_vio_sub1", "Cell info to subset:",
                 choices = sc2conf[grp == TRUE]$UI,
                 selected = sc2def$grp1
               ),
-              uiOutput("sc2c1sub1.ui"),
-              actionButton("sc2c1sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
-              actionButton("sc2c1sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
+              uiOutput("sc2_vio_sub1.ui"),
+              actionButton("sc2_vio_sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
+              actionButton("sc2_vio_sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
             ),
-            checkboxInput("sc2c1tog", "Adjust graphics"),
+            checkboxInput("sc2_vio_tog", "Adjust graphics"),
             conditionalPanel(
-              condition = "input.sc2c1tog == true",
-              sliderInput("sc2c1siz", "Data point size:",
+              condition = "input.sc2_vio_tog == true",
+              sliderInput("sc2_vio_siz", "Data point size:",
                 min = 0, max = 4, value = 1.25, step = 0.25
               ),
-              radioButtons("sc2c1psz", "Plot size:",
+              radioButtons("sc2_vio_psz", "Plot size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Small", inline = TRUE
               ),
-              radioButtons("sc2c1fsz", "Font size:",
+              radioButtons("sc2_vio_fsz", "Font size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Small", inline = TRUE
+              ),
+              conditionalPanel(
+              condition = "input.sc2_vio_typ == 'lineplot'",
+              sliderInput("sc2_vio_barsz", "Line size", min = 0.05, max = 0.5, step = 0.01, value = 0.3)
               )
             )
           ),
           div(
             class = "input-panel",
-            numericInput("sc2c1oup.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-            downloadButton("sc2c1oup.pdf", "Download PDF", class = "btn-sm"),
-            downloadButton("sc2c1oup.png", "Download PNG", class = "btn-sm")
+            numericInput("sc2_vio_oup.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+            downloadButton("sc2_vio_oup.pdf", "Download PDF", class = "btn-sm"),
+            downloadButton("sc2_vio_oup.png", "Download PNG", class = "btn-sm")
           )
         ), # row 2 col 1
         # row 2 col 2
         column(
-          9, uiOutput("sc2c1oup.ui")
+          9, uiOutput("sc2_vio_oup.ui")
         ) # row 2 col 2
       ), # row 2
       hr()
     )
   )
-) # End of tab 5
+) # End of tab vio
+
 ,
-# tab 6 ----
+# tab pro ----
 tabPanel(
   "Proportion plot",
   fluidRow(
@@ -2117,7 +2295,7 @@ tabPanel(
         column(
           12,
           h3("Proportion / cell numbers across different cell information"),
-          p("Visualise the composition of single cells based on one discrete cell information across another discrete cell information. Usage examples include the library or cellcycle composition across clusters.")
+          p("Visualise the composition of single cells based on one discrete cell information across another discrete cell information.")
         )
       ),
       # row 2 ----
@@ -2126,57 +2304,56 @@ tabPanel(
         # row 2 col 1
         column(
           3,
-          style = "border-right: 2px solid #f3f6f4",
           div(
             class = "input-panel",
-            selectInput("sc2c2inp1", "Cell information to plot (X-axis):",
+            selectInput("sc2_pro_inp1", "Cell info to plot (X-axis):",
               choices = sc2conf[grp == TRUE]$UI,
               selected = sc2def$grp2
             ) %>%
               helper(
                 type = "inline", size = "m", fade = TRUE,
-                title = "Cell information to plot cells by",
+                title = "Cell info to plot cells by",
                 content = c(
-                  "Select categorical cell information to plot cells by",
+                  "Select categorical cell info to plot cells by",
                   "- Plotted as the X-axis of the proportion plot"
                 )
               ),
-            selectInput("sc2c2inp2", "Cell information to group / colour by:",
+            selectInput("sc2_pro_inp2", "Cell info to group / colour by:",
               choices = sc2conf[grp == TRUE]$UI,
               selected = sc2def$grp1
             ) %>%
               helper(
                 type = "inline", size = "m", fade = TRUE,
-                title = "Cell information to group / colour cells by",
+                title = "Cell info to group / colour cells by",
                 content = c(
-                  "Select categorical cell information to group / colour cells by",
+                  "Select categorical cell info to group / colour cells by",
                   "- Proportion / cell numbers are shown in different colours"
                 )
               ),
-            radioButtons("sc2c2typ", "Plot value:",
+            radioButtons("sc2_pro_typ", "Plot value:",
               choices = c("Proportion", "CellNumbers"),
               selected = "Proportion", inline = TRUE
             ),
-            checkboxInput("sc2c2flp", "Flip X/Y", value = FALSE),
-            checkboxInput("sc2c2togL", "Subset cells"),
+            checkboxInput("sc2_pro_flp", "Flip X/Y", value = FALSE),
+            checkboxInput("sc2_pro_togL", "Subset cells"),
             conditionalPanel(
-              condition = "input.sc2c2togL == true",
-              selectInput("sc2c2sub1", "Cell information to subset:",
+              condition = "input.sc2_pro_togL == true",
+              selectInput("sc2_pro_sub1", "Cell info to subset:",
                 choices = sc2conf[grp == TRUE]$UI,
                 selected = sc2def$grp1
               ),
-              uiOutput("sc2c2sub1.ui"),
-              actionButton("sc2c2sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
-              actionButton("sc2c2sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
+              uiOutput("sc2_pro_sub1.ui"),
+              actionButton("sc2_pro_sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
+              actionButton("sc2_pro_sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
             ),
-            checkboxInput("sc2c2tog", "Adjust graphics"),
+            checkboxInput("sc2_pro_tog", "Adjust graphics"),
             conditionalPanel(
-              condition = "input.sc2c2tog == true",
-              radioButtons("sc2c2psz", "Plot size:",
+              condition = "input.sc2_pro_tog == true",
+              radioButtons("sc2_pro_psz", "Plot size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Medium", inline = TRUE
               ),
-              radioButtons("sc2c2fsz", "Font size:",
+              radioButtons("sc2_pro_fsz", "Font size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Small", inline = TRUE
               )
@@ -2184,22 +2361,23 @@ tabPanel(
           ),
           div(
             class = "input-panel",
-            numericInput("sc2c2oup.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-            downloadButton("sc2c2oup.pdf", "Download PDF", class = "btn-sm"),
-            downloadButton("sc2c2oup.png", "Download PNG", class = "btn-sm")
+            numericInput("sc2_pro_oup.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+            downloadButton("sc2_pro_oup.pdf", "Download PDF", class = "btn-sm"),
+            downloadButton("sc2_pro_oup.png", "Download PNG", class = "btn-sm")
           )
         ), # row 2 col 1
         # row 2 col 2
         column(
-          9, uiOutput("sc2c2oup.ui")
+          9, uiOutput("sc2_pro_oup.ui")
         ) # row 2 col 2
       ), # row 2
       hr()
     )
   )
-) # End of tab 6
+) # End of tab pro
+
 ,
-# tab 7 ----
+# tab hea ----
 tabPanel(
   "Bubbleplot / Heatmap",
   fluidRow(
@@ -2220,13 +2398,10 @@ tabPanel(
         class = "tab-section",
         column(
           3,
-          style = "border-right: 2px solid #f3f6f4",
           div(
             class = "input-panel",
-            textAreaInput("sc2d1inp", HTML("List of gene names <br />
-                                        (Max 50 genes, separated <br />
-                                         by , or ; or newline):"),
-              height = "200px",
+            textAreaInput("sc2_hea_inp", "Gene names",
+              height = "100px",
               value = paste0(sc2def$genes, collapse = ", ")
             ) %>%
               helper(
@@ -2238,52 +2413,52 @@ tabPanel(
                   "- Genes should be separated by comma, semicolon or newline"
                 )
               ),
-            selectInput("sc2d1grp", "Group by:",
+            selectInput("sc2_hea_grp", "Group by:",
               choices = sc2conf[grp == TRUE]$UI,
               selected = sc2conf[grp == TRUE]$UI[1]
             ) %>%
               helper(
                 type = "inline", size = "m", fade = TRUE,
-                title = "Cell information to group cells by",
+                title = "Cell info to group cells by",
                 content = c(
-                  "Select categorical cell information to group cells by",
+                  "Select categorical cell info to group cells by",
                   "- Single cells are grouped by this categorical covariate",
                   "- Plotted as the X-axis of the bubbleplot / heatmap"
                 )
               ),
-            radioButtons("sc2d1plt", "Plot type:",
+            radioButtons("sc2_hea_plt", "Plot type:",
               choices = c("Bubbleplot", "Heatmap"),
               selected = "Bubbleplot", inline = TRUE
             ),
-            checkboxInput("sc2d1scl", "Scale gene expression", value = TRUE),
-            checkboxInput("sc2d1row", "Cluster rows (genes)", value = TRUE),
-            checkboxInput("sc2d1col", "Cluster columns (samples)", value = FALSE),
-            checkboxInput("sc2d1togL", "Subset cells"),
+            checkboxInput("sc2_hea_scl", "Scale gene expression", value = TRUE),
+            checkboxInput("sc2_hea_row", "Cluster rows (genes)", value = TRUE),
+            checkboxInput("sc2_hea_col", "Cluster columns (samples)", value = FALSE),
+            checkboxInput("sc2_hea_togL", "Subset cells"),
             conditionalPanel(
-              condition = "input.sc2d1togL == true",
-              selectInput("sc2d1sub1", "Cell information to subset:",
+              condition = "input.sc2_hea_togL == true",
+              selectInput("sc2_hea_sub1", "Cell info to subset:",
                 choices = sc2conf[grp == TRUE]$UI,
                 selected = sc2def$grp1
               ),
-              uiOutput("sc2d1sub1.ui"),
-              actionButton("sc2d1sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
-              actionButton("sc2d1sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
+              uiOutput("sc2_hea_sub1.ui"),
+              actionButton("sc2_hea_sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
+              actionButton("sc2_hea_sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
             ),
-            checkboxInput("sc2d1tog", "Adjust graphics"),
+            checkboxInput("sc2_hea_tog", "Adjust graphics"),
             conditionalPanel(
-              condition = "input.sc2d1tog == true",
-              radioButtons("sc2d1cols", "Colour scheme:",
+              condition = "input.sc2_hea_tog == true",
+              radioButtons("sc2_hea_cols", "Colour scheme:",
                 choices = c(
                   "White-Red", "Blue-Yellow-Red",
                   "Yellow-Green-Purple"
                 ),
                 selected = "Blue-Yellow-Red"
               ),
-              radioButtons("sc2d1psz", "Plot size:",
+              radioButtons("sc2_hea_psz", "Plot size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Medium", inline = TRUE
               ),
-              radioButtons("sc2d1fsz", "Font size:",
+              radioButtons("sc2_hea_fsz", "Font size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Small", inline = TRUE
               )
@@ -2291,24 +2466,25 @@ tabPanel(
           ),
           div(
             class = "input-panel",
-            numericInput("sc2d1oup.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-            downloadButton("sc2d1oup.pdf", "Download PDF", class = "btn-sm"),
-            downloadButton("sc2d1oup.png", "Download PNG", class = "btn-sm")
+            numericInput("sc2_hea_oup.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+            downloadButton("sc2_hea_oup.pdf", "Download PDF", class = "btn-sm"),
+            downloadButton("sc2_hea_oup.png", "Download PNG", class = "btn-sm")
           )
         ), # row 2 col 1
         # row 2 col 2
         column(
-          9, h4(htmlOutput("sc2d1oupTxt")),
-          uiOutput("sc2d1oup.ui")
+          9, h4(htmlOutput("sc2_hea_oupTxt")),
+          uiOutput("sc2_hea_oup.ui")
         ) # row 2 col 2
       ), # row 2
       hr()
     )
   )
-) # End of tab 7
+) # End of tab hea
+
 )
 ,navbarMenu("Healthy",
-# tab 1 ----
+# tab civge ----
 tabPanel(
   "CellInfo vs GeneExpr",
   fluidRow(
@@ -2333,11 +2509,11 @@ tabPanel(
           div(
             class = "input-panel",
             h4("Dimension Reduction"),
-            selectInput("sc3a1drX", "X-axis:",
+            selectInput("sc3_civge_drX", "X-axis:",
               choices = sc3conf[dimred == TRUE]$UI,
               selected = sc3def$dimred[1]
             ),
-            selectInput("sc3a1drY", "Y-axis:",
+            selectInput("sc3_civge_drY", "Y-axis:",
               choices = sc3conf[dimred == TRUE]$UI,
               selected = sc3def$dimred[2]
             )
@@ -2348,16 +2524,16 @@ tabPanel(
           4,
           div(
             class = "input-panel",
-            checkboxInput("sc3a1togL", "Subset cells"),
+            checkboxInput("sc3_civge_togL", "Subset cells"),
             conditionalPanel(
-              condition = "input.sc3a1togL == true",
-              selectInput("sc3a1sub1", "Cell information to subset:",
+              condition = "input.sc3_civge_togL == true",
+              selectInput("sc3_civge_sub1", "Cell info to subset:",
                 choices = sc3conf[grp == TRUE]$UI,
                 selected = sc3def$grp1
               ),
-              uiOutput("sc3a1sub1.ui"),
-              actionButton("sc3a1sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
-              actionButton("sc3a1sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
+              uiOutput("sc3_civge_sub1.ui"),
+              actionButton("sc3_civge_sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
+              actionButton("sc3_civge_sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
             )
           )
         ), # End of column
@@ -2366,25 +2542,25 @@ tabPanel(
           4,
           div(
             class = "input-panel",
-            checkboxInput("sc3a1tog0", "Adjust graphics"),
+            checkboxInput("sc3_civge_tog0", "Adjust graphics"),
             conditionalPanel(
-              condition = "input.sc3a1tog0 == true",
-              sliderInput("sc3a1siz", "Point size:",
+              condition = "input.sc3_civge_tog0 == true",
+              sliderInput("sc3_civge_siz", "Point size:",
                 min = 0, max = 4, value = 1.25, step = 0.25
               ),
-              radioButtons("sc3a1psz", "Plot size:",
+              radioButtons("sc3_civge_psz", "Plot size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Medium", inline = TRUE
               ),
-              radioButtons("sc3a1fsz", "Font size:",
+              radioButtons("sc3_civge_fsz", "Font size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Small", inline = TRUE
               ),
-              radioButtons("sc3a1asp", "Aspect ratio:",
+              radioButtons("sc3_civge_asp", "Aspect ratio:",
                 choices = c("Square", "Fixed", "Free"),
                 selected = "Square", inline = TRUE
               ),
-              checkboxInput("sc3a1txt", "Show axis text", value = FALSE)
+              checkboxInput("sc3_civge_txt", "Show axis text", value = FALSE)
             )
           )
         ) # row 2 col 3
@@ -2403,15 +2579,15 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                selectInput("sc3a1inp1", "Cell info:",
+                selectInput("sc3_civge_inp1", "Cell info:",
                   choices = sc3conf$UI,
                   selected = sc3def$meta1
                 ) %>%
                   helper(
                     type = "inline", size = "m", fade = TRUE,
-                    title = "Cell information to colour cells by",
+                    title = "Cell info to colour cells by",
                     content = c(
-                      "Select cell information to colour cells",
+                      "Select cell info to colour cells",
                       "- Categorical covariates have a fixed colour palette",
                       paste0(
                         "- Continuous covariates are coloured in a ",
@@ -2426,18 +2602,18 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                checkboxInput("sc3a1tog1", "Adjust graphics"),
+                checkboxInput("sc3_civge_tog1", "Adjust graphics"),
                 conditionalPanel(
-                  condition = "input.sc3a1tog1 == true",
-                  radioButtons("sc3a1col1", "Colour (Continuous data):",
+                  condition = "input.sc3_civge_tog1 == true",
+                  radioButtons("sc3_civge_col1", "Colour (Continuous data):",
                     choices = c("White-Red", "Blue-Yellow-Red", "Yellow-Green-Purple"),
                     selected = "Blue-Yellow-Red"
                   ),
-                  radioButtons("sc3a1ord1", "Plot order:",
-                    choices = c("Max-1st", "Min-1st", "Original", "Random"),
+                  radioButtons("sc3_civge_ord1", "Plot order:",
+                    choices = c("Max", "Min", "Original", "Random"),
                     selected = "Original", inline = TRUE
                   ),
-                  checkboxInput("sc3a1lab1", "Show cell info labels", value = TRUE)
+                  checkboxInput("sc3_civge_lab1", "Show cell info labels", value = TRUE)
                 )
               )
             )
@@ -2447,7 +2623,7 @@ tabPanel(
             class = "tab-section",
             column(
               12,
-              uiOutput("sc3a1oup1.ui")
+              uiOutput("sc3_civge_oup1.ui")
             )
           ),
           # row 3 col 1 row 3
@@ -2457,21 +2633,21 @@ tabPanel(
               12,
               div(
                 class = "input-panel",
-                numericInput("sc3a1oup1.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-                downloadButton("sc3a1oup1.pdf", "Download PDF", class = "btn-sm"),
-                downloadButton("sc3a1oup1.png", "Download PNG", class = "btn-sm"),
-                checkboxInput("sc3a1tog9", "Show cell numbers / statistics")
+                numericInput("sc3_civge_oup1.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+                downloadButton("sc3_civge_oup1.pdf", "Download PDF", class = "btn-sm"),
+                downloadButton("sc3_civge_oup1.png", "Download PNG", class = "btn-sm"),
+                checkboxInput("sc3_civge_tog9", "Show cell numbers / statistics")
               )
             )
           ),
           conditionalPanel(
-            condition = "input.sc3a1tog9 == true",
+            condition = "input.sc3_civge_tog9 == true",
             h4("Cell numbers / statistics"),
-            radioButtons("sc3a1splt", "Split continuous cell info into:",
+            radioButtons("sc3_civge_splt", "Split continuous cell info into:",
               choices = c("Quartile", "Decile"),
               selected = "Decile", inline = TRUE
             ),
-            dataTableOutput("sc3a1.dt")
+            dataTableOutput("sc3_civge_.dt")
           )
         ), # row 3 col 1
         # row 3 col 2
@@ -2484,7 +2660,7 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                selectInput("sc3a1inp2", "Gene name:", choices = NULL) %>%
+                selectInput("sc3_civge_inp2", "Gene name:", choices = NULL) %>%
                   helper(
                     type = "inline", size = "m", fade = TRUE,
                     title = "Gene expression to colour cells by",
@@ -2503,16 +2679,16 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                checkboxInput("sc3a1tog2", "Adjust graphics"),
+                checkboxInput("sc3_civge_tog2", "Adjust graphics"),
                 conditionalPanel(
-                  condition = "input.sc3a1tog2 == true",
-                  radioButtons("sc3a1col2", "Colour:",
+                  condition = "input.sc3_civge_tog2 == true",
+                  radioButtons("sc3_civge_col2", "Colour:",
                     choices = c("White-Red", "Blue-Yellow-Red", "Yellow-Green-Purple"),
                     selected = "White-Red"
                   ),
-                  radioButtons("sc3a1ord2", "Plot order:",
-                    choices = c("Max-1st", "Min-1st", "Original", "Random"),
-                    selected = "Max-1st", inline = TRUE
+                  radioButtons("sc3_civge_ord2", "Plot order:",
+                    choices = c("Max", "Min", "Original", "Random"),
+                    selected = "Max", inline = TRUE
                   )
                 )
               )
@@ -2522,7 +2698,7 @@ tabPanel(
             class = "tab-section",
             column(
               12,
-              uiOutput("sc3a1oup2.ui")
+              uiOutput("sc3_civge_oup2.ui")
             )
           ),
           fluidRow(
@@ -2531,9 +2707,9 @@ tabPanel(
               12,
               div(
                 class = "input-panel",
-                numericInput("sc3a1oup2.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-                downloadButton("sc3a1oup2.pdf", "Download PDF", class = "btn-sm"),
-                downloadButton("sc3a1oup2.png", "Download PNG", class = "btn-sm")
+                numericInput("sc3_civge_oup2.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+                downloadButton("sc3_civge_oup2.pdf", "Download PDF", class = "btn-sm"),
+                downloadButton("sc3_civge_oup2.png", "Download PNG", class = "btn-sm")
               )
             )
           )
@@ -2542,9 +2718,10 @@ tabPanel(
       hr()
     )
   )
-) # End of tab 1
+) # End of tab civge
+
 ,
-# tab 2 ----
+# tab civci ----
 tabPanel(
   "CellInfo vs CellInfo",
   fluidRow(
@@ -2557,7 +2734,7 @@ tabPanel(
         column(
           12,
           h3("Cell info vs cell info"),
-          p("Two cell informations side-by-side on low-dimensional represention.")
+          p("Two cell infos side-by-side on low-dimensional represention.")
         ) # row 1 col 1
       ), # row 1
       # row 2 ----
@@ -2568,11 +2745,11 @@ tabPanel(
           div(
             class = "input-panel",
             h4("Dimension Reduction"),
-            selectInput("sc3a2drX", "X-axis:",
+            selectInput("sc3_civci_drX", "X-axis:",
               choices = sc3conf[dimred == TRUE]$UI,
               selected = sc3def$dimred[1]
             ),
-            selectInput("sc3a2drY", "Y-axis:",
+            selectInput("sc3_civci_drY", "Y-axis:",
               choices = sc3conf[dimred == TRUE]$UI,
               selected = sc3def$dimred[2]
             )
@@ -2582,16 +2759,16 @@ tabPanel(
         column(4,
           div(
             class = "input-panel",
-            checkboxInput("sc3a2togL", "Subset cells"),
+            checkboxInput("sc3_civci_togL", "Subset cells"),
             conditionalPanel(
-              condition = "input.sc3a2togL == true",
-              selectInput("sc3a2sub1", "Cell information to subset:",
+              condition = "input.sc3_civci_togL == true",
+              selectInput("sc3_civci_sub1", "Cell info to subset:",
                 choices = sc3conf[grp == TRUE]$UI,
                 selected = sc3def$grp1
               ),
-              uiOutput("sc3a2sub1.ui"),
-              actionButton("sc3a2sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
-              actionButton("sc3a2sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
+              uiOutput("sc3_civci_sub1.ui"),
+              actionButton("sc3_civci_sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
+              actionButton("sc3_civci_sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
             )
           )
         ), # row 2 col 2
@@ -2600,25 +2777,25 @@ tabPanel(
           4,
           div(
             class = "input-panel",
-            checkboxInput("sc3a2tog0", "Adjust graphics"),
+            checkboxInput("sc3_civci_tog0", "Adjust graphics"),
             conditionalPanel(
-              condition = "input.sc3a2tog0 == true",
-              sliderInput("sc3a2siz", "Point size:",
+              condition = "input.sc3_civci_tog0 == true",
+              sliderInput("sc3_civci_siz", "Point size:",
                 min = 0, max = 4, value = 1.25, step = 0.25
               ),
-              radioButtons("sc3a2psz", "Plot size:",
+              radioButtons("sc3_civci_psz", "Plot size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Medium", inline = TRUE
               ),
-              radioButtons("sc3a2fsz", "Font size:",
+              radioButtons("sc3_civci_fsz", "Font size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Small", inline = TRUE
               ),
-              radioButtons("sc3a2asp", "Aspect ratio:",
+              radioButtons("sc3_civci_asp", "Aspect ratio:",
                 choices = c("Square", "Fixed", "Free"),
                 selected = "Square", inline = TRUE
               ),
-              checkboxInput("sc3a2txt", "Show axis text", value = FALSE)
+              checkboxInput("sc3_civci_txt", "Show axis text", value = FALSE)
             )
           )
         ) # row 2 col 3
@@ -2638,15 +2815,15 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                selectInput("sc3a2inp1", "Cell info:",
+                selectInput("sc3_civci_inp1", "Cell info:",
                   choices = sc3conf$UI,
                   selected = sc3def$meta1
                 ) %>%
                   helper(
                     type = "inline", size = "m", fade = TRUE,
-                    title = "Cell information to colour cells by",
+                    title = "Cell info to colour cells by",
                     content = c(
-                      "Select cell information to colour cells",
+                      "Select cell info to colour cells",
                       "- Categorical covariates have a fixed colour palette",
                       paste0(
                         "- Continuous covariates are coloured in a ",
@@ -2661,27 +2838,27 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                checkboxInput("sc3a2tog1", "Adjust graphics"),
+                checkboxInput("sc3_civci_tog1", "Adjust graphics"),
                 conditionalPanel(
-                  condition = "input.sc3a2tog1 == true",
-                  radioButtons("sc3a2col1", "Colour (Continuous data):",
+                  condition = "input.sc3_civci_tog1 == true",
+                  radioButtons("sc3_civci_col1", "Colour (Continuous data):",
                     choices = c(
                       "White-Red", "Blue-Yellow-Red",
                       "Yellow-Green-Purple"
                     ),
                     selected = "Blue-Yellow-Red"
                   ),
-                  radioButtons("sc3a2ord1", "Plot order:",
-                    choices = c("Max-1st", "Min-1st", "Original", "Random"),
+                  radioButtons("sc3_civci_ord1", "Plot order:",
+                    choices = c("Max", "Min", "Original", "Random"),
                     selected = "Original", inline = TRUE
                   ),
-                  checkboxInput("sc3a2lab1", "Show cell info labels", value = TRUE)
+                  checkboxInput("sc3_civci_lab1", "Show cell info labels", value = TRUE)
                 )
               )
             )
           ),
           # row 3 col 1 row 2
-          fluidRow(column(12, uiOutput("sc3a2oup1.ui"))),
+          fluidRow(column(12, uiOutput("sc3_civci_oup1.ui"))),
           # row 3 col 1 row 3
           fluidRow(
             class = "tab-section",
@@ -2689,9 +2866,9 @@ tabPanel(
               12,
               div(
                 class = "input-panel",
-                numericInput("sc3a2oup1.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-                downloadButton("sc3a2oup1.pdf", "Download PDF", class = "btn-sm"),
-                downloadButton("sc3a2oup1.png", "Download PNG", class = "btn-sm")
+                numericInput("sc3_civci_oup1.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+                downloadButton("sc3_civci_oup1.pdf", "Download PDF", class = "btn-sm"),
+                downloadButton("sc3_civci_oup1.png", "Download PNG", class = "btn-sm")
               )
             )
           )
@@ -2705,15 +2882,15 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                selectInput("sc3a2inp2", "Cell info:",
+                selectInput("sc3_civci_inp2", "Cell info:",
                   choices = sc3conf$UI,
                   selected = sc3def$meta2
                 ) %>%
                   helper(
                     type = "inline", size = "m", fade = TRUE,
-                    title = "Cell information to colour cells by",
+                    title = "Cell info to colour cells by",
                     content = c(
-                      "Select cell information to colour cells",
+                      "Select cell info to colour cells",
                       "- Categorical covariates have a fixed colour palette",
                       paste0(
                         "- Continuous covariates are coloured in a ",
@@ -2728,35 +2905,35 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                checkboxInput("sc3a2tog2", "Adjust graphics"),
+                checkboxInput("sc3_civci_tog2", "Adjust graphics"),
                 conditionalPanel(
-                  condition = "input.sc3a2tog2 == true",
-                  radioButtons("sc3a2col2", "Colour (Continuous data):",
+                  condition = "input.sc3_civci_tog2 == true",
+                  radioButtons("sc3_civci_col2", "Colour (Continuous data):",
                     choices = c(
                       "White-Red", "Blue-Yellow-Red",
                       "Yellow-Green-Purple"
                     ),
                     selected = "Blue-Yellow-Red"
                   ),
-                  radioButtons("sc3a2ord2", "Plot order:",
-                    choices = c("Max-1st", "Min-1st", "Original", "Random"),
+                  radioButtons("sc3_civci_ord2", "Plot order:",
+                    choices = c("Max", "Min", "Original", "Random"),
                     selected = "Original", inline = TRUE
                   ),
-                  checkboxInput("sc3a2lab2", "Show cell info labels", value = TRUE)
+                  checkboxInput("sc3_civci_lab2", "Show cell info labels", value = TRUE)
                 )
               )
             )
           ),
-          fluidRow(column(12, uiOutput("sc3a2oup2.ui"))),
+          fluidRow(column(12, uiOutput("sc3_civci_oup2.ui"))),
           fluidRow(
             class = "tab-section",
             column(
               12,
               div(
                 class = "input-panel",
-                numericInput("sc3a2oup2.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-                downloadButton("sc3a2oup2.pdf", "Download PDF", class = "btn-sm"),
-                downloadButton("sc3a2oup2.png", "Download PNG", class = "btn-sm")
+                numericInput("sc3_civci_oup2.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+                downloadButton("sc3_civci_oup2.pdf", "Download PDF", class = "btn-sm"),
+                downloadButton("sc3_civci_oup2.png", "Download PNG", class = "btn-sm")
               )
             )
           )
@@ -2765,9 +2942,10 @@ tabPanel(
       hr()
     )
   )
-) # End of tab 2
+) # End of tab civci
+
 ,
-# tab 3 ----
+# tab gevge ----
 tabPanel(
   "GeneExpr vs GeneExpr",
   fluidRow(
@@ -2792,11 +2970,11 @@ tabPanel(
           div(
             class = "input-panel",
             h4("Dimension Reduction"),
-            selectInput("sc3a3drX", "X-axis:",
+            selectInput("sc3_gevge_drX", "X-axis:",
               choices = sc3conf[dimred == TRUE]$UI,
               selected = sc3def$dimred[1]
             ),
-            selectInput("sc3a3drY", "Y-axis:",
+            selectInput("sc3_gevge_drY", "Y-axis:",
               choices = sc3conf[dimred == TRUE]$UI,
               selected = sc3def$dimred[2]
             )
@@ -2806,16 +2984,16 @@ tabPanel(
         column(4,
           div(
             class = "input-panel",
-            checkboxInput("sc3a3togL", "Subset cells"),
+            checkboxInput("sc3_gevge_togL", "Subset cells"),
             conditionalPanel(
-              condition = "input.sc3a3togL == true",
-              selectInput("sc3a3sub1", "Cell information to subset:",
+              condition = "input.sc3_gevge_togL == true",
+              selectInput("sc3_gevge_sub1", "Cell info to subset:",
                 choices = sc3conf[grp == TRUE]$UI,
                 selected = sc3def$grp1
               ),
-              uiOutput("sc3a3sub1.ui"),
-              actionButton("sc3a3sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
-              actionButton("sc3a3sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
+              uiOutput("sc3_gevge_sub1.ui"),
+              actionButton("sc3_gevge_sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
+              actionButton("sc3_gevge_sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
             )
           )
         ), # End of column
@@ -2824,25 +3002,25 @@ tabPanel(
           4,
           div(
             class = "input-panel",
-            checkboxInput("sc3a3tog0", "Adjust graphics"),
+            checkboxInput("sc3_gevge_tog0", "Adjust graphics"),
             conditionalPanel(
-              condition = "input.sc3a3tog0 == true",
-              sliderInput("sc3a3siz", "Point size:",
+              condition = "input.sc3_gevge_tog0 == true",
+              sliderInput("sc3_gevge_siz", "Point size:",
                 min = 0, max = 4, value = 1.25, step = 0.25
               ),
-              radioButtons("sc3a3psz", "Plot size:",
+              radioButtons("sc3_gevge_psz", "Plot size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Medium", inline = TRUE
               ),
-              radioButtons("sc3a3fsz", "Font size:",
+              radioButtons("sc3_gevge_fsz", "Font size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Small", inline = TRUE
               ),
-              radioButtons("sc3a3asp", "Aspect ratio:",
+              radioButtons("sc3_gevge_asp", "Aspect ratio:",
                 choices = c("Square", "Fixed", "Free"),
                 selected = "Square", inline = TRUE
               ),
-              checkboxInput("sc3a3txt", "Show axis text", value = FALSE)
+              checkboxInput("sc3_gevge_txt", "Show axis text", value = FALSE)
             )
           )
         ) # row 2 col 3
@@ -2860,7 +3038,7 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                selectInput("sc3a3inp1", "Gene name:", choices = NULL) %>%
+                selectInput("sc3_gevge_inp1", "Gene name:", choices = NULL) %>%
                   helper(
                     type = "inline", size = "m", fade = TRUE,
                     title = "Gene expression to colour cells by",
@@ -2879,19 +3057,19 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                checkboxInput("sc3a3tog1", "Adjust graphics"),
+                checkboxInput("sc3_gevge_tog1", "Adjust graphics"),
                 conditionalPanel(
-                  condition = "input.sc3a3tog1 == true",
-                  radioButtons("sc3a3col1", "Colour:",
+                  condition = "input.sc3_gevge_tog1 == true",
+                  radioButtons("sc3_gevge_col1", "Colour:",
                     choices = c(
                       "White-Red", "Blue-Yellow-Red",
                       "Yellow-Green-Purple"
                     ),
                     selected = "White-Red"
                   ),
-                  radioButtons("sc3a3ord1", "Plot order:",
-                    choices = c("Max-1st", "Min-1st", "Original", "Random"),
-                    selected = "Max-1st", inline = TRUE
+                  radioButtons("sc3_gevge_ord1", "Plot order:",
+                    choices = c("Max", "Min", "Original", "Random"),
+                    selected = "Max", inline = TRUE
                   )
                 )
               )
@@ -2900,7 +3078,7 @@ tabPanel(
           # row 3 col 1 row 2
           fluidRow(
             class = "tab-section",
-            column(12, uiOutput("sc3a3oup1.ui"))
+            column(12, uiOutput("sc3_gevge_oup1.ui"))
           ),
           # row 3 col 1 row 3
           fluidRow(
@@ -2909,9 +3087,9 @@ tabPanel(
               12,
               div(
                 class = "input-panel",
-                numericInput("sc3a3oup1.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-                downloadButton("sc3a3oup1.pdf", "Download PDF", class = "btn-sm"),
-                downloadButton("sc3a3oup1.png", "Download PNG", class = "btn-sm")
+                numericInput("sc3_gevge_oup1.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+                downloadButton("sc3_gevge_oup1.pdf", "Download PDF", class = "btn-sm"),
+                downloadButton("sc3_gevge_oup1.png", "Download PNG", class = "btn-sm")
               )
             )
           )
@@ -2925,7 +3103,7 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                selectInput("sc3a3inp2", "Gene name:", choices = NULL) %>%
+                selectInput("sc3_gevge_inp2", "Gene name:", choices = NULL) %>%
                   helper(
                     type = "inline", size = "m", fade = TRUE,
                     title = "Gene expression to colour cells by",
@@ -2944,19 +3122,19 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                checkboxInput("sc3a3tog2", "Adjust graphics"),
+                checkboxInput("sc3_gevge_tog2", "Adjust graphics"),
                 conditionalPanel(
-                  condition = "input.sc3a3tog2 == true",
-                  radioButtons("sc3a3col2", "Colour:",
+                  condition = "input.sc3_gevge_tog2 == true",
+                  radioButtons("sc3_gevge_col2", "Colour:",
                     choices = c(
                       "White-Red", "Blue-Yellow-Red",
                       "Yellow-Green-Purple"
                     ),
                     selected = "White-Red"
                   ),
-                  radioButtons("sc3a3ord2", "Plot order:",
-                    choices = c("Max-1st", "Min-1st", "Original", "Random"),
-                    selected = "Max-1st", inline = TRUE
+                  radioButtons("sc3_gevge_ord2", "Plot order:",
+                    choices = c("Max", "Min", "Original", "Random"),
+                    selected = "Max", inline = TRUE
                   )
                 )
               )
@@ -2964,7 +3142,7 @@ tabPanel(
           ),
           fluidRow(
             class = "tab-section",
-            column(12, uiOutput("sc3a3oup2.ui"))
+            column(12, uiOutput("sc3_gevge_oup2.ui"))
           ),
           fluidRow(
             class = "tab-section",
@@ -2972,9 +3150,9 @@ tabPanel(
               12,
               div(
                 class = "input-panel",
-                  numericInput("sc3a3oup2.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-                  downloadButton("sc3a3oup2.pdf", "Download PDF", class = "btn-sm"),
-                  downloadButton("sc3a3oup2.png", "Download PNG", class = "btn-sm")
+                  numericInput("sc3_gevge_oup2.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+                  downloadButton("sc3_gevge_oup2.pdf", "Download PDF", class = "btn-sm"),
+                  downloadButton("sc3_gevge_oup2.png", "Download PNG", class = "btn-sm")
               )
             )
           )
@@ -2983,9 +3161,129 @@ tabPanel(
       hr()
     )
   )
-) # End of tab 3
+) # End of tab gevge
+
 ,
-# tab 4 ----
+# tab gem ----
+tabPanel(
+  "Expression",
+  fluidRow(
+    class = "container page",
+    column(
+      12,
+      # row 1 ----
+      fluidRow(
+        class = "tab-section",
+        column(
+          12,
+          h3("Gene expression"),
+          p("Explore gene expression on low-dimensional represention.")
+        ) # row 1 col 1
+      ), # row 1
+      # row 2 ----
+      fluidRow(
+        class = "tab-section",
+        column(4,
+               fluidRow(
+        column(
+          12,
+          div(
+            class = "input-panel input-panel-section",
+            textAreaInput("sc3_gem_inp", "Gene names:",
+                          height = "100px",
+                          value = paste0(sc3def$genes, collapse = ", ")
+            ) %>%
+              helper(
+                type = "inline", size = "m", fade = TRUE,
+                title = "List of genes to plot on bubbleplot / heatmap",
+                content = c(
+                  "Input genes to plot",
+                  "- Maximum 16 genes (due to ploting space limitations)",
+                  "- Genes should be separated by comma, semicolon or newline"
+                )
+              ),
+            selectInput("sc3_gem_drX", "X-axis:",
+                        choices = sc3conf[dimred == TRUE]$UI,
+                        selected = sc3def$dimred[1]
+            ),
+            selectInput("sc3_gem_drY", "Y-axis:",
+                        choices = sc3conf[dimred == TRUE]$UI,
+                        selected = sc3def$dimred[2]
+            ),
+            checkboxInput("sc3_gem_togL", "Subset cells"),
+            conditionalPanel(
+              condition = "input.sc3_gem_togL == true",
+              selectInput("sc3_gem_sub1", "Cell info to subset:",
+                          choices = sc3conf[grp == TRUE]$UI,
+                          selected = sc3def$grp1
+              ),
+              uiOutput("sc3_gem_sub1.ui"),
+              actionButton("sc3_gem_sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
+              actionButton("sc3_gem_sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
+            ),
+            checkboxInput("sc3_gem_tog0", "Adjust graphics"),
+            conditionalPanel(
+              condition = "input.sc3_gem_tog0 == true",
+              sliderInput("sc3_gem_siz", "Point size:",
+                          min = 0, max = 3, value = 0.5, step = 0.1
+              ),
+              radioButtons("sc3_gem_psz", "Plot size:",
+                           choices = c("Small", "Medium", "Large"),
+                           selected = "Medium", inline = TRUE
+              ),
+              radioButtons("sc3_gem_fsz", "Font size:",
+                           choices = c("Smaller", "Small", "Medium", "Large"),
+                           selected = "Small", inline = TRUE
+              ),
+              radioButtons("sc3_gem_asp", "Aspect ratio:",
+                           choices = c("Square", "Fixed", "Free"),
+                           selected = "Square", inline = TRUE
+              ),
+              checkboxInput("sc3_gem_txt", "Show axis text", value = FALSE),
+              radioButtons("sc3_gem_col", "Colour (Continuous data):",
+                           choices = c(
+                             "White-Red", "Blue-Yellow-Red",
+                             "Yellow-Green-Purple"
+                           ),
+                           selected = "Blue-Yellow-Red"
+              ),
+              radioButtons("sc3_gem_ord", "Plot order:",
+                           choices = c("Max", "Min", "Original", "Random"),
+                           selected = "Max", inline = TRUE
+              ),
+              numericInput("sc3_gem_ncol", "Number of columns", value = 0, min = 0, step = 1)
+            )
+          ),
+          div(
+            class = "input-panel",
+            fluidRow(
+            column(4,
+              numericInput("sc3_gem_oup1.height", "Height:", min = 1, max = 50, value = 25, step = 2)
+            ),
+            column(4,
+              numericInput("sc3_gem_oup1.width", "Width:", min = 1, max = 50, value = 25, step = 2)
+            ),
+            column(4,
+              numericInput("sc3_gem_oup1.res", "Res:", min = 72, max = 600, value = 150, step = 5)
+            )
+            ),
+            downloadButton("sc3_gem_oup1.pdf", "Download PDF", class = "btn-sm"),
+            downloadButton("sc3_gem_oup1.png", "Download PNG", class = "btn-sm")
+          )
+        )
+               )
+      ),
+      column(8,
+             uiOutput("sc3_gem_oup1.ui")
+      )
+      ),
+      hr()
+    )
+  )
+) # End of tab gem
+
+,
+# tab gec ----
 tabPanel(
   "Gene coexpression",
   fluidRow(
@@ -3005,149 +3303,112 @@ tabPanel(
       fluidRow(
         class = "tab-section",
         # row 2 col 1
-        column(
-          4,
-          div(
-            class = "input-panel",
-            h4("Dimension Reduction"),
-            selectInput("sc3b2drX", "X-axis:",
-              choices = sc3conf[dimred == TRUE]$UI,
-              selected = sc3def$dimred[1]
-            ),
-            selectInput("sc3b2drY", "Y-axis:",
-              choices = sc3conf[dimred == TRUE]$UI,
-              selected = sc3def$dimred[2]
-            )
-          )
-        ), # row 1 col 1
-        # row 2 col 2
         column(4,
-          div(
-            class = "input-panel",
-            checkboxInput("sc3b2togL", "Subset cells"),
-            conditionalPanel(
-              condition = "input.sc3b2togL == true",
-              selectInput("sc3b2sub1", "Cell information to subset:",
-                choices = sc3conf[grp == TRUE]$UI,
-                selected = sc3def$grp1
-              ),
-              uiOutput("sc3b2sub1.ui"),
-              actionButton("sc3b2sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
-              actionButton("sc3b2sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
-            )
-          )
-        ), # End of column
-        # row 2 col 3
+               column(
+                 12,
+                 div(
+                   class = "input-panel input-panel-section",
+                   h4("Dimension Reduction"),
+                   selectInput("sc3_gec_drX", "X-axis:",
+                               choices = sc3conf[dimred == TRUE]$UI,
+                               selected = sc3def$dimred[1]
+                   ),
+                   selectInput("sc3_gec_drY", "Y-axis:",
+                               choices = sc3conf[dimred == TRUE]$UI,
+                               selected = sc3def$dimred[2]
+                   ),
+                   selectInput("sc3_gec_inp1", "Gene 1:", choices = NULL) %>%
+                     helper(
+                       type = "inline", size = "m", fade = TRUE,
+                       title = "Gene expression to colour cells by",
+                       content = c(
+                         "Select gene to colour cells by gene expression",
+                         paste0(
+                           "- Gene expression are coloured in a ",
+                           "White-Red colour scheme which can be ",
+                           "changed in the plot controls"
+                         )
+                       )
+                     ),
+                   selectInput("sc3_gec_inp2", "Gene 2:", choices = NULL) %>%
+                     helper(
+                       type = "inline", size = "m", fade = TRUE,
+                       title = "Gene expression to colour cells by",
+                       content = c(
+                         "Select gene to colour cells by gene expression",
+                         paste0(
+                           "- Gene expression are coloured in a ",
+                           "White-Blue colour scheme which can be ",
+                           "changed in the plot controls"
+                         )
+                       )
+                     ),
+                   checkboxInput("sc3_gec_togL", "Subset cells"),
+                   conditionalPanel(
+                    condition = "input.sc3_gec_togL == true",
+                    selectInput("sc3_gec_sub1", "Cell info to subset:", choices = sc3conf[grp == TRUE]$UI, selected = sc3def$grp1),
+                     uiOutput("sc3_gec_sub1.ui"),
+                     actionButton("sc3_gec_sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
+                     actionButton("sc3_gec_sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
+                   ),
+                   checkboxInput("sc3_gec_tog0", "Adjust graphics"),
+                   conditionalPanel(
+                     condition = "input.sc3_gec_tog0 == true",
+                     radioButtons("sc3_gec_col1", "Colour:",
+                                  choices = c(
+                                    "Red (Gene1); Blue (Gene2)",
+                                    "Orange (Gene1); Blue (Gene2)",
+                                    "Red (Gene1); Green (Gene2)",
+                                    "Green (Gene1); Blue (Gene2)"
+                                  ),
+                                  selected = "Red (Gene1); Blue (Gene2)"
+                     ),
+                     radioButtons("sc3_gec_ord1", "Plot order:",
+                                  choices = c("Max", "Min", "Original", "Random"),
+                                  selected = "Max", inline = TRUE
+                     ),
+                     sliderInput("sc3_gec_siz", "Point size:",
+                                 min = 0, max = 4, value = 1.25, step = 0.25
+                     ),
+                     radioButtons("sc3_gec_psz", "Plot size:",
+                                  choices = c("Small", "Medium", "Large"),
+                                  selected = "Medium", inline = TRUE
+                     ),
+                     radioButtons("sc3_gec_fsz", "Font size:",
+                                  choices = c("Small", "Medium", "Large"),
+                                  selected = "Small", inline = TRUE
+                     ),
+                     radioButtons("sc3_gec_asp", "Aspect ratio:",
+                                  choices = c("Square", "Fixed", "Free"),
+                                  selected = "Square", inline = TRUE
+                     ),
+                     checkboxInput("sc3_gec_txt", "Show axis text", value = FALSE)
+                   )
+                 ),
+                 div(class="input-panel input-panel-section",
+                     numericInput("sc3_gec_oup1.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+                     downloadButton("sc3_gec_oup1.pdf", "Download PDF", class = "btn-sm"),
+                     downloadButton("sc3_gec_oup1.png", "Download PNG", class = "btn-sm")
+                 ),
+                 div(class="input-panel-section",
+                     h4("Cell numbers"),
+                     dataTableOutput("sc3_gec_.dt")
+                 )
+               )
+        ), # row 2 col 1
+        # row 2 col 2
         column(
-          4,
-          div(
-            class = "input-panel",
-            checkboxInput("sc3b2tog0", "Adjust graphics"),
-            conditionalPanel(
-              condition = "input.sc3b2tog0 == true",
-              sliderInput("sc3b2siz", "Point size:",
-                min = 0, max = 4, value = 1.25, step = 0.25
-              ),
-              radioButtons("sc3b2psz", "Plot size:",
-                choices = c("Small", "Medium", "Large"),
-                selected = "Medium", inline = TRUE
-              ),
-              radioButtons("sc3b2fsz", "Font size:",
-                choices = c("Small", "Medium", "Large"),
-                selected = "Small", inline = TRUE
-              ),
-              radioButtons("sc3b2asp", "Aspect ratio:",
-                choices = c("Square", "Fixed", "Free"),
-                selected = "Square", inline = TRUE
-              ),
-              checkboxInput("sc3b2txt", "Show axis text", value = FALSE)
-            )
-          )
-        ) # row 2 col 3
-      ), # row 2
-      # row 3 ----
-      fluidRow(
-        class = "tab-section",
-        # row 3 col 1
-        column(
-          3,
-          style = "border-right: 2px solid #f3f6f4",
-          div(
-            class = "input-panel",
-            h4("Gene Expression"),
-            selectInput("sc3b2inp1", "Gene 1:", choices = NULL) %>%
-              helper(
-                type = "inline", size = "m", fade = TRUE,
-                title = "Gene expression to colour cells by",
-                content = c(
-                  "Select gene to colour cells by gene expression",
-                  paste0(
-                    "- Gene expression are coloured in a ",
-                    "White-Red colour scheme which can be ",
-                    "changed in the plot controls"
-                  )
-                )
-              ),
-            selectInput("sc3b2inp2", "Gene 2:", choices = NULL) %>%
-              helper(
-                type = "inline", size = "m", fade = TRUE,
-                title = "Gene expression to colour cells by",
-                content = c(
-                  "Select gene to colour cells by gene expression",
-                  paste0(
-                    "- Gene expression are coloured in a ",
-                    "White-Blue colour scheme which can be ",
-                    "changed in the plot controls"
-                  )
-                )
-              ),
-            checkboxInput("sc3b2tog1", "Adjust graphics"),
-            conditionalPanel(
-              condition = "input.sc3b2tog1 == true",
-              radioButtons("sc3b2col1", "Colour:",
-                choices = c(
-                  "Red (Gene1); Blue (Gene2)",
-                  "Orange (Gene1); Blue (Gene2)",
-                  "Red (Gene1); Green (Gene2)",
-                  "Green (Gene1); Blue (Gene2)"
-                ),
-                selected = "Red (Gene1); Blue (Gene2)"
-              ),
-              radioButtons("sc3b2ord1", "Plot order:",
-                choices = c("Max-1st", "Min-1st", "Original", "Random"),
-                selected = "Max-1st", inline = TRUE
-              )
-            )
-          )
-        ), # row 3 col 1
-        # row 3 col 2
-        column(
-          6,
-          style = "border-right: 2px solid #f3f6f4",
-          uiOutput("sc3b2oup1.ui"),
-          div(
-            class = "input-panel",
-            numericInput("sc3b2oup1.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-            downloadButton("sc3b2oup1.pdf", "Download PDF", class = "btn-sm"),
-            downloadButton("sc3b2oup1.png", "Download PNG", class = "btn-sm")
-          )
-        ), # row 3 col 2
-        # row 3 col 3
-        column(
-          3,
-          uiOutput("sc3b2oup2.ui"),
-          downloadButton("sc3b2oup2.pdf", "Download PDF", class = "btn-sm"),
-          downloadButton("sc3b2oup2.png", "Download PNG", class = "btn-sm"),
-          h4("Cell numbers"),
-          dataTableOutput("sc3b2.dt")
-        ) # row 3 col 3
-      ), # row 3
+          8,
+          uiOutput("sc3_gec_oup1.ui"),
+        )
+      ), # end of row 2
       hr()
-    )
-  )
-) # End of tab 4
+    ) # col
+  ) # row
+) # End of tab gec
+
 ,
-# tab 5 ----
+# tab vio ----
 tabPanel(
   "Violinplot / Boxplot",
   fluidRow(
@@ -3172,79 +3433,84 @@ tabPanel(
           div(
             class = "input-panel",
             style = "border-right: 2px solid #f3f6f4",
-            selectInput("sc3c1inp1", "Cell information (X-axis):",
+            selectInput("sc3_vio_inp1", "Cell info (X-axis):",
               choices = sc3conf[grp == TRUE]$UI,
               selected = sc3def$grp1
             ) %>%
               helper(
                 type = "inline", size = "m", fade = TRUE,
-                title = "Cell information to group cells by",
+                title = "Cell info to group cells by",
                 content = c(
-                  "Select categorical cell information to group cells by",
+                  "Select categorical cell info to group cells by",
                   "- Single cells are grouped by this categorical covariate",
                   "- Plotted as the X-axis of the violin plot / box plot"
                 )
               ),
-            selectInput("sc3c1inp2", "Cell Info / Gene name (Y-axis):", choices = NULL) %>%
+            selectInput("sc3_vio_inp2", "Cell info / Gene (Y-axis):", choices = NULL) %>%
               helper(
                 type = "inline", size = "m", fade = TRUE,
                 title = "Cell Info / Gene to plot",
                 content = c(
                   "Select cell info / gene to plot on Y-axis",
-                  "- Can be continuous cell information (e.g. nUMIs / scores)",
+                  "- Can be continuous cell info (e.g. nUMIs / scores)",
                   "- Can also be gene expression"
                 )
               ),
-            radioButtons("sc3c1typ", "Plot type:",
-              choices = c("violin", "boxplot"),
+            radioButtons("sc3_vio_typ", "Plot type:",
+              choices = c("violin", "boxplot", "lineplot"),
               selected = "violin", inline = TRUE
             ),
-            checkboxInput("sc3c1pts", "Show data points", value = FALSE),
-            checkboxInput("sc3c1togL", "Subset cells"),
+            checkboxInput("sc3_vio_pts", "Show data points", value = FALSE),
+            checkboxInput("sc3_vio_togL", "Subset cells"),
             conditionalPanel(
-              condition = "input.sc3c1togL == true",
-              selectInput("sc3c1sub1", "Cell information to subset:",
+              condition = "input.sc3_vio_togL == true",
+              selectInput("sc3_vio_sub1", "Cell info to subset:",
                 choices = sc3conf[grp == TRUE]$UI,
                 selected = sc3def$grp1
               ),
-              uiOutput("sc3c1sub1.ui"),
-              actionButton("sc3c1sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
-              actionButton("sc3c1sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
+              uiOutput("sc3_vio_sub1.ui"),
+              actionButton("sc3_vio_sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
+              actionButton("sc3_vio_sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
             ),
-            checkboxInput("sc3c1tog", "Adjust graphics"),
+            checkboxInput("sc3_vio_tog", "Adjust graphics"),
             conditionalPanel(
-              condition = "input.sc3c1tog == true",
-              sliderInput("sc3c1siz", "Data point size:",
+              condition = "input.sc3_vio_tog == true",
+              sliderInput("sc3_vio_siz", "Data point size:",
                 min = 0, max = 4, value = 1.25, step = 0.25
               ),
-              radioButtons("sc3c1psz", "Plot size:",
+              radioButtons("sc3_vio_psz", "Plot size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Small", inline = TRUE
               ),
-              radioButtons("sc3c1fsz", "Font size:",
+              radioButtons("sc3_vio_fsz", "Font size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Small", inline = TRUE
+              ),
+              conditionalPanel(
+              condition = "input.sc3_vio_typ == 'lineplot'",
+              sliderInput("sc3_vio_barsz", "Line size", min = 0.05, max = 0.5, step = 0.01, value = 0.3)
               )
             )
           ),
           div(
             class = "input-panel",
-            numericInput("sc3c1oup.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-            downloadButton("sc3c1oup.pdf", "Download PDF", class = "btn-sm"),
-            downloadButton("sc3c1oup.png", "Download PNG", class = "btn-sm")
+            numericInput("sc3_vio_oup.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+            downloadButton("sc3_vio_oup.pdf", "Download PDF", class = "btn-sm"),
+            downloadButton("sc3_vio_oup.png", "Download PNG", class = "btn-sm")
           )
         ), # row 2 col 1
         # row 2 col 2
         column(
-          9, uiOutput("sc3c1oup.ui")
+          9, uiOutput("sc3_vio_oup.ui")
         ) # row 2 col 2
       ), # row 2
       hr()
     )
   )
-) # End of tab 5
+) # End of tab vio
+
 ,
-# tab 6 ----
+# tab pro ----
 tabPanel(
   "Proportion plot",
   fluidRow(
@@ -3257,7 +3523,7 @@ tabPanel(
         column(
           12,
           h3("Proportion / cell numbers across different cell information"),
-          p("Visualise the composition of single cells based on one discrete cell information across another discrete cell information. Usage examples include the library or cellcycle composition across clusters.")
+          p("Visualise the composition of single cells based on one discrete cell information across another discrete cell information.")
         )
       ),
       # row 2 ----
@@ -3266,57 +3532,56 @@ tabPanel(
         # row 2 col 1
         column(
           3,
-          style = "border-right: 2px solid #f3f6f4",
           div(
             class = "input-panel",
-            selectInput("sc3c2inp1", "Cell information to plot (X-axis):",
+            selectInput("sc3_pro_inp1", "Cell info to plot (X-axis):",
               choices = sc3conf[grp == TRUE]$UI,
               selected = sc3def$grp2
             ) %>%
               helper(
                 type = "inline", size = "m", fade = TRUE,
-                title = "Cell information to plot cells by",
+                title = "Cell info to plot cells by",
                 content = c(
-                  "Select categorical cell information to plot cells by",
+                  "Select categorical cell info to plot cells by",
                   "- Plotted as the X-axis of the proportion plot"
                 )
               ),
-            selectInput("sc3c2inp2", "Cell information to group / colour by:",
+            selectInput("sc3_pro_inp2", "Cell info to group / colour by:",
               choices = sc3conf[grp == TRUE]$UI,
               selected = sc3def$grp1
             ) %>%
               helper(
                 type = "inline", size = "m", fade = TRUE,
-                title = "Cell information to group / colour cells by",
+                title = "Cell info to group / colour cells by",
                 content = c(
-                  "Select categorical cell information to group / colour cells by",
+                  "Select categorical cell info to group / colour cells by",
                   "- Proportion / cell numbers are shown in different colours"
                 )
               ),
-            radioButtons("sc3c2typ", "Plot value:",
+            radioButtons("sc3_pro_typ", "Plot value:",
               choices = c("Proportion", "CellNumbers"),
               selected = "Proportion", inline = TRUE
             ),
-            checkboxInput("sc3c2flp", "Flip X/Y", value = FALSE),
-            checkboxInput("sc3c2togL", "Subset cells"),
+            checkboxInput("sc3_pro_flp", "Flip X/Y", value = FALSE),
+            checkboxInput("sc3_pro_togL", "Subset cells"),
             conditionalPanel(
-              condition = "input.sc3c2togL == true",
-              selectInput("sc3c2sub1", "Cell information to subset:",
+              condition = "input.sc3_pro_togL == true",
+              selectInput("sc3_pro_sub1", "Cell info to subset:",
                 choices = sc3conf[grp == TRUE]$UI,
                 selected = sc3def$grp1
               ),
-              uiOutput("sc3c2sub1.ui"),
-              actionButton("sc3c2sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
-              actionButton("sc3c2sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
+              uiOutput("sc3_pro_sub1.ui"),
+              actionButton("sc3_pro_sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
+              actionButton("sc3_pro_sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
             ),
-            checkboxInput("sc3c2tog", "Adjust graphics"),
+            checkboxInput("sc3_pro_tog", "Adjust graphics"),
             conditionalPanel(
-              condition = "input.sc3c2tog == true",
-              radioButtons("sc3c2psz", "Plot size:",
+              condition = "input.sc3_pro_tog == true",
+              radioButtons("sc3_pro_psz", "Plot size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Medium", inline = TRUE
               ),
-              radioButtons("sc3c2fsz", "Font size:",
+              radioButtons("sc3_pro_fsz", "Font size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Small", inline = TRUE
               )
@@ -3324,22 +3589,23 @@ tabPanel(
           ),
           div(
             class = "input-panel",
-            numericInput("sc3c2oup.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-            downloadButton("sc3c2oup.pdf", "Download PDF", class = "btn-sm"),
-            downloadButton("sc3c2oup.png", "Download PNG", class = "btn-sm")
+            numericInput("sc3_pro_oup.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+            downloadButton("sc3_pro_oup.pdf", "Download PDF", class = "btn-sm"),
+            downloadButton("sc3_pro_oup.png", "Download PNG", class = "btn-sm")
           )
         ), # row 2 col 1
         # row 2 col 2
         column(
-          9, uiOutput("sc3c2oup.ui")
+          9, uiOutput("sc3_pro_oup.ui")
         ) # row 2 col 2
       ), # row 2
       hr()
     )
   )
-) # End of tab 6
+) # End of tab pro
+
 ,
-# tab 7 ----
+# tab hea ----
 tabPanel(
   "Bubbleplot / Heatmap",
   fluidRow(
@@ -3360,13 +3626,10 @@ tabPanel(
         class = "tab-section",
         column(
           3,
-          style = "border-right: 2px solid #f3f6f4",
           div(
             class = "input-panel",
-            textAreaInput("sc3d1inp", HTML("List of gene names <br />
-                                        (Max 50 genes, separated <br />
-                                         by , or ; or newline):"),
-              height = "200px",
+            textAreaInput("sc3_hea_inp", "Gene names",
+              height = "100px",
               value = paste0(sc3def$genes, collapse = ", ")
             ) %>%
               helper(
@@ -3378,52 +3641,52 @@ tabPanel(
                   "- Genes should be separated by comma, semicolon or newline"
                 )
               ),
-            selectInput("sc3d1grp", "Group by:",
+            selectInput("sc3_hea_grp", "Group by:",
               choices = sc3conf[grp == TRUE]$UI,
               selected = sc3conf[grp == TRUE]$UI[1]
             ) %>%
               helper(
                 type = "inline", size = "m", fade = TRUE,
-                title = "Cell information to group cells by",
+                title = "Cell info to group cells by",
                 content = c(
-                  "Select categorical cell information to group cells by",
+                  "Select categorical cell info to group cells by",
                   "- Single cells are grouped by this categorical covariate",
                   "- Plotted as the X-axis of the bubbleplot / heatmap"
                 )
               ),
-            radioButtons("sc3d1plt", "Plot type:",
+            radioButtons("sc3_hea_plt", "Plot type:",
               choices = c("Bubbleplot", "Heatmap"),
               selected = "Bubbleplot", inline = TRUE
             ),
-            checkboxInput("sc3d1scl", "Scale gene expression", value = TRUE),
-            checkboxInput("sc3d1row", "Cluster rows (genes)", value = TRUE),
-            checkboxInput("sc3d1col", "Cluster columns (samples)", value = FALSE),
-            checkboxInput("sc3d1togL", "Subset cells"),
+            checkboxInput("sc3_hea_scl", "Scale gene expression", value = TRUE),
+            checkboxInput("sc3_hea_row", "Cluster rows (genes)", value = TRUE),
+            checkboxInput("sc3_hea_col", "Cluster columns (samples)", value = FALSE),
+            checkboxInput("sc3_hea_togL", "Subset cells"),
             conditionalPanel(
-              condition = "input.sc3d1togL == true",
-              selectInput("sc3d1sub1", "Cell information to subset:",
+              condition = "input.sc3_hea_togL == true",
+              selectInput("sc3_hea_sub1", "Cell info to subset:",
                 choices = sc3conf[grp == TRUE]$UI,
                 selected = sc3def$grp1
               ),
-              uiOutput("sc3d1sub1.ui"),
-              actionButton("sc3d1sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
-              actionButton("sc3d1sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
+              uiOutput("sc3_hea_sub1.ui"),
+              actionButton("sc3_hea_sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
+              actionButton("sc3_hea_sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
             ),
-            checkboxInput("sc3d1tog", "Adjust graphics"),
+            checkboxInput("sc3_hea_tog", "Adjust graphics"),
             conditionalPanel(
-              condition = "input.sc3d1tog == true",
-              radioButtons("sc3d1cols", "Colour scheme:",
+              condition = "input.sc3_hea_tog == true",
+              radioButtons("sc3_hea_cols", "Colour scheme:",
                 choices = c(
                   "White-Red", "Blue-Yellow-Red",
                   "Yellow-Green-Purple"
                 ),
                 selected = "Blue-Yellow-Red"
               ),
-              radioButtons("sc3d1psz", "Plot size:",
+              radioButtons("sc3_hea_psz", "Plot size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Medium", inline = TRUE
               ),
-              radioButtons("sc3d1fsz", "Font size:",
+              radioButtons("sc3_hea_fsz", "Font size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Small", inline = TRUE
               )
@@ -3431,24 +3694,25 @@ tabPanel(
           ),
           div(
             class = "input-panel",
-            numericInput("sc3d1oup.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-            downloadButton("sc3d1oup.pdf", "Download PDF", class = "btn-sm"),
-            downloadButton("sc3d1oup.png", "Download PNG", class = "btn-sm")
+            numericInput("sc3_hea_oup.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+            downloadButton("sc3_hea_oup.pdf", "Download PDF", class = "btn-sm"),
+            downloadButton("sc3_hea_oup.png", "Download PNG", class = "btn-sm")
           )
         ), # row 2 col 1
         # row 2 col 2
         column(
-          9, h4(htmlOutput("sc3d1oupTxt")),
-          uiOutput("sc3d1oup.ui")
+          9, h4(htmlOutput("sc3_hea_oupTxt")),
+          uiOutput("sc3_hea_oup.ui")
         ) # row 2 col 2
       ), # row 2
       hr()
     )
   )
-) # End of tab 7
+) # End of tab hea
+
 )
 ,navbarMenu("Healthy Valve",
-# tab 1 ----
+# tab civge ----
 tabPanel(
   "CellInfo vs GeneExpr",
   fluidRow(
@@ -3473,11 +3737,11 @@ tabPanel(
           div(
             class = "input-panel",
             h4("Dimension Reduction"),
-            selectInput("sc4a1drX", "X-axis:",
+            selectInput("sc4_civge_drX", "X-axis:",
               choices = sc4conf[dimred == TRUE]$UI,
               selected = sc4def$dimred[1]
             ),
-            selectInput("sc4a1drY", "Y-axis:",
+            selectInput("sc4_civge_drY", "Y-axis:",
               choices = sc4conf[dimred == TRUE]$UI,
               selected = sc4def$dimred[2]
             )
@@ -3488,16 +3752,16 @@ tabPanel(
           4,
           div(
             class = "input-panel",
-            checkboxInput("sc4a1togL", "Subset cells"),
+            checkboxInput("sc4_civge_togL", "Subset cells"),
             conditionalPanel(
-              condition = "input.sc4a1togL == true",
-              selectInput("sc4a1sub1", "Cell information to subset:",
+              condition = "input.sc4_civge_togL == true",
+              selectInput("sc4_civge_sub1", "Cell info to subset:",
                 choices = sc4conf[grp == TRUE]$UI,
                 selected = sc4def$grp1
               ),
-              uiOutput("sc4a1sub1.ui"),
-              actionButton("sc4a1sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
-              actionButton("sc4a1sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
+              uiOutput("sc4_civge_sub1.ui"),
+              actionButton("sc4_civge_sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
+              actionButton("sc4_civge_sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
             )
           )
         ), # End of column
@@ -3506,25 +3770,25 @@ tabPanel(
           4,
           div(
             class = "input-panel",
-            checkboxInput("sc4a1tog0", "Adjust graphics"),
+            checkboxInput("sc4_civge_tog0", "Adjust graphics"),
             conditionalPanel(
-              condition = "input.sc4a1tog0 == true",
-              sliderInput("sc4a1siz", "Point size:",
+              condition = "input.sc4_civge_tog0 == true",
+              sliderInput("sc4_civge_siz", "Point size:",
                 min = 0, max = 4, value = 1.25, step = 0.25
               ),
-              radioButtons("sc4a1psz", "Plot size:",
+              radioButtons("sc4_civge_psz", "Plot size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Medium", inline = TRUE
               ),
-              radioButtons("sc4a1fsz", "Font size:",
+              radioButtons("sc4_civge_fsz", "Font size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Small", inline = TRUE
               ),
-              radioButtons("sc4a1asp", "Aspect ratio:",
+              radioButtons("sc4_civge_asp", "Aspect ratio:",
                 choices = c("Square", "Fixed", "Free"),
                 selected = "Square", inline = TRUE
               ),
-              checkboxInput("sc4a1txt", "Show axis text", value = FALSE)
+              checkboxInput("sc4_civge_txt", "Show axis text", value = FALSE)
             )
           )
         ) # row 2 col 3
@@ -3543,15 +3807,15 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                selectInput("sc4a1inp1", "Cell info:",
+                selectInput("sc4_civge_inp1", "Cell info:",
                   choices = sc4conf$UI,
                   selected = sc4def$meta1
                 ) %>%
                   helper(
                     type = "inline", size = "m", fade = TRUE,
-                    title = "Cell information to colour cells by",
+                    title = "Cell info to colour cells by",
                     content = c(
-                      "Select cell information to colour cells",
+                      "Select cell info to colour cells",
                       "- Categorical covariates have a fixed colour palette",
                       paste0(
                         "- Continuous covariates are coloured in a ",
@@ -3566,18 +3830,18 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                checkboxInput("sc4a1tog1", "Adjust graphics"),
+                checkboxInput("sc4_civge_tog1", "Adjust graphics"),
                 conditionalPanel(
-                  condition = "input.sc4a1tog1 == true",
-                  radioButtons("sc4a1col1", "Colour (Continuous data):",
+                  condition = "input.sc4_civge_tog1 == true",
+                  radioButtons("sc4_civge_col1", "Colour (Continuous data):",
                     choices = c("White-Red", "Blue-Yellow-Red", "Yellow-Green-Purple"),
                     selected = "Blue-Yellow-Red"
                   ),
-                  radioButtons("sc4a1ord1", "Plot order:",
-                    choices = c("Max-1st", "Min-1st", "Original", "Random"),
+                  radioButtons("sc4_civge_ord1", "Plot order:",
+                    choices = c("Max", "Min", "Original", "Random"),
                     selected = "Original", inline = TRUE
                   ),
-                  checkboxInput("sc4a1lab1", "Show cell info labels", value = TRUE)
+                  checkboxInput("sc4_civge_lab1", "Show cell info labels", value = TRUE)
                 )
               )
             )
@@ -3587,7 +3851,7 @@ tabPanel(
             class = "tab-section",
             column(
               12,
-              uiOutput("sc4a1oup1.ui")
+              uiOutput("sc4_civge_oup1.ui")
             )
           ),
           # row 3 col 1 row 3
@@ -3597,21 +3861,21 @@ tabPanel(
               12,
               div(
                 class = "input-panel",
-                numericInput("sc4a1oup1.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-                downloadButton("sc4a1oup1.pdf", "Download PDF", class = "btn-sm"),
-                downloadButton("sc4a1oup1.png", "Download PNG", class = "btn-sm"),
-                checkboxInput("sc4a1tog9", "Show cell numbers / statistics")
+                numericInput("sc4_civge_oup1.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+                downloadButton("sc4_civge_oup1.pdf", "Download PDF", class = "btn-sm"),
+                downloadButton("sc4_civge_oup1.png", "Download PNG", class = "btn-sm"),
+                checkboxInput("sc4_civge_tog9", "Show cell numbers / statistics")
               )
             )
           ),
           conditionalPanel(
-            condition = "input.sc4a1tog9 == true",
+            condition = "input.sc4_civge_tog9 == true",
             h4("Cell numbers / statistics"),
-            radioButtons("sc4a1splt", "Split continuous cell info into:",
+            radioButtons("sc4_civge_splt", "Split continuous cell info into:",
               choices = c("Quartile", "Decile"),
               selected = "Decile", inline = TRUE
             ),
-            dataTableOutput("sc4a1.dt")
+            dataTableOutput("sc4_civge_.dt")
           )
         ), # row 3 col 1
         # row 3 col 2
@@ -3624,7 +3888,7 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                selectInput("sc4a1inp2", "Gene name:", choices = NULL) %>%
+                selectInput("sc4_civge_inp2", "Gene name:", choices = NULL) %>%
                   helper(
                     type = "inline", size = "m", fade = TRUE,
                     title = "Gene expression to colour cells by",
@@ -3643,16 +3907,16 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                checkboxInput("sc4a1tog2", "Adjust graphics"),
+                checkboxInput("sc4_civge_tog2", "Adjust graphics"),
                 conditionalPanel(
-                  condition = "input.sc4a1tog2 == true",
-                  radioButtons("sc4a1col2", "Colour:",
+                  condition = "input.sc4_civge_tog2 == true",
+                  radioButtons("sc4_civge_col2", "Colour:",
                     choices = c("White-Red", "Blue-Yellow-Red", "Yellow-Green-Purple"),
                     selected = "White-Red"
                   ),
-                  radioButtons("sc4a1ord2", "Plot order:",
-                    choices = c("Max-1st", "Min-1st", "Original", "Random"),
-                    selected = "Max-1st", inline = TRUE
+                  radioButtons("sc4_civge_ord2", "Plot order:",
+                    choices = c("Max", "Min", "Original", "Random"),
+                    selected = "Max", inline = TRUE
                   )
                 )
               )
@@ -3662,7 +3926,7 @@ tabPanel(
             class = "tab-section",
             column(
               12,
-              uiOutput("sc4a1oup2.ui")
+              uiOutput("sc4_civge_oup2.ui")
             )
           ),
           fluidRow(
@@ -3671,9 +3935,9 @@ tabPanel(
               12,
               div(
                 class = "input-panel",
-                numericInput("sc4a1oup2.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-                downloadButton("sc4a1oup2.pdf", "Download PDF", class = "btn-sm"),
-                downloadButton("sc4a1oup2.png", "Download PNG", class = "btn-sm")
+                numericInput("sc4_civge_oup2.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+                downloadButton("sc4_civge_oup2.pdf", "Download PDF", class = "btn-sm"),
+                downloadButton("sc4_civge_oup2.png", "Download PNG", class = "btn-sm")
               )
             )
           )
@@ -3682,9 +3946,10 @@ tabPanel(
       hr()
     )
   )
-) # End of tab 1
+) # End of tab civge
+
 ,
-# tab 2 ----
+# tab civci ----
 tabPanel(
   "CellInfo vs CellInfo",
   fluidRow(
@@ -3697,7 +3962,7 @@ tabPanel(
         column(
           12,
           h3("Cell info vs cell info"),
-          p("Two cell informations side-by-side on low-dimensional represention.")
+          p("Two cell infos side-by-side on low-dimensional represention.")
         ) # row 1 col 1
       ), # row 1
       # row 2 ----
@@ -3708,11 +3973,11 @@ tabPanel(
           div(
             class = "input-panel",
             h4("Dimension Reduction"),
-            selectInput("sc4a2drX", "X-axis:",
+            selectInput("sc4_civci_drX", "X-axis:",
               choices = sc4conf[dimred == TRUE]$UI,
               selected = sc4def$dimred[1]
             ),
-            selectInput("sc4a2drY", "Y-axis:",
+            selectInput("sc4_civci_drY", "Y-axis:",
               choices = sc4conf[dimred == TRUE]$UI,
               selected = sc4def$dimred[2]
             )
@@ -3722,16 +3987,16 @@ tabPanel(
         column(4,
           div(
             class = "input-panel",
-            checkboxInput("sc4a2togL", "Subset cells"),
+            checkboxInput("sc4_civci_togL", "Subset cells"),
             conditionalPanel(
-              condition = "input.sc4a2togL == true",
-              selectInput("sc4a2sub1", "Cell information to subset:",
+              condition = "input.sc4_civci_togL == true",
+              selectInput("sc4_civci_sub1", "Cell info to subset:",
                 choices = sc4conf[grp == TRUE]$UI,
                 selected = sc4def$grp1
               ),
-              uiOutput("sc4a2sub1.ui"),
-              actionButton("sc4a2sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
-              actionButton("sc4a2sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
+              uiOutput("sc4_civci_sub1.ui"),
+              actionButton("sc4_civci_sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
+              actionButton("sc4_civci_sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
             )
           )
         ), # row 2 col 2
@@ -3740,25 +4005,25 @@ tabPanel(
           4,
           div(
             class = "input-panel",
-            checkboxInput("sc4a2tog0", "Adjust graphics"),
+            checkboxInput("sc4_civci_tog0", "Adjust graphics"),
             conditionalPanel(
-              condition = "input.sc4a2tog0 == true",
-              sliderInput("sc4a2siz", "Point size:",
+              condition = "input.sc4_civci_tog0 == true",
+              sliderInput("sc4_civci_siz", "Point size:",
                 min = 0, max = 4, value = 1.25, step = 0.25
               ),
-              radioButtons("sc4a2psz", "Plot size:",
+              radioButtons("sc4_civci_psz", "Plot size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Medium", inline = TRUE
               ),
-              radioButtons("sc4a2fsz", "Font size:",
+              radioButtons("sc4_civci_fsz", "Font size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Small", inline = TRUE
               ),
-              radioButtons("sc4a2asp", "Aspect ratio:",
+              radioButtons("sc4_civci_asp", "Aspect ratio:",
                 choices = c("Square", "Fixed", "Free"),
                 selected = "Square", inline = TRUE
               ),
-              checkboxInput("sc4a2txt", "Show axis text", value = FALSE)
+              checkboxInput("sc4_civci_txt", "Show axis text", value = FALSE)
             )
           )
         ) # row 2 col 3
@@ -3778,15 +4043,15 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                selectInput("sc4a2inp1", "Cell info:",
+                selectInput("sc4_civci_inp1", "Cell info:",
                   choices = sc4conf$UI,
                   selected = sc4def$meta1
                 ) %>%
                   helper(
                     type = "inline", size = "m", fade = TRUE,
-                    title = "Cell information to colour cells by",
+                    title = "Cell info to colour cells by",
                     content = c(
-                      "Select cell information to colour cells",
+                      "Select cell info to colour cells",
                       "- Categorical covariates have a fixed colour palette",
                       paste0(
                         "- Continuous covariates are coloured in a ",
@@ -3801,27 +4066,27 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                checkboxInput("sc4a2tog1", "Adjust graphics"),
+                checkboxInput("sc4_civci_tog1", "Adjust graphics"),
                 conditionalPanel(
-                  condition = "input.sc4a2tog1 == true",
-                  radioButtons("sc4a2col1", "Colour (Continuous data):",
+                  condition = "input.sc4_civci_tog1 == true",
+                  radioButtons("sc4_civci_col1", "Colour (Continuous data):",
                     choices = c(
                       "White-Red", "Blue-Yellow-Red",
                       "Yellow-Green-Purple"
                     ),
                     selected = "Blue-Yellow-Red"
                   ),
-                  radioButtons("sc4a2ord1", "Plot order:",
-                    choices = c("Max-1st", "Min-1st", "Original", "Random"),
+                  radioButtons("sc4_civci_ord1", "Plot order:",
+                    choices = c("Max", "Min", "Original", "Random"),
                     selected = "Original", inline = TRUE
                   ),
-                  checkboxInput("sc4a2lab1", "Show cell info labels", value = TRUE)
+                  checkboxInput("sc4_civci_lab1", "Show cell info labels", value = TRUE)
                 )
               )
             )
           ),
           # row 3 col 1 row 2
-          fluidRow(column(12, uiOutput("sc4a2oup1.ui"))),
+          fluidRow(column(12, uiOutput("sc4_civci_oup1.ui"))),
           # row 3 col 1 row 3
           fluidRow(
             class = "tab-section",
@@ -3829,9 +4094,9 @@ tabPanel(
               12,
               div(
                 class = "input-panel",
-                numericInput("sc4a2oup1.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-                downloadButton("sc4a2oup1.pdf", "Download PDF", class = "btn-sm"),
-                downloadButton("sc4a2oup1.png", "Download PNG", class = "btn-sm")
+                numericInput("sc4_civci_oup1.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+                downloadButton("sc4_civci_oup1.pdf", "Download PDF", class = "btn-sm"),
+                downloadButton("sc4_civci_oup1.png", "Download PNG", class = "btn-sm")
               )
             )
           )
@@ -3845,15 +4110,15 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                selectInput("sc4a2inp2", "Cell info:",
+                selectInput("sc4_civci_inp2", "Cell info:",
                   choices = sc4conf$UI,
                   selected = sc4def$meta2
                 ) %>%
                   helper(
                     type = "inline", size = "m", fade = TRUE,
-                    title = "Cell information to colour cells by",
+                    title = "Cell info to colour cells by",
                     content = c(
-                      "Select cell information to colour cells",
+                      "Select cell info to colour cells",
                       "- Categorical covariates have a fixed colour palette",
                       paste0(
                         "- Continuous covariates are coloured in a ",
@@ -3868,35 +4133,35 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                checkboxInput("sc4a2tog2", "Adjust graphics"),
+                checkboxInput("sc4_civci_tog2", "Adjust graphics"),
                 conditionalPanel(
-                  condition = "input.sc4a2tog2 == true",
-                  radioButtons("sc4a2col2", "Colour (Continuous data):",
+                  condition = "input.sc4_civci_tog2 == true",
+                  radioButtons("sc4_civci_col2", "Colour (Continuous data):",
                     choices = c(
                       "White-Red", "Blue-Yellow-Red",
                       "Yellow-Green-Purple"
                     ),
                     selected = "Blue-Yellow-Red"
                   ),
-                  radioButtons("sc4a2ord2", "Plot order:",
-                    choices = c("Max-1st", "Min-1st", "Original", "Random"),
+                  radioButtons("sc4_civci_ord2", "Plot order:",
+                    choices = c("Max", "Min", "Original", "Random"),
                     selected = "Original", inline = TRUE
                   ),
-                  checkboxInput("sc4a2lab2", "Show cell info labels", value = TRUE)
+                  checkboxInput("sc4_civci_lab2", "Show cell info labels", value = TRUE)
                 )
               )
             )
           ),
-          fluidRow(column(12, uiOutput("sc4a2oup2.ui"))),
+          fluidRow(column(12, uiOutput("sc4_civci_oup2.ui"))),
           fluidRow(
             class = "tab-section",
             column(
               12,
               div(
                 class = "input-panel",
-                numericInput("sc4a2oup2.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-                downloadButton("sc4a2oup2.pdf", "Download PDF", class = "btn-sm"),
-                downloadButton("sc4a2oup2.png", "Download PNG", class = "btn-sm")
+                numericInput("sc4_civci_oup2.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+                downloadButton("sc4_civci_oup2.pdf", "Download PDF", class = "btn-sm"),
+                downloadButton("sc4_civci_oup2.png", "Download PNG", class = "btn-sm")
               )
             )
           )
@@ -3905,9 +4170,10 @@ tabPanel(
       hr()
     )
   )
-) # End of tab 2
+) # End of tab civci
+
 ,
-# tab 3 ----
+# tab gevge ----
 tabPanel(
   "GeneExpr vs GeneExpr",
   fluidRow(
@@ -3932,11 +4198,11 @@ tabPanel(
           div(
             class = "input-panel",
             h4("Dimension Reduction"),
-            selectInput("sc4a3drX", "X-axis:",
+            selectInput("sc4_gevge_drX", "X-axis:",
               choices = sc4conf[dimred == TRUE]$UI,
               selected = sc4def$dimred[1]
             ),
-            selectInput("sc4a3drY", "Y-axis:",
+            selectInput("sc4_gevge_drY", "Y-axis:",
               choices = sc4conf[dimred == TRUE]$UI,
               selected = sc4def$dimred[2]
             )
@@ -3946,16 +4212,16 @@ tabPanel(
         column(4,
           div(
             class = "input-panel",
-            checkboxInput("sc4a3togL", "Subset cells"),
+            checkboxInput("sc4_gevge_togL", "Subset cells"),
             conditionalPanel(
-              condition = "input.sc4a3togL == true",
-              selectInput("sc4a3sub1", "Cell information to subset:",
+              condition = "input.sc4_gevge_togL == true",
+              selectInput("sc4_gevge_sub1", "Cell info to subset:",
                 choices = sc4conf[grp == TRUE]$UI,
                 selected = sc4def$grp1
               ),
-              uiOutput("sc4a3sub1.ui"),
-              actionButton("sc4a3sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
-              actionButton("sc4a3sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
+              uiOutput("sc4_gevge_sub1.ui"),
+              actionButton("sc4_gevge_sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
+              actionButton("sc4_gevge_sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
             )
           )
         ), # End of column
@@ -3964,25 +4230,25 @@ tabPanel(
           4,
           div(
             class = "input-panel",
-            checkboxInput("sc4a3tog0", "Adjust graphics"),
+            checkboxInput("sc4_gevge_tog0", "Adjust graphics"),
             conditionalPanel(
-              condition = "input.sc4a3tog0 == true",
-              sliderInput("sc4a3siz", "Point size:",
+              condition = "input.sc4_gevge_tog0 == true",
+              sliderInput("sc4_gevge_siz", "Point size:",
                 min = 0, max = 4, value = 1.25, step = 0.25
               ),
-              radioButtons("sc4a3psz", "Plot size:",
+              radioButtons("sc4_gevge_psz", "Plot size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Medium", inline = TRUE
               ),
-              radioButtons("sc4a3fsz", "Font size:",
+              radioButtons("sc4_gevge_fsz", "Font size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Small", inline = TRUE
               ),
-              radioButtons("sc4a3asp", "Aspect ratio:",
+              radioButtons("sc4_gevge_asp", "Aspect ratio:",
                 choices = c("Square", "Fixed", "Free"),
                 selected = "Square", inline = TRUE
               ),
-              checkboxInput("sc4a3txt", "Show axis text", value = FALSE)
+              checkboxInput("sc4_gevge_txt", "Show axis text", value = FALSE)
             )
           )
         ) # row 2 col 3
@@ -4000,7 +4266,7 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                selectInput("sc4a3inp1", "Gene name:", choices = NULL) %>%
+                selectInput("sc4_gevge_inp1", "Gene name:", choices = NULL) %>%
                   helper(
                     type = "inline", size = "m", fade = TRUE,
                     title = "Gene expression to colour cells by",
@@ -4019,19 +4285,19 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                checkboxInput("sc4a3tog1", "Adjust graphics"),
+                checkboxInput("sc4_gevge_tog1", "Adjust graphics"),
                 conditionalPanel(
-                  condition = "input.sc4a3tog1 == true",
-                  radioButtons("sc4a3col1", "Colour:",
+                  condition = "input.sc4_gevge_tog1 == true",
+                  radioButtons("sc4_gevge_col1", "Colour:",
                     choices = c(
                       "White-Red", "Blue-Yellow-Red",
                       "Yellow-Green-Purple"
                     ),
                     selected = "White-Red"
                   ),
-                  radioButtons("sc4a3ord1", "Plot order:",
-                    choices = c("Max-1st", "Min-1st", "Original", "Random"),
-                    selected = "Max-1st", inline = TRUE
+                  radioButtons("sc4_gevge_ord1", "Plot order:",
+                    choices = c("Max", "Min", "Original", "Random"),
+                    selected = "Max", inline = TRUE
                   )
                 )
               )
@@ -4040,7 +4306,7 @@ tabPanel(
           # row 3 col 1 row 2
           fluidRow(
             class = "tab-section",
-            column(12, uiOutput("sc4a3oup1.ui"))
+            column(12, uiOutput("sc4_gevge_oup1.ui"))
           ),
           # row 3 col 1 row 3
           fluidRow(
@@ -4049,9 +4315,9 @@ tabPanel(
               12,
               div(
                 class = "input-panel",
-                numericInput("sc4a3oup1.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-                downloadButton("sc4a3oup1.pdf", "Download PDF", class = "btn-sm"),
-                downloadButton("sc4a3oup1.png", "Download PNG", class = "btn-sm")
+                numericInput("sc4_gevge_oup1.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+                downloadButton("sc4_gevge_oup1.pdf", "Download PDF", class = "btn-sm"),
+                downloadButton("sc4_gevge_oup1.png", "Download PNG", class = "btn-sm")
               )
             )
           )
@@ -4065,7 +4331,7 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                selectInput("sc4a3inp2", "Gene name:", choices = NULL) %>%
+                selectInput("sc4_gevge_inp2", "Gene name:", choices = NULL) %>%
                   helper(
                     type = "inline", size = "m", fade = TRUE,
                     title = "Gene expression to colour cells by",
@@ -4084,19 +4350,19 @@ tabPanel(
               6,
               div(
                 class = "input-panel",
-                checkboxInput("sc4a3tog2", "Adjust graphics"),
+                checkboxInput("sc4_gevge_tog2", "Adjust graphics"),
                 conditionalPanel(
-                  condition = "input.sc4a3tog2 == true",
-                  radioButtons("sc4a3col2", "Colour:",
+                  condition = "input.sc4_gevge_tog2 == true",
+                  radioButtons("sc4_gevge_col2", "Colour:",
                     choices = c(
                       "White-Red", "Blue-Yellow-Red",
                       "Yellow-Green-Purple"
                     ),
                     selected = "White-Red"
                   ),
-                  radioButtons("sc4a3ord2", "Plot order:",
-                    choices = c("Max-1st", "Min-1st", "Original", "Random"),
-                    selected = "Max-1st", inline = TRUE
+                  radioButtons("sc4_gevge_ord2", "Plot order:",
+                    choices = c("Max", "Min", "Original", "Random"),
+                    selected = "Max", inline = TRUE
                   )
                 )
               )
@@ -4104,7 +4370,7 @@ tabPanel(
           ),
           fluidRow(
             class = "tab-section",
-            column(12, uiOutput("sc4a3oup2.ui"))
+            column(12, uiOutput("sc4_gevge_oup2.ui"))
           ),
           fluidRow(
             class = "tab-section",
@@ -4112,9 +4378,9 @@ tabPanel(
               12,
               div(
                 class = "input-panel",
-                  numericInput("sc4a3oup2.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-                  downloadButton("sc4a3oup2.pdf", "Download PDF", class = "btn-sm"),
-                  downloadButton("sc4a3oup2.png", "Download PNG", class = "btn-sm")
+                  numericInput("sc4_gevge_oup2.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+                  downloadButton("sc4_gevge_oup2.pdf", "Download PDF", class = "btn-sm"),
+                  downloadButton("sc4_gevge_oup2.png", "Download PNG", class = "btn-sm")
               )
             )
           )
@@ -4123,9 +4389,129 @@ tabPanel(
       hr()
     )
   )
-) # End of tab 3
+) # End of tab gevge
+
 ,
-# tab 4 ----
+# tab gem ----
+tabPanel(
+  "Expression",
+  fluidRow(
+    class = "container page",
+    column(
+      12,
+      # row 1 ----
+      fluidRow(
+        class = "tab-section",
+        column(
+          12,
+          h3("Gene expression"),
+          p("Explore gene expression on low-dimensional represention.")
+        ) # row 1 col 1
+      ), # row 1
+      # row 2 ----
+      fluidRow(
+        class = "tab-section",
+        column(4,
+               fluidRow(
+        column(
+          12,
+          div(
+            class = "input-panel input-panel-section",
+            textAreaInput("sc4_gem_inp", "Gene names:",
+                          height = "100px",
+                          value = paste0(sc4def$genes, collapse = ", ")
+            ) %>%
+              helper(
+                type = "inline", size = "m", fade = TRUE,
+                title = "List of genes to plot on bubbleplot / heatmap",
+                content = c(
+                  "Input genes to plot",
+                  "- Maximum 16 genes (due to ploting space limitations)",
+                  "- Genes should be separated by comma, semicolon or newline"
+                )
+              ),
+            selectInput("sc4_gem_drX", "X-axis:",
+                        choices = sc4conf[dimred == TRUE]$UI,
+                        selected = sc4def$dimred[1]
+            ),
+            selectInput("sc4_gem_drY", "Y-axis:",
+                        choices = sc4conf[dimred == TRUE]$UI,
+                        selected = sc4def$dimred[2]
+            ),
+            checkboxInput("sc4_gem_togL", "Subset cells"),
+            conditionalPanel(
+              condition = "input.sc4_gem_togL == true",
+              selectInput("sc4_gem_sub1", "Cell info to subset:",
+                          choices = sc4conf[grp == TRUE]$UI,
+                          selected = sc4def$grp1
+              ),
+              uiOutput("sc4_gem_sub1.ui"),
+              actionButton("sc4_gem_sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
+              actionButton("sc4_gem_sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
+            ),
+            checkboxInput("sc4_gem_tog0", "Adjust graphics"),
+            conditionalPanel(
+              condition = "input.sc4_gem_tog0 == true",
+              sliderInput("sc4_gem_siz", "Point size:",
+                          min = 0, max = 3, value = 0.5, step = 0.1
+              ),
+              radioButtons("sc4_gem_psz", "Plot size:",
+                           choices = c("Small", "Medium", "Large"),
+                           selected = "Medium", inline = TRUE
+              ),
+              radioButtons("sc4_gem_fsz", "Font size:",
+                           choices = c("Smaller", "Small", "Medium", "Large"),
+                           selected = "Small", inline = TRUE
+              ),
+              radioButtons("sc4_gem_asp", "Aspect ratio:",
+                           choices = c("Square", "Fixed", "Free"),
+                           selected = "Square", inline = TRUE
+              ),
+              checkboxInput("sc4_gem_txt", "Show axis text", value = FALSE),
+              radioButtons("sc4_gem_col", "Colour (Continuous data):",
+                           choices = c(
+                             "White-Red", "Blue-Yellow-Red",
+                             "Yellow-Green-Purple"
+                           ),
+                           selected = "Blue-Yellow-Red"
+              ),
+              radioButtons("sc4_gem_ord", "Plot order:",
+                           choices = c("Max", "Min", "Original", "Random"),
+                           selected = "Max", inline = TRUE
+              ),
+              numericInput("sc4_gem_ncol", "Number of columns", value = 0, min = 0, step = 1)
+            )
+          ),
+          div(
+            class = "input-panel",
+            fluidRow(
+            column(4,
+              numericInput("sc4_gem_oup1.height", "Height:", min = 1, max = 50, value = 25, step = 2)
+            ),
+            column(4,
+              numericInput("sc4_gem_oup1.width", "Width:", min = 1, max = 50, value = 25, step = 2)
+            ),
+            column(4,
+              numericInput("sc4_gem_oup1.res", "Res:", min = 72, max = 600, value = 150, step = 5)
+            )
+            ),
+            downloadButton("sc4_gem_oup1.pdf", "Download PDF", class = "btn-sm"),
+            downloadButton("sc4_gem_oup1.png", "Download PNG", class = "btn-sm")
+          )
+        )
+               )
+      ),
+      column(8,
+             uiOutput("sc4_gem_oup1.ui")
+      )
+      ),
+      hr()
+    )
+  )
+) # End of tab gem
+
+,
+# tab gec ----
 tabPanel(
   "Gene coexpression",
   fluidRow(
@@ -4145,149 +4531,112 @@ tabPanel(
       fluidRow(
         class = "tab-section",
         # row 2 col 1
-        column(
-          4,
-          div(
-            class = "input-panel",
-            h4("Dimension Reduction"),
-            selectInput("sc4b2drX", "X-axis:",
-              choices = sc4conf[dimred == TRUE]$UI,
-              selected = sc4def$dimred[1]
-            ),
-            selectInput("sc4b2drY", "Y-axis:",
-              choices = sc4conf[dimred == TRUE]$UI,
-              selected = sc4def$dimred[2]
-            )
-          )
-        ), # row 1 col 1
-        # row 2 col 2
         column(4,
-          div(
-            class = "input-panel",
-            checkboxInput("sc4b2togL", "Subset cells"),
-            conditionalPanel(
-              condition = "input.sc4b2togL == true",
-              selectInput("sc4b2sub1", "Cell information to subset:",
-                choices = sc4conf[grp == TRUE]$UI,
-                selected = sc4def$grp1
-              ),
-              uiOutput("sc4b2sub1.ui"),
-              actionButton("sc4b2sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
-              actionButton("sc4b2sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
-            )
-          )
-        ), # End of column
-        # row 2 col 3
+               column(
+                 12,
+                 div(
+                   class = "input-panel input-panel-section",
+                   h4("Dimension Reduction"),
+                   selectInput("sc4_gec_drX", "X-axis:",
+                               choices = sc4conf[dimred == TRUE]$UI,
+                               selected = sc4def$dimred[1]
+                   ),
+                   selectInput("sc4_gec_drY", "Y-axis:",
+                               choices = sc4conf[dimred == TRUE]$UI,
+                               selected = sc4def$dimred[2]
+                   ),
+                   selectInput("sc4_gec_inp1", "Gene 1:", choices = NULL) %>%
+                     helper(
+                       type = "inline", size = "m", fade = TRUE,
+                       title = "Gene expression to colour cells by",
+                       content = c(
+                         "Select gene to colour cells by gene expression",
+                         paste0(
+                           "- Gene expression are coloured in a ",
+                           "White-Red colour scheme which can be ",
+                           "changed in the plot controls"
+                         )
+                       )
+                     ),
+                   selectInput("sc4_gec_inp2", "Gene 2:", choices = NULL) %>%
+                     helper(
+                       type = "inline", size = "m", fade = TRUE,
+                       title = "Gene expression to colour cells by",
+                       content = c(
+                         "Select gene to colour cells by gene expression",
+                         paste0(
+                           "- Gene expression are coloured in a ",
+                           "White-Blue colour scheme which can be ",
+                           "changed in the plot controls"
+                         )
+                       )
+                     ),
+                   checkboxInput("sc4_gec_togL", "Subset cells"),
+                   conditionalPanel(
+                    condition = "input.sc4_gec_togL == true",
+                    selectInput("sc4_gec_sub1", "Cell info to subset:", choices = sc4conf[grp == TRUE]$UI, selected = sc4def$grp1),
+                     uiOutput("sc4_gec_sub1.ui"),
+                     actionButton("sc4_gec_sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
+                     actionButton("sc4_gec_sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
+                   ),
+                   checkboxInput("sc4_gec_tog0", "Adjust graphics"),
+                   conditionalPanel(
+                     condition = "input.sc4_gec_tog0 == true",
+                     radioButtons("sc4_gec_col1", "Colour:",
+                                  choices = c(
+                                    "Red (Gene1); Blue (Gene2)",
+                                    "Orange (Gene1); Blue (Gene2)",
+                                    "Red (Gene1); Green (Gene2)",
+                                    "Green (Gene1); Blue (Gene2)"
+                                  ),
+                                  selected = "Red (Gene1); Blue (Gene2)"
+                     ),
+                     radioButtons("sc4_gec_ord1", "Plot order:",
+                                  choices = c("Max", "Min", "Original", "Random"),
+                                  selected = "Max", inline = TRUE
+                     ),
+                     sliderInput("sc4_gec_siz", "Point size:",
+                                 min = 0, max = 4, value = 1.25, step = 0.25
+                     ),
+                     radioButtons("sc4_gec_psz", "Plot size:",
+                                  choices = c("Small", "Medium", "Large"),
+                                  selected = "Medium", inline = TRUE
+                     ),
+                     radioButtons("sc4_gec_fsz", "Font size:",
+                                  choices = c("Small", "Medium", "Large"),
+                                  selected = "Small", inline = TRUE
+                     ),
+                     radioButtons("sc4_gec_asp", "Aspect ratio:",
+                                  choices = c("Square", "Fixed", "Free"),
+                                  selected = "Square", inline = TRUE
+                     ),
+                     checkboxInput("sc4_gec_txt", "Show axis text", value = FALSE)
+                   )
+                 ),
+                 div(class="input-panel input-panel-section",
+                     numericInput("sc4_gec_oup1.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+                     downloadButton("sc4_gec_oup1.pdf", "Download PDF", class = "btn-sm"),
+                     downloadButton("sc4_gec_oup1.png", "Download PNG", class = "btn-sm")
+                 ),
+                 div(class="input-panel-section",
+                     h4("Cell numbers"),
+                     dataTableOutput("sc4_gec_.dt")
+                 )
+               )
+        ), # row 2 col 1
+        # row 2 col 2
         column(
-          4,
-          div(
-            class = "input-panel",
-            checkboxInput("sc4b2tog0", "Adjust graphics"),
-            conditionalPanel(
-              condition = "input.sc4b2tog0 == true",
-              sliderInput("sc4b2siz", "Point size:",
-                min = 0, max = 4, value = 1.25, step = 0.25
-              ),
-              radioButtons("sc4b2psz", "Plot size:",
-                choices = c("Small", "Medium", "Large"),
-                selected = "Medium", inline = TRUE
-              ),
-              radioButtons("sc4b2fsz", "Font size:",
-                choices = c("Small", "Medium", "Large"),
-                selected = "Small", inline = TRUE
-              ),
-              radioButtons("sc4b2asp", "Aspect ratio:",
-                choices = c("Square", "Fixed", "Free"),
-                selected = "Square", inline = TRUE
-              ),
-              checkboxInput("sc4b2txt", "Show axis text", value = FALSE)
-            )
-          )
-        ) # row 2 col 3
-      ), # row 2
-      # row 3 ----
-      fluidRow(
-        class = "tab-section",
-        # row 3 col 1
-        column(
-          3,
-          style = "border-right: 2px solid #f3f6f4",
-          div(
-            class = "input-panel",
-            h4("Gene Expression"),
-            selectInput("sc4b2inp1", "Gene 1:", choices = NULL) %>%
-              helper(
-                type = "inline", size = "m", fade = TRUE,
-                title = "Gene expression to colour cells by",
-                content = c(
-                  "Select gene to colour cells by gene expression",
-                  paste0(
-                    "- Gene expression are coloured in a ",
-                    "White-Red colour scheme which can be ",
-                    "changed in the plot controls"
-                  )
-                )
-              ),
-            selectInput("sc4b2inp2", "Gene 2:", choices = NULL) %>%
-              helper(
-                type = "inline", size = "m", fade = TRUE,
-                title = "Gene expression to colour cells by",
-                content = c(
-                  "Select gene to colour cells by gene expression",
-                  paste0(
-                    "- Gene expression are coloured in a ",
-                    "White-Blue colour scheme which can be ",
-                    "changed in the plot controls"
-                  )
-                )
-              ),
-            checkboxInput("sc4b2tog1", "Adjust graphics"),
-            conditionalPanel(
-              condition = "input.sc4b2tog1 == true",
-              radioButtons("sc4b2col1", "Colour:",
-                choices = c(
-                  "Red (Gene1); Blue (Gene2)",
-                  "Orange (Gene1); Blue (Gene2)",
-                  "Red (Gene1); Green (Gene2)",
-                  "Green (Gene1); Blue (Gene2)"
-                ),
-                selected = "Red (Gene1); Blue (Gene2)"
-              ),
-              radioButtons("sc4b2ord1", "Plot order:",
-                choices = c("Max-1st", "Min-1st", "Original", "Random"),
-                selected = "Max-1st", inline = TRUE
-              )
-            )
-          )
-        ), # row 3 col 1
-        # row 3 col 2
-        column(
-          6,
-          style = "border-right: 2px solid #f3f6f4",
-          uiOutput("sc4b2oup1.ui"),
-          div(
-            class = "input-panel",
-            numericInput("sc4b2oup1.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-            downloadButton("sc4b2oup1.pdf", "Download PDF", class = "btn-sm"),
-            downloadButton("sc4b2oup1.png", "Download PNG", class = "btn-sm")
-          )
-        ), # row 3 col 2
-        # row 3 col 3
-        column(
-          3,
-          uiOutput("sc4b2oup2.ui"),
-          downloadButton("sc4b2oup2.pdf", "Download PDF", class = "btn-sm"),
-          downloadButton("sc4b2oup2.png", "Download PNG", class = "btn-sm"),
-          h4("Cell numbers"),
-          dataTableOutput("sc4b2.dt")
-        ) # row 3 col 3
-      ), # row 3
+          8,
+          uiOutput("sc4_gec_oup1.ui"),
+        )
+      ), # end of row 2
       hr()
-    )
-  )
-) # End of tab 4
+    ) # col
+  ) # row
+) # End of tab gec
+
 ,
-# tab 5 ----
+# tab vio ----
 tabPanel(
   "Violinplot / Boxplot",
   fluidRow(
@@ -4312,79 +4661,84 @@ tabPanel(
           div(
             class = "input-panel",
             style = "border-right: 2px solid #f3f6f4",
-            selectInput("sc4c1inp1", "Cell information (X-axis):",
+            selectInput("sc4_vio_inp1", "Cell info (X-axis):",
               choices = sc4conf[grp == TRUE]$UI,
               selected = sc4def$grp1
             ) %>%
               helper(
                 type = "inline", size = "m", fade = TRUE,
-                title = "Cell information to group cells by",
+                title = "Cell info to group cells by",
                 content = c(
-                  "Select categorical cell information to group cells by",
+                  "Select categorical cell info to group cells by",
                   "- Single cells are grouped by this categorical covariate",
                   "- Plotted as the X-axis of the violin plot / box plot"
                 )
               ),
-            selectInput("sc4c1inp2", "Cell Info / Gene name (Y-axis):", choices = NULL) %>%
+            selectInput("sc4_vio_inp2", "Cell info / Gene (Y-axis):", choices = NULL) %>%
               helper(
                 type = "inline", size = "m", fade = TRUE,
                 title = "Cell Info / Gene to plot",
                 content = c(
                   "Select cell info / gene to plot on Y-axis",
-                  "- Can be continuous cell information (e.g. nUMIs / scores)",
+                  "- Can be continuous cell info (e.g. nUMIs / scores)",
                   "- Can also be gene expression"
                 )
               ),
-            radioButtons("sc4c1typ", "Plot type:",
-              choices = c("violin", "boxplot"),
+            radioButtons("sc4_vio_typ", "Plot type:",
+              choices = c("violin", "boxplot", "lineplot"),
               selected = "violin", inline = TRUE
             ),
-            checkboxInput("sc4c1pts", "Show data points", value = FALSE),
-            checkboxInput("sc4c1togL", "Subset cells"),
+            checkboxInput("sc4_vio_pts", "Show data points", value = FALSE),
+            checkboxInput("sc4_vio_togL", "Subset cells"),
             conditionalPanel(
-              condition = "input.sc4c1togL == true",
-              selectInput("sc4c1sub1", "Cell information to subset:",
+              condition = "input.sc4_vio_togL == true",
+              selectInput("sc4_vio_sub1", "Cell info to subset:",
                 choices = sc4conf[grp == TRUE]$UI,
                 selected = sc4def$grp1
               ),
-              uiOutput("sc4c1sub1.ui"),
-              actionButton("sc4c1sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
-              actionButton("sc4c1sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
+              uiOutput("sc4_vio_sub1.ui"),
+              actionButton("sc4_vio_sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
+              actionButton("sc4_vio_sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
             ),
-            checkboxInput("sc4c1tog", "Adjust graphics"),
+            checkboxInput("sc4_vio_tog", "Adjust graphics"),
             conditionalPanel(
-              condition = "input.sc4c1tog == true",
-              sliderInput("sc4c1siz", "Data point size:",
+              condition = "input.sc4_vio_tog == true",
+              sliderInput("sc4_vio_siz", "Data point size:",
                 min = 0, max = 4, value = 1.25, step = 0.25
               ),
-              radioButtons("sc4c1psz", "Plot size:",
+              radioButtons("sc4_vio_psz", "Plot size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Small", inline = TRUE
               ),
-              radioButtons("sc4c1fsz", "Font size:",
+              radioButtons("sc4_vio_fsz", "Font size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Small", inline = TRUE
+              ),
+              conditionalPanel(
+              condition = "input.sc4_vio_typ == 'lineplot'",
+              sliderInput("sc4_vio_barsz", "Line size", min = 0.05, max = 0.5, step = 0.01, value = 0.3)
               )
             )
           ),
           div(
             class = "input-panel",
-            numericInput("sc4c1oup.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-            downloadButton("sc4c1oup.pdf", "Download PDF", class = "btn-sm"),
-            downloadButton("sc4c1oup.png", "Download PNG", class = "btn-sm")
+            numericInput("sc4_vio_oup.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+            downloadButton("sc4_vio_oup.pdf", "Download PDF", class = "btn-sm"),
+            downloadButton("sc4_vio_oup.png", "Download PNG", class = "btn-sm")
           )
         ), # row 2 col 1
         # row 2 col 2
         column(
-          9, uiOutput("sc4c1oup.ui")
+          9, uiOutput("sc4_vio_oup.ui")
         ) # row 2 col 2
       ), # row 2
       hr()
     )
   )
-) # End of tab 5
+) # End of tab vio
+
 ,
-# tab 6 ----
+# tab pro ----
 tabPanel(
   "Proportion plot",
   fluidRow(
@@ -4397,7 +4751,7 @@ tabPanel(
         column(
           12,
           h3("Proportion / cell numbers across different cell information"),
-          p("Visualise the composition of single cells based on one discrete cell information across another discrete cell information. Usage examples include the library or cellcycle composition across clusters.")
+          p("Visualise the composition of single cells based on one discrete cell information across another discrete cell information.")
         )
       ),
       # row 2 ----
@@ -4406,57 +4760,56 @@ tabPanel(
         # row 2 col 1
         column(
           3,
-          style = "border-right: 2px solid #f3f6f4",
           div(
             class = "input-panel",
-            selectInput("sc4c2inp1", "Cell information to plot (X-axis):",
+            selectInput("sc4_pro_inp1", "Cell info to plot (X-axis):",
               choices = sc4conf[grp == TRUE]$UI,
               selected = sc4def$grp2
             ) %>%
               helper(
                 type = "inline", size = "m", fade = TRUE,
-                title = "Cell information to plot cells by",
+                title = "Cell info to plot cells by",
                 content = c(
-                  "Select categorical cell information to plot cells by",
+                  "Select categorical cell info to plot cells by",
                   "- Plotted as the X-axis of the proportion plot"
                 )
               ),
-            selectInput("sc4c2inp2", "Cell information to group / colour by:",
+            selectInput("sc4_pro_inp2", "Cell info to group / colour by:",
               choices = sc4conf[grp == TRUE]$UI,
               selected = sc4def$grp1
             ) %>%
               helper(
                 type = "inline", size = "m", fade = TRUE,
-                title = "Cell information to group / colour cells by",
+                title = "Cell info to group / colour cells by",
                 content = c(
-                  "Select categorical cell information to group / colour cells by",
+                  "Select categorical cell info to group / colour cells by",
                   "- Proportion / cell numbers are shown in different colours"
                 )
               ),
-            radioButtons("sc4c2typ", "Plot value:",
+            radioButtons("sc4_pro_typ", "Plot value:",
               choices = c("Proportion", "CellNumbers"),
               selected = "Proportion", inline = TRUE
             ),
-            checkboxInput("sc4c2flp", "Flip X/Y", value = FALSE),
-            checkboxInput("sc4c2togL", "Subset cells"),
+            checkboxInput("sc4_pro_flp", "Flip X/Y", value = FALSE),
+            checkboxInput("sc4_pro_togL", "Subset cells"),
             conditionalPanel(
-              condition = "input.sc4c2togL == true",
-              selectInput("sc4c2sub1", "Cell information to subset:",
+              condition = "input.sc4_pro_togL == true",
+              selectInput("sc4_pro_sub1", "Cell info to subset:",
                 choices = sc4conf[grp == TRUE]$UI,
                 selected = sc4def$grp1
               ),
-              uiOutput("sc4c2sub1.ui"),
-              actionButton("sc4c2sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
-              actionButton("sc4c2sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
+              uiOutput("sc4_pro_sub1.ui"),
+              actionButton("sc4_pro_sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
+              actionButton("sc4_pro_sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
             ),
-            checkboxInput("sc4c2tog", "Adjust graphics"),
+            checkboxInput("sc4_pro_tog", "Adjust graphics"),
             conditionalPanel(
-              condition = "input.sc4c2tog == true",
-              radioButtons("sc4c2psz", "Plot size:",
+              condition = "input.sc4_pro_tog == true",
+              radioButtons("sc4_pro_psz", "Plot size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Medium", inline = TRUE
               ),
-              radioButtons("sc4c2fsz", "Font size:",
+              radioButtons("sc4_pro_fsz", "Font size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Small", inline = TRUE
               )
@@ -4464,22 +4817,23 @@ tabPanel(
           ),
           div(
             class = "input-panel",
-            numericInput("sc4c2oup.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-            downloadButton("sc4c2oup.pdf", "Download PDF", class = "btn-sm"),
-            downloadButton("sc4c2oup.png", "Download PNG", class = "btn-sm")
+            numericInput("sc4_pro_oup.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+            downloadButton("sc4_pro_oup.pdf", "Download PDF", class = "btn-sm"),
+            downloadButton("sc4_pro_oup.png", "Download PNG", class = "btn-sm")
           )
         ), # row 2 col 1
         # row 2 col 2
         column(
-          9, uiOutput("sc4c2oup.ui")
+          9, uiOutput("sc4_pro_oup.ui")
         ) # row 2 col 2
       ), # row 2
       hr()
     )
   )
-) # End of tab 6
+) # End of tab pro
+
 ,
-# tab 7 ----
+# tab hea ----
 tabPanel(
   "Bubbleplot / Heatmap",
   fluidRow(
@@ -4500,13 +4854,10 @@ tabPanel(
         class = "tab-section",
         column(
           3,
-          style = "border-right: 2px solid #f3f6f4",
           div(
             class = "input-panel",
-            textAreaInput("sc4d1inp", HTML("List of gene names <br />
-                                        (Max 50 genes, separated <br />
-                                         by , or ; or newline):"),
-              height = "200px",
+            textAreaInput("sc4_hea_inp", "Gene names",
+              height = "100px",
               value = paste0(sc4def$genes, collapse = ", ")
             ) %>%
               helper(
@@ -4518,52 +4869,52 @@ tabPanel(
                   "- Genes should be separated by comma, semicolon or newline"
                 )
               ),
-            selectInput("sc4d1grp", "Group by:",
+            selectInput("sc4_hea_grp", "Group by:",
               choices = sc4conf[grp == TRUE]$UI,
               selected = sc4conf[grp == TRUE]$UI[1]
             ) %>%
               helper(
                 type = "inline", size = "m", fade = TRUE,
-                title = "Cell information to group cells by",
+                title = "Cell info to group cells by",
                 content = c(
-                  "Select categorical cell information to group cells by",
+                  "Select categorical cell info to group cells by",
                   "- Single cells are grouped by this categorical covariate",
                   "- Plotted as the X-axis of the bubbleplot / heatmap"
                 )
               ),
-            radioButtons("sc4d1plt", "Plot type:",
+            radioButtons("sc4_hea_plt", "Plot type:",
               choices = c("Bubbleplot", "Heatmap"),
               selected = "Bubbleplot", inline = TRUE
             ),
-            checkboxInput("sc4d1scl", "Scale gene expression", value = TRUE),
-            checkboxInput("sc4d1row", "Cluster rows (genes)", value = TRUE),
-            checkboxInput("sc4d1col", "Cluster columns (samples)", value = FALSE),
-            checkboxInput("sc4d1togL", "Subset cells"),
+            checkboxInput("sc4_hea_scl", "Scale gene expression", value = TRUE),
+            checkboxInput("sc4_hea_row", "Cluster rows (genes)", value = TRUE),
+            checkboxInput("sc4_hea_col", "Cluster columns (samples)", value = FALSE),
+            checkboxInput("sc4_hea_togL", "Subset cells"),
             conditionalPanel(
-              condition = "input.sc4d1togL == true",
-              selectInput("sc4d1sub1", "Cell information to subset:",
+              condition = "input.sc4_hea_togL == true",
+              selectInput("sc4_hea_sub1", "Cell info to subset:",
                 choices = sc4conf[grp == TRUE]$UI,
                 selected = sc4def$grp1
               ),
-              uiOutput("sc4d1sub1.ui"),
-              actionButton("sc4d1sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
-              actionButton("sc4d1sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
+              uiOutput("sc4_hea_sub1.ui"),
+              actionButton("sc4_hea_sub1all", "Select all groups", class = "btn btn-primary btn-sm"),
+              actionButton("sc4_hea_sub1non", "Deselect all groups", class = "btn btn-primary btn-sm")
             ),
-            checkboxInput("sc4d1tog", "Adjust graphics"),
+            checkboxInput("sc4_hea_tog", "Adjust graphics"),
             conditionalPanel(
-              condition = "input.sc4d1tog == true",
-              radioButtons("sc4d1cols", "Colour scheme:",
+              condition = "input.sc4_hea_tog == true",
+              radioButtons("sc4_hea_cols", "Colour scheme:",
                 choices = c(
                   "White-Red", "Blue-Yellow-Red",
                   "Yellow-Green-Purple"
                 ),
                 selected = "Blue-Yellow-Red"
               ),
-              radioButtons("sc4d1psz", "Plot size:",
+              radioButtons("sc4_hea_psz", "Plot size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Medium", inline = TRUE
               ),
-              radioButtons("sc4d1fsz", "Font size:",
+              radioButtons("sc4_hea_fsz", "Font size:",
                 choices = c("Small", "Medium", "Large"),
                 selected = "Small", inline = TRUE
               )
@@ -4571,21 +4922,22 @@ tabPanel(
           ),
           div(
             class = "input-panel",
-            numericInput("sc4d1oup.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
-            downloadButton("sc4d1oup.pdf", "Download PDF", class = "btn-sm"),
-            downloadButton("sc4d1oup.png", "Download PNG", class = "btn-sm")
+            numericInput("sc4_hea_oup.res", "Resolution:", min = 72, max = 600, value = 150, step = 5),
+            downloadButton("sc4_hea_oup.pdf", "Download PDF", class = "btn-sm"),
+            downloadButton("sc4_hea_oup.png", "Download PNG", class = "btn-sm")
           )
         ), # row 2 col 1
         # row 2 col 2
         column(
-          9, h4(htmlOutput("sc4d1oupTxt")),
-          uiOutput("sc4d1oup.ui")
+          9, h4(htmlOutput("sc4_hea_oupTxt")),
+          uiOutput("sc4_hea_oup.ui")
         ) # row 2 col 2
       ), # row 2
       hr()
     )
   )
-) # End of tab 7
+) # End of tab hea
+
 )
 ,navbarMenu("About"
 ,
