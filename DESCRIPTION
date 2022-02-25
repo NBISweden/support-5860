@@ -28,6 +28,7 @@ Imports:
     RColorBrewer,
     readr,
     readxl,
+    shinycssloaders,
     shinyhelper,
     shinythemes,
     showtext,

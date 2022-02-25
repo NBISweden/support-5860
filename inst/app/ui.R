@@ -9,15 +9,19 @@ library(magrittr)
 
 sc1conf = readRDS("sc1conf.rds")
 sc1def  = readRDS("sc1def.rds")
+sc1meta  = readRDS("sc1meta.rds")
 
 sc2conf = readRDS("sc2conf.rds")
 sc2def  = readRDS("sc2def.rds")
+sc2meta  = readRDS("sc2meta.rds")
 
 sc3conf = readRDS("sc3conf.rds")
 sc3def  = readRDS("sc3def.rds")
+sc3meta  = readRDS("sc3meta.rds")
 
 sc4conf = readRDS("sc4conf.rds")
 sc4def  = readRDS("sc4def.rds")
+sc4meta  = readRDS("sc4meta.rds")
 
 ### UI code
 shinyUI(
@@ -1254,6 +1258,49 @@ tabPanel(
   )
 ) # End of tab hea
 
+,
+# tab mar ----
+tabPanel(
+  "Markers",
+  fluidRow(
+    class = "container page",
+    column(
+      12,
+      # row 1 ----
+      fluidRow(
+        class = "tab-section",
+        column(
+          12,
+          h3("Markers"),
+          p("Explore markers for different clustering.")
+        ) # row 1 col 1
+      ), # row 1
+      # row 2 ----
+      fluidRow(
+        class = "tab-section",
+        column(3,
+               fluidRow(
+                 column(
+                   12,
+                   div(
+                     class = "input-panel input-panel-section",
+                     selectInput("sc1_mar_cls","Select clustering:", choices = colnames(sc1meta)[grep("^clusters_",colnames(sc1meta))],selected = 1)
+                   )
+                 )
+               )
+        )
+      ), # end of row 2
+      # row 3 ----
+      fluidRow(
+      column(12,
+        DTOutput("sc1_mar_table")
+      )
+      ), # end of row 3
+      hr()
+    )
+  )
+) # End of tab mar
+
 )
 ,navbarMenu("Diseased",
 # tab civge ----
@@ -2481,6 +2528,49 @@ tabPanel(
     )
   )
 ) # End of tab hea
+
+,
+# tab mar ----
+tabPanel(
+  "Markers",
+  fluidRow(
+    class = "container page",
+    column(
+      12,
+      # row 1 ----
+      fluidRow(
+        class = "tab-section",
+        column(
+          12,
+          h3("Markers"),
+          p("Explore markers for different clustering.")
+        ) # row 1 col 1
+      ), # row 1
+      # row 2 ----
+      fluidRow(
+        class = "tab-section",
+        column(3,
+               fluidRow(
+                 column(
+                   12,
+                   div(
+                     class = "input-panel input-panel-section",
+                     selectInput("sc2_mar_cls","Select clustering:", choices = colnames(sc2meta)[grep("^clusters_",colnames(sc2meta))],selected = 1)
+                   )
+                 )
+               )
+        )
+      ), # end of row 2
+      # row 3 ----
+      fluidRow(
+      column(12,
+        DTOutput("sc2_mar_table")
+      )
+      ), # end of row 3
+      hr()
+    )
+  )
+) # End of tab mar
 
 )
 ,navbarMenu("Healthy",
@@ -3710,6 +3800,49 @@ tabPanel(
   )
 ) # End of tab hea
 
+,
+# tab mar ----
+tabPanel(
+  "Markers",
+  fluidRow(
+    class = "container page",
+    column(
+      12,
+      # row 1 ----
+      fluidRow(
+        class = "tab-section",
+        column(
+          12,
+          h3("Markers"),
+          p("Explore markers for different clustering.")
+        ) # row 1 col 1
+      ), # row 1
+      # row 2 ----
+      fluidRow(
+        class = "tab-section",
+        column(3,
+               fluidRow(
+                 column(
+                   12,
+                   div(
+                     class = "input-panel input-panel-section",
+                     selectInput("sc3_mar_cls","Select clustering:", choices = colnames(sc3meta)[grep("^clusters_",colnames(sc3meta))],selected = 1)
+                   )
+                 )
+               )
+        )
+      ), # end of row 2
+      # row 3 ----
+      fluidRow(
+      column(12,
+        DTOutput("sc3_mar_table")
+      )
+      ), # end of row 3
+      hr()
+    )
+  )
+) # End of tab mar
+
 )
 ,navbarMenu("Healthy Valve",
 # tab civge ----
@@ -4937,6 +5070,49 @@ tabPanel(
     )
   )
 ) # End of tab hea
+
+,
+# tab mar ----
+tabPanel(
+  "Markers",
+  fluidRow(
+    class = "container page",
+    column(
+      12,
+      # row 1 ----
+      fluidRow(
+        class = "tab-section",
+        column(
+          12,
+          h3("Markers"),
+          p("Explore markers for different clustering.")
+        ) # row 1 col 1
+      ), # row 1
+      # row 2 ----
+      fluidRow(
+        class = "tab-section",
+        column(3,
+               fluidRow(
+                 column(
+                   12,
+                   div(
+                     class = "input-panel input-panel-section",
+                     selectInput("sc4_mar_cls","Select clustering:", choices = colnames(sc4meta)[grep("^clusters_",colnames(sc4meta))],selected = 1)
+                   )
+                 )
+               )
+        )
+      ), # end of row 2
+      # row 3 ----
+      fluidRow(
+      column(12,
+        DTOutput("sc4_mar_table")
+      )
+      ), # end of row 3
+      hr()
+    )
+  )
+) # End of tab mar
 
 )
 ,navbarMenu("About"

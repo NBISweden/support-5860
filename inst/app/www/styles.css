@@ -37,6 +37,13 @@ a:active,
 }
 
 .dt-buttons {
-  margin: 1em 0em;
+  padding-top: 0.25em;
+  
+}
+
+.dataTables_info,
+.dataTables_paginate,
+.dt-buttons {
+  margin: 0.5em 0em;
 }
 

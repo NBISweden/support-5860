@@ -10,7 +10,9 @@ library(ggrepel)
 library(hdf5r)
 library(ggdendro)
 library(gridExtra)
+library(shinycssloaders)
 
+# load font for plot
 sysfonts::font_add_google(name = "Lato", family = "Lato")
 showtext::showtext_auto()
 
@@ -18,21 +20,22 @@ sc1conf = readRDS("sc1conf.rds")
 sc1def  = readRDS("sc1def.rds")
 sc1gene = readRDS("sc1gene.rds")
 sc1meta = readRDS("sc1meta.rds")
-
+sc1mar = readRDS("sc1mar.rds")
 sc2conf = readRDS("sc2conf.rds")
 sc2def  = readRDS("sc2def.rds")
 sc2gene = readRDS("sc2gene.rds")
 sc2meta = readRDS("sc2meta.rds")
-
+sc2mar = readRDS("sc2mar.rds")
 sc3conf = readRDS("sc3conf.rds")
 sc3def  = readRDS("sc3def.rds")
 sc3gene = readRDS("sc3gene.rds")
 sc3meta = readRDS("sc3meta.rds")
-
+sc3mar = readRDS("sc3mar.rds")
 sc4conf = readRDS("sc4conf.rds")
 sc4def  = readRDS("sc4def.rds")
 sc4gene = readRDS("sc4gene.rds")
 sc4meta = readRDS("sc4meta.rds")
+sc4mar = readRDS("sc4mar.rds")
 
 ### Useful stuff ----
 
@@ -73,6 +76,11 @@ g_legend <- function(a.gplot) {
   leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
   legend <- tmp$grobs[[leg]]
   legend
+}
+
+# progress indicator
+show_progress <- function(...){
+  return(shinycssloaders::withSpinner(..., type = 7, color = "#95a5a6"))
 }
 
 # Plot theme
@@ -1041,7 +1049,7 @@ output$sc1_civge_oup1 <- renderPlot({
 })
 
 output$sc1_civge_oup1.ui <- renderUI({
-  imageOutput("sc1_civge_oup1", height = pList[input$sc1_civge_psz])
+  show_progress(imageOutput("sc1_civge_oup1", height = pList[input$sc1_civge_psz]))
 })
 
 output$sc1_civge_oup1.pdf <- downloadHandler(
@@ -1075,7 +1083,7 @@ output$sc1_civge_oup2 <- renderPlot({
 })
 
 output$sc1_civge_oup2.ui <- renderUI({
- imageOutput("sc1_civge_oup2", height = pList[input$sc1_civge_psz])
+ show_progress(imageOutput("sc1_civge_oup2", height = pList[input$sc1_civge_psz]))
 })
 
 output$sc1_civge_oup2.pdf <- downloadHandler(
@@ -1119,7 +1127,7 @@ output$sc1_civci_oup1 <- renderPlot({
 })
 
 output$sc1_civci_oup1.ui <- renderUI({
-  imageOutput("sc1_civci_oup1", height = pList[input$sc1_civci_psz])
+  show_progress(imageOutput("sc1_civci_oup1", height = pList[input$sc1_civci_psz]))
 })
 
 output$sc1_civci_oup1.pdf <- downloadHandler(
@@ -1144,7 +1152,7 @@ output$sc1_civci_oup2 <- renderPlot({
 })
 
 output$sc1_civci_oup2.ui <- renderUI({
-  imageOutput("sc1_civci_oup2", height = pList[input$sc1_civci_psz])
+  show_progress(imageOutput("sc1_civci_oup2", height = pList[input$sc1_civci_psz]))
 })
 
 output$sc1_civci_oup2.pdf <- downloadHandler(
@@ -1188,7 +1196,7 @@ output$sc1_gevge_oup1 <- renderPlot({
 })
 
 output$sc1_gevge_oup1.ui <- renderUI({
-  imageOutput("sc1_gevge_oup1", height = pList[input$sc1_gevge_psz])
+  show_progress(imageOutput("sc1_gevge_oup1", height = pList[input$sc1_gevge_psz]))
 })
 
 output$sc1_gevge_oup1.pdf <- downloadHandler(
@@ -1219,7 +1227,7 @@ output$sc1_gevge_oup2 <- renderPlot({
 })
 
 output$sc1_gevge_oup2.ui <- renderUI({
-  imageOutput("sc1_gevge_oup2", height = pList[input$sc1_gevge_psz])
+  show_progress(imageOutput("sc1_gevge_oup2", height = pList[input$sc1_gevge_psz]))
 })
 
 output$sc1_gevge_oup2.pdf <- downloadHandler(
@@ -1269,7 +1277,7 @@ output$sc1_gem_oup1 <- renderPlot({
 })
 
 output$sc1_gem_oup1.ui <- renderUI({
-  imageOutput("sc1_gem_oup1", height = pList[input$sc1_gem_psz])
+  show_progress(imageOutput("sc1_gem_oup1", height = pList[input$sc1_gem_psz]))
 })
 
 output$sc1_gem_oup1.pdf <- downloadHandler(
@@ -1310,7 +1318,7 @@ output$sc1_gec_oup1 <- renderPlot({
 })
 
 output$sc1_gec_oup1.ui <- renderUI({
-  imageOutput("sc1_gec_oup1", height = pList2[input$sc1_gec_psz])
+  show_progress(imageOutput("sc1_gec_oup1", height = pList2[input$sc1_gec_psz]))
 })
 
 output$sc1_gec_oup1.pdf <- downloadHandler(
@@ -1357,7 +1365,7 @@ output$sc1_vio_oup <- renderPlot({
 })
 
 output$sc1_vio_oup.ui <- renderUI({
-  imageOutput("sc1_vio_oup", height = pList2[input$sc1_vio_psz])
+  show_progress(imageOutput("sc1_vio_oup", height = pList2[input$sc1_vio_psz]))
 })
 
 output$sc1_vio_oup.pdf <- downloadHandler(
@@ -1401,7 +1409,7 @@ output$sc1_pro_oup <- renderPlot({
 })
 
 output$sc1_pro_oup.ui <- renderUI({
-  imageOutput("sc1_pro_oup", height = pList2[input$sc1_pro_psz])
+  show_progress(imageOutput("sc1_pro_oup", height = pList2[input$sc1_pro_psz]))
 })
 
 output$sc1_pro_oup.pdf <- downloadHandler(
@@ -1456,7 +1464,7 @@ output$sc1_hea_oup <- renderPlot({
 })
 
 output$sc1_hea_oup.ui <- renderUI({
-  imageOutput("sc1_hea_oup", height = pList3[input$sc1_hea_psz])
+  show_progress(imageOutput("sc1_hea_oup", height = pList3[input$sc1_hea_psz]))
 })
 
 output$sc1_hea_oup.pdf <- downloadHandler(
@@ -1476,7 +1484,16 @@ output$sc1_hea_oup.png <- downloadHandler(
     plot = scBubbHeat(sc1conf, sc1meta, input$sc1_hea_inp, input$sc1_hea_grp, input$sc1_hea_plt, input$sc1_hea_sub1, input$sc1_hea_sub2, "sc1gexpr.h5", sc1gene, input$sc1_hea_scl, input$sc1_hea_row, input$sc1_hea_col, input$sc1_hea_cols, input$sc1_hea_fsz, save = TRUE)
     )
 }) # End of tab hea      
-       optCrt="{ option_create: function(data,escape) {return('<div class=\"create\"><strong>' + '</strong></div>');} }"
+       
+
+
+### Tab markers ----
+
+output$sc1_mar_table <- renderDataTable({
+  req(input$sc1_mar_cls)
+  datatable(sc1mar[[input$sc1_mar_cls]], rownames = FALSE, extensions = "Buttons", options = list(dom = "lftiprB", buttons = c("copy", "csv", "excel")))
+}) # End of tab mar
+optCrt="{ option_create: function(data,escape) {return('<div class=\"create\"><strong>' + '</strong></div>');} }"
 updateSelectizeInput(session, "sc2_civge_inp2", choices = names(sc2gene), server = TRUE,
                      selected = sc2def$gene1, options = list(
                        maxOptions = 7, create = TRUE, persist = TRUE, render = I(optCrt)))
@@ -1518,7 +1535,7 @@ output$sc2_civge_oup1 <- renderPlot({
 })
 
 output$sc2_civge_oup1.ui <- renderUI({
-  imageOutput("sc2_civge_oup1", height = pList[input$sc2_civge_psz])
+  show_progress(imageOutput("sc2_civge_oup1", height = pList[input$sc2_civge_psz]))
 })
 
 output$sc2_civge_oup1.pdf <- downloadHandler(
@@ -1552,7 +1569,7 @@ output$sc2_civge_oup2 <- renderPlot({
 })
 
 output$sc2_civge_oup2.ui <- renderUI({
- imageOutput("sc2_civge_oup2", height = pList[input$sc2_civge_psz])
+ show_progress(imageOutput("sc2_civge_oup2", height = pList[input$sc2_civge_psz]))
 })
 
 output$sc2_civge_oup2.pdf <- downloadHandler(
@@ -1596,7 +1613,7 @@ output$sc2_civci_oup1 <- renderPlot({
 })
 
 output$sc2_civci_oup1.ui <- renderUI({
-  imageOutput("sc2_civci_oup1", height = pList[input$sc2_civci_psz])
+  show_progress(imageOutput("sc2_civci_oup1", height = pList[input$sc2_civci_psz]))
 })
 
 output$sc2_civci_oup1.pdf <- downloadHandler(
@@ -1621,7 +1638,7 @@ output$sc2_civci_oup2 <- renderPlot({
 })
 
 output$sc2_civci_oup2.ui <- renderUI({
-  imageOutput("sc2_civci_oup2", height = pList[input$sc2_civci_psz])
+  show_progress(imageOutput("sc2_civci_oup2", height = pList[input$sc2_civci_psz]))
 })
 
 output$sc2_civci_oup2.pdf <- downloadHandler(
@@ -1665,7 +1682,7 @@ output$sc2_gevge_oup1 <- renderPlot({
 })
 
 output$sc2_gevge_oup1.ui <- renderUI({
-  imageOutput("sc2_gevge_oup1", height = pList[input$sc2_gevge_psz])
+  show_progress(imageOutput("sc2_gevge_oup1", height = pList[input$sc2_gevge_psz]))
 })
 
 output$sc2_gevge_oup1.pdf <- downloadHandler(
@@ -1696,7 +1713,7 @@ output$sc2_gevge_oup2 <- renderPlot({
 })
 
 output$sc2_gevge_oup2.ui <- renderUI({
-  imageOutput("sc2_gevge_oup2", height = pList[input$sc2_gevge_psz])
+  show_progress(imageOutput("sc2_gevge_oup2", height = pList[input$sc2_gevge_psz]))
 })
 
 output$sc2_gevge_oup2.pdf <- downloadHandler(
@@ -1746,7 +1763,7 @@ output$sc2_gem_oup1 <- renderPlot({
 })
 
 output$sc2_gem_oup1.ui <- renderUI({
-  imageOutput("sc2_gem_oup1", height = pList[input$sc2_gem_psz])
+  show_progress(imageOutput("sc2_gem_oup1", height = pList[input$sc2_gem_psz]))
 })
 
 output$sc2_gem_oup1.pdf <- downloadHandler(
@@ -1787,7 +1804,7 @@ output$sc2_gec_oup1 <- renderPlot({
 })
 
 output$sc2_gec_oup1.ui <- renderUI({
-  imageOutput("sc2_gec_oup1", height = pList2[input$sc2_gec_psz])
+  show_progress(imageOutput("sc2_gec_oup1", height = pList2[input$sc2_gec_psz]))
 })
 
 output$sc2_gec_oup1.pdf <- downloadHandler(
@@ -1834,7 +1851,7 @@ output$sc2_vio_oup <- renderPlot({
 })
 
 output$sc2_vio_oup.ui <- renderUI({
-  imageOutput("sc2_vio_oup", height = pList2[input$sc2_vio_psz])
+  show_progress(imageOutput("sc2_vio_oup", height = pList2[input$sc2_vio_psz]))
 })
 
 output$sc2_vio_oup.pdf <- downloadHandler(
@@ -1878,7 +1895,7 @@ output$sc2_pro_oup <- renderPlot({
 })
 
 output$sc2_pro_oup.ui <- renderUI({
-  imageOutput("sc2_pro_oup", height = pList2[input$sc2_pro_psz])
+  show_progress(imageOutput("sc2_pro_oup", height = pList2[input$sc2_pro_psz]))
 })
 
 output$sc2_pro_oup.pdf <- downloadHandler(
@@ -1933,7 +1950,7 @@ output$sc2_hea_oup <- renderPlot({
 })
 
 output$sc2_hea_oup.ui <- renderUI({
-  imageOutput("sc2_hea_oup", height = pList3[input$sc2_hea_psz])
+  show_progress(imageOutput("sc2_hea_oup", height = pList3[input$sc2_hea_psz]))
 })
 
 output$sc2_hea_oup.pdf <- downloadHandler(
@@ -1953,7 +1970,16 @@ output$sc2_hea_oup.png <- downloadHandler(
     plot = scBubbHeat(sc2conf, sc2meta, input$sc2_hea_inp, input$sc2_hea_grp, input$sc2_hea_plt, input$sc2_hea_sub1, input$sc2_hea_sub2, "sc2gexpr.h5", sc2gene, input$sc2_hea_scl, input$sc2_hea_row, input$sc2_hea_col, input$sc2_hea_cols, input$sc2_hea_fsz, save = TRUE)
     )
 }) # End of tab hea      
-       optCrt="{ option_create: function(data,escape) {return('<div class=\"create\"><strong>' + '</strong></div>');} }"
+       
+
+
+### Tab markers ----
+
+output$sc2_mar_table <- renderDataTable({
+  req(input$sc2_mar_cls)
+  datatable(sc2mar[[input$sc2_mar_cls]], rownames = FALSE, extensions = "Buttons", options = list(dom = "lftiprB", buttons = c("copy", "csv", "excel")))
+}) # End of tab mar
+optCrt="{ option_create: function(data,escape) {return('<div class=\"create\"><strong>' + '</strong></div>');} }"
 updateSelectizeInput(session, "sc3_civge_inp2", choices = names(sc3gene), server = TRUE,
                      selected = sc3def$gene1, options = list(
                        maxOptions = 7, create = TRUE, persist = TRUE, render = I(optCrt)))
@@ -1995,7 +2021,7 @@ output$sc3_civge_oup1 <- renderPlot({
 })
 
 output$sc3_civge_oup1.ui <- renderUI({
-  imageOutput("sc3_civge_oup1", height = pList[input$sc3_civge_psz])
+  show_progress(imageOutput("sc3_civge_oup1", height = pList[input$sc3_civge_psz]))
 })
 
 output$sc3_civge_oup1.pdf <- downloadHandler(
@@ -2029,7 +2055,7 @@ output$sc3_civge_oup2 <- renderPlot({
 })
 
 output$sc3_civge_oup2.ui <- renderUI({
- imageOutput("sc3_civge_oup2", height = pList[input$sc3_civge_psz])
+ show_progress(imageOutput("sc3_civge_oup2", height = pList[input$sc3_civge_psz]))
 })
 
 output$sc3_civge_oup2.pdf <- downloadHandler(
@@ -2073,7 +2099,7 @@ output$sc3_civci_oup1 <- renderPlot({
 })
 
 output$sc3_civci_oup1.ui <- renderUI({
-  imageOutput("sc3_civci_oup1", height = pList[input$sc3_civci_psz])
+  show_progress(imageOutput("sc3_civci_oup1", height = pList[input$sc3_civci_psz]))
 })
 
 output$sc3_civci_oup1.pdf <- downloadHandler(
@@ -2098,7 +2124,7 @@ output$sc3_civci_oup2 <- renderPlot({
 })
 
 output$sc3_civci_oup2.ui <- renderUI({
-  imageOutput("sc3_civci_oup2", height = pList[input$sc3_civci_psz])
+  show_progress(imageOutput("sc3_civci_oup2", height = pList[input$sc3_civci_psz]))
 })
 
 output$sc3_civci_oup2.pdf <- downloadHandler(
@@ -2142,7 +2168,7 @@ output$sc3_gevge_oup1 <- renderPlot({
 })
 
 output$sc3_gevge_oup1.ui <- renderUI({
-  imageOutput("sc3_gevge_oup1", height = pList[input$sc3_gevge_psz])
+  show_progress(imageOutput("sc3_gevge_oup1", height = pList[input$sc3_gevge_psz]))
 })
 
 output$sc3_gevge_oup1.pdf <- downloadHandler(
@@ -2173,7 +2199,7 @@ output$sc3_gevge_oup2 <- renderPlot({
 })
 
 output$sc3_gevge_oup2.ui <- renderUI({
-  imageOutput("sc3_gevge_oup2", height = pList[input$sc3_gevge_psz])
+  show_progress(imageOutput("sc3_gevge_oup2", height = pList[input$sc3_gevge_psz]))
 })
 
 output$sc3_gevge_oup2.pdf <- downloadHandler(
@@ -2223,7 +2249,7 @@ output$sc3_gem_oup1 <- renderPlot({
 })
 
 output$sc3_gem_oup1.ui <- renderUI({
-  imageOutput("sc3_gem_oup1", height = pList[input$sc3_gem_psz])
+  show_progress(imageOutput("sc3_gem_oup1", height = pList[input$sc3_gem_psz]))
 })
 
 output$sc3_gem_oup1.pdf <- downloadHandler(
@@ -2264,7 +2290,7 @@ output$sc3_gec_oup1 <- renderPlot({
 })
 
 output$sc3_gec_oup1.ui <- renderUI({
-  imageOutput("sc3_gec_oup1", height = pList2[input$sc3_gec_psz])
+  show_progress(imageOutput("sc3_gec_oup1", height = pList2[input$sc3_gec_psz]))
 })
 
 output$sc3_gec_oup1.pdf <- downloadHandler(
@@ -2311,7 +2337,7 @@ output$sc3_vio_oup <- renderPlot({
 })
 
 output$sc3_vio_oup.ui <- renderUI({
-  imageOutput("sc3_vio_oup", height = pList2[input$sc3_vio_psz])
+  show_progress(imageOutput("sc3_vio_oup", height = pList2[input$sc3_vio_psz]))
 })
 
 output$sc3_vio_oup.pdf <- downloadHandler(
@@ -2355,7 +2381,7 @@ output$sc3_pro_oup <- renderPlot({
 })
 
 output$sc3_pro_oup.ui <- renderUI({
-  imageOutput("sc3_pro_oup", height = pList2[input$sc3_pro_psz])
+  show_progress(imageOutput("sc3_pro_oup", height = pList2[input$sc3_pro_psz]))
 })
 
 output$sc3_pro_oup.pdf <- downloadHandler(
@@ -2410,7 +2436,7 @@ output$sc3_hea_oup <- renderPlot({
 })
 
 output$sc3_hea_oup.ui <- renderUI({
-  imageOutput("sc3_hea_oup", height = pList3[input$sc3_hea_psz])
+  show_progress(imageOutput("sc3_hea_oup", height = pList3[input$sc3_hea_psz]))
 })
 
 output$sc3_hea_oup.pdf <- downloadHandler(
@@ -2430,7 +2456,16 @@ output$sc3_hea_oup.png <- downloadHandler(
     plot = scBubbHeat(sc3conf, sc3meta, input$sc3_hea_inp, input$sc3_hea_grp, input$sc3_hea_plt, input$sc3_hea_sub1, input$sc3_hea_sub2, "sc3gexpr.h5", sc3gene, input$sc3_hea_scl, input$sc3_hea_row, input$sc3_hea_col, input$sc3_hea_cols, input$sc3_hea_fsz, save = TRUE)
     )
 }) # End of tab hea      
-       optCrt="{ option_create: function(data,escape) {return('<div class=\"create\"><strong>' + '</strong></div>');} }"
+       
+
+
+### Tab markers ----
+
+output$sc3_mar_table <- renderDataTable({
+  req(input$sc3_mar_cls)
+  datatable(sc3mar[[input$sc3_mar_cls]], rownames = FALSE, extensions = "Buttons", options = list(dom = "lftiprB", buttons = c("copy", "csv", "excel")))
+}) # End of tab mar
+optCrt="{ option_create: function(data,escape) {return('<div class=\"create\"><strong>' + '</strong></div>');} }"
 updateSelectizeInput(session, "sc4_civge_inp2", choices = names(sc4gene), server = TRUE,
                      selected = sc4def$gene1, options = list(
                        maxOptions = 7, create = TRUE, persist = TRUE, render = I(optCrt)))
@@ -2472,7 +2507,7 @@ output$sc4_civge_oup1 <- renderPlot({
 })
 
 output$sc4_civge_oup1.ui <- renderUI({
-  imageOutput("sc4_civge_oup1", height = pList[input$sc4_civge_psz])
+  show_progress(imageOutput("sc4_civge_oup1", height = pList[input$sc4_civge_psz]))
 })
 
 output$sc4_civge_oup1.pdf <- downloadHandler(
@@ -2506,7 +2541,7 @@ output$sc4_civge_oup2 <- renderPlot({
 })
 
 output$sc4_civge_oup2.ui <- renderUI({
- imageOutput("sc4_civge_oup2", height = pList[input$sc4_civge_psz])
+ show_progress(imageOutput("sc4_civge_oup2", height = pList[input$sc4_civge_psz]))
 })
 
 output$sc4_civge_oup2.pdf <- downloadHandler(
@@ -2550,7 +2585,7 @@ output$sc4_civci_oup1 <- renderPlot({
 })
 
 output$sc4_civci_oup1.ui <- renderUI({
-  imageOutput("sc4_civci_oup1", height = pList[input$sc4_civci_psz])
+  show_progress(imageOutput("sc4_civci_oup1", height = pList[input$sc4_civci_psz]))
 })
 
 output$sc4_civci_oup1.pdf <- downloadHandler(
@@ -2575,7 +2610,7 @@ output$sc4_civci_oup2 <- renderPlot({
 })
 
 output$sc4_civci_oup2.ui <- renderUI({
-  imageOutput("sc4_civci_oup2", height = pList[input$sc4_civci_psz])
+  show_progress(imageOutput("sc4_civci_oup2", height = pList[input$sc4_civci_psz]))
 })
 
 output$sc4_civci_oup2.pdf <- downloadHandler(
@@ -2619,7 +2654,7 @@ output$sc4_gevge_oup1 <- renderPlot({
 })
 
 output$sc4_gevge_oup1.ui <- renderUI({
-  imageOutput("sc4_gevge_oup1", height = pList[input$sc4_gevge_psz])
+  show_progress(imageOutput("sc4_gevge_oup1", height = pList[input$sc4_gevge_psz]))
 })
 
 output$sc4_gevge_oup1.pdf <- downloadHandler(
@@ -2650,7 +2685,7 @@ output$sc4_gevge_oup2 <- renderPlot({
 })
 
 output$sc4_gevge_oup2.ui <- renderUI({
-  imageOutput("sc4_gevge_oup2", height = pList[input$sc4_gevge_psz])
+  show_progress(imageOutput("sc4_gevge_oup2", height = pList[input$sc4_gevge_psz]))
 })
 
 output$sc4_gevge_oup2.pdf <- downloadHandler(
@@ -2700,7 +2735,7 @@ output$sc4_gem_oup1 <- renderPlot({
 })
 
 output$sc4_gem_oup1.ui <- renderUI({
-  imageOutput("sc4_gem_oup1", height = pList[input$sc4_gem_psz])
+  show_progress(imageOutput("sc4_gem_oup1", height = pList[input$sc4_gem_psz]))
 })
 
 output$sc4_gem_oup1.pdf <- downloadHandler(
@@ -2741,7 +2776,7 @@ output$sc4_gec_oup1 <- renderPlot({
 })
 
 output$sc4_gec_oup1.ui <- renderUI({
-  imageOutput("sc4_gec_oup1", height = pList2[input$sc4_gec_psz])
+  show_progress(imageOutput("sc4_gec_oup1", height = pList2[input$sc4_gec_psz]))
 })
 
 output$sc4_gec_oup1.pdf <- downloadHandler(
@@ -2788,7 +2823,7 @@ output$sc4_vio_oup <- renderPlot({
 })
 
 output$sc4_vio_oup.ui <- renderUI({
-  imageOutput("sc4_vio_oup", height = pList2[input$sc4_vio_psz])
+  show_progress(imageOutput("sc4_vio_oup", height = pList2[input$sc4_vio_psz]))
 })
 
 output$sc4_vio_oup.pdf <- downloadHandler(
@@ -2832,7 +2867,7 @@ output$sc4_pro_oup <- renderPlot({
 })
 
 output$sc4_pro_oup.ui <- renderUI({
-  imageOutput("sc4_pro_oup", height = pList2[input$sc4_pro_psz])
+  show_progress(imageOutput("sc4_pro_oup", height = pList2[input$sc4_pro_psz]))
 })
 
 output$sc4_pro_oup.pdf <- downloadHandler(
@@ -2887,7 +2922,7 @@ output$sc4_hea_oup <- renderPlot({
 })
 
 output$sc4_hea_oup.ui <- renderUI({
-  imageOutput("sc4_hea_oup", height = pList3[input$sc4_hea_psz])
+  show_progress(imageOutput("sc4_hea_oup", height = pList3[input$sc4_hea_psz]))
 })
 
 output$sc4_hea_oup.pdf <- downloadHandler(
@@ -2908,6 +2943,15 @@ output$sc4_hea_oup.png <- downloadHandler(
     )
 }) # End of tab hea      
        
+
+
+### Tab markers ----
+
+output$sc4_mar_table <- renderDataTable({
+  req(input$sc4_mar_cls)
+  datatable(sc4mar[[input$sc4_mar_cls]], rownames = FALSE, extensions = "Buttons", options = list(dom = "lftiprB", buttons = c("copy", "csv", "excel")))
+}) # End of tab mar
+
 })
 
 

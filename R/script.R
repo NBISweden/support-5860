@@ -12,6 +12,7 @@
 #' }
 #' @import shinythemes shiny shinyhelper data.table hdf5r reticulate ggplot2 
 #' @importFrom DT DTOutput renderDT
+#' @importFrom shinycssloaders withSpinner
 #' @export
 #' 
 runShiny <- function(...) {
