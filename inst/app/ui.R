@@ -6,22 +6,26 @@ library(data.table)
 library(Matrix)
 library(DT)
 library(magrittr)
-
-sc1conf = readRDS("sc1conf.rds")
-sc1def  = readRDS("sc1def.rds")
-sc1meta  = readRDS("sc1meta.rds")
-
-sc2conf = readRDS("sc2conf.rds")
-sc2def  = readRDS("sc2def.rds")
-sc2meta  = readRDS("sc2meta.rds")
-
-sc3conf = readRDS("sc3conf.rds")
-sc3def  = readRDS("sc3def.rds")
-sc3meta  = readRDS("sc3meta.rds")
-
-sc4conf = readRDS("sc4conf.rds")
-sc4def  = readRDS("sc4def.rds")
-sc4meta  = readRDS("sc4meta.rds")
+if(!exists("sc1conf")) sc1conf = readRDS("sc1conf.rds")
+if(!exists("sc1def")) sc1def  = readRDS("sc1def.rds")
+if(!exists("sc1gene")) sc1gene = readRDS("sc1gene.rds")
+if(!exists("sc1meta")) sc1meta = readRDS("sc1meta.rds")
+if(!exists("sc1mar")) sc1mar = readRDS("sc1mar.rds")
+if(!exists("sc2conf")) sc2conf = readRDS("sc2conf.rds")
+if(!exists("sc2def")) sc2def  = readRDS("sc2def.rds")
+if(!exists("sc2gene")) sc2gene = readRDS("sc2gene.rds")
+if(!exists("sc2meta")) sc2meta = readRDS("sc2meta.rds")
+if(!exists("sc2mar")) sc2mar = readRDS("sc2mar.rds")
+if(!exists("sc3conf")) sc3conf = readRDS("sc3conf.rds")
+if(!exists("sc3def")) sc3def  = readRDS("sc3def.rds")
+if(!exists("sc3gene")) sc3gene = readRDS("sc3gene.rds")
+if(!exists("sc3meta")) sc3meta = readRDS("sc3meta.rds")
+if(!exists("sc3mar")) sc3mar = readRDS("sc3mar.rds")
+if(!exists("sc4conf")) sc4conf = readRDS("sc4conf.rds")
+if(!exists("sc4def")) sc4def  = readRDS("sc4def.rds")
+if(!exists("sc4gene")) sc4gene = readRDS("sc4gene.rds")
+if(!exists("sc4meta")) sc4meta = readRDS("sc4meta.rds")
+if(!exists("sc4mar")) sc4mar = readRDS("sc4mar.rds")
 
 ### UI code
 shinyUI(
@@ -31,7 +35,7 @@ tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "styles.css"))
 theme = shinythemes::shinytheme("flatly"),
 navbarPage(
 "Support 8560"
-,navbarMenu("Combined LEC",
+,navbarMenu("LEC Combined",
 # tab civge ----
 tabPanel(
   "CellInfo vs GeneExpr",
@@ -1284,7 +1288,7 @@ tabPanel(
                    12,
                    div(
                      class = "input-panel input-panel-section",
-                     selectInput("sc1_mar_cls","Select clustering:", choices = colnames(sc1meta)[grep("^clusters_",colnames(sc1meta))],selected = 1)
+                     selectInput("sc1_mar_cls","Select clustering:", choices = names(sc1mar),selected = 1)
                    )
                  )
                )
@@ -1302,7 +1306,7 @@ tabPanel(
 ) # End of tab mar
 
 )
-,navbarMenu("Diseased",
+,navbarMenu("LEC Diseased",
 # tab civge ----
 tabPanel(
   "CellInfo vs GeneExpr",
@@ -2555,7 +2559,7 @@ tabPanel(
                    12,
                    div(
                      class = "input-panel input-panel-section",
-                     selectInput("sc2_mar_cls","Select clustering:", choices = colnames(sc2meta)[grep("^clusters_",colnames(sc2meta))],selected = 1)
+                     selectInput("sc2_mar_cls","Select clustering:", choices = names(sc2mar),selected = 1)
                    )
                  )
                )
@@ -2573,7 +2577,7 @@ tabPanel(
 ) # End of tab mar
 
 )
-,navbarMenu("Healthy",
+,navbarMenu("LEC Healthy",
 # tab civge ----
 tabPanel(
   "CellInfo vs GeneExpr",
@@ -3826,7 +3830,7 @@ tabPanel(
                    12,
                    div(
                      class = "input-panel input-panel-section",
-                     selectInput("sc3_mar_cls","Select clustering:", choices = colnames(sc3meta)[grep("^clusters_",colnames(sc3meta))],selected = 1)
+                     selectInput("sc3_mar_cls","Select clustering:", choices = names(sc3mar),selected = 1)
                    )
                  )
                )
@@ -3844,7 +3848,7 @@ tabPanel(
 ) # End of tab mar
 
 )
-,navbarMenu("Healthy Valve",
+,navbarMenu("Valve Healthy",
 # tab civge ----
 tabPanel(
   "CellInfo vs GeneExpr",
@@ -5097,7 +5101,7 @@ tabPanel(
                    12,
                    div(
                      class = "input-panel input-panel-section",
-                     selectInput("sc4_mar_cls","Select clustering:", choices = colnames(sc4meta)[grep("^clusters_",colnames(sc4meta))],selected = 1)
+                     selectInput("sc4_mar_cls","Select clustering:", choices = names(sc4mar),selected = 1)
                    )
                  )
                )
