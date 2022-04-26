@@ -24,7 +24,7 @@ This repository contains project reports and R shiny web application.
 
 ### Online
 
-[NBIS RShiny Server](https://rshiny.nbis.se/shiny-server-apps/rshiny-support-5860/)
+[SciLifeLab Serve](https://support5860.serve.scilifelab.se/)
 
 ### Local
 
