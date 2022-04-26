@@ -36,7 +36,7 @@ install.packages(c("shiny","DT","readxl","shinythemes","remotes"),
 repos="https://cloud.r-project.org/")
 
 # install package
-remotes::install_github("NBISweden/support5860")
+remotes::install_github("NBISweden/support-5860")
 
 # load package
 library(support5860)
