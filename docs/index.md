@@ -26,11 +26,11 @@ This repository contains project reports and R shiny web application.
 
 <img loading="lazy" src="https://www.scilifelab.se/wp-content/uploads/2021/03/scilifelab_logo_email.png" alt="scilifelab" width="194" height="43">
 
-[SciLifeLab Serve](https://support5860.serve.scilifelab.se/)
+[`https://support5860.serve.scilifelab.se/`](https://support5860.serve.scilifelab.se/)
 
 ### Docker
 
-<img loading="lazy" src="https://marvel-b1-cdn.bc0a.com/f00000000152152/www.zend.com/sites/default/files/image/2019-09/logo-docker.jpg" alt="docker" height="50">
+<img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/7/79/Docker_%28container_engine%29_logo.png" alt="docker" height="50">
 
 ```
 docker run --rm -p 8787:8787 royfrancis/support-5860:latest
@@ -38,14 +38,17 @@ docker run --rm -p 8787:8787 royfrancis/support-5860:latest
 
 ### Local
 
-<img loading="lazy" src="https://blog.desdelinux.net/wp-content/uploads/2019/02/rstudio-og.png.webp" alt="rstudio" height="50">
+<img loading="lazy" src="https://www.rstudio.com/assets/img/logo.svg" alt="rstudio" height="50">
 
 The shiny app can be installed as an R package and run locally.
 
 ```{r,eval=FALSE}
 # install dependencies
 
-reqPkg = c("data.table", "DT", "ggdendro", "ggplot2", "ggplotify", "ggrepel", "glue", "gridExtra", "hdf5r", "magrittr", "Matrix", "RColorBrewer", "readr", "remotes", "reticulate", "R.utils", "Seurat", "shiny", "shinycssloaders", "shinyhelper", "showtext", "shinythemes", "remotes")
+reqPkg = c("data.table", "DT", "ggdendro", "ggplot2", "ggplotify", "ggrepel", "glue",
+	   "gridExtra", "hdf5r", "magrittr", "Matrix", "RColorBrewer", "readr",
+	   "remotes", "reticulate", "R.utils", "Seurat", "shiny", "shinycssloaders",
+	   "shinyhelper", "showtext", "shinythemes", "remotes")
 newPkg = reqPkg[!(reqPkg %in% installed.packages()[,"Package"])]
 
 if(length(newPkg)){
