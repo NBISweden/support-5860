@@ -26,14 +26,27 @@ This repository contains project reports and R shiny web application.
 
 [SciLifeLab Serve](https://support5860.serve.scilifelab.se/)
 
+### Docker
+
+Run as a docker container.
+
+```
+docker run --rm -p 8787:8787 royfrancis/support-5860:latest
+```
+
 ### Local
 
 The shiny app can be installed as an R package and run locally.
 
 ```{r,eval=FALSE}
 # install dependencies
-install.packages(c("shiny","DT","readxl","shinythemes","remotes"),
-repos="https://cloud.r-project.org/")
+
+reqPkg = c("data.table", "DT", "ggdendro", "ggplot2", "ggplotify", "ggrepel", "glue", "gridExtra", "hdf5r", "magrittr", "Matrix", "RColorBrewer", "readr", "remotes", "reticulate", "R.utils", "Seurat", "shiny", "shinycssloaders", "shinyhelper", "showtext", "shinythemes", "remotes")
+newPkg = reqPkg[!(reqPkg %in% installed.packages()[,"Package"])]
+
+if(length(newPkg)){
+  install.packages(newPkg,repos="https://cloud.r-project.org/")
+}
 
 # install package
 remotes::install_github("NBISweden/support-5860")
