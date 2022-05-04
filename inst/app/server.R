@@ -687,17 +687,17 @@ scDRcoexNum <- function(inpConf, inpMeta, inp1, inp2, inpsub1, inpsub2, inpH5, i
   return(ggData)
 }
 
-# Plot violin / boxplot
+# Plot violin / boxplot / lineplot
 # @description Violin plot gene expression
 # @param inpConf (data.frame) Configuration table
 # @param inpMeta (data.frame) Metadata table
-# @param inp1 (Character) Gene name to use
-# @param inp2 (Character) Gene name to use
+# @param inp1 (Character) X axis cell info
+# @param inp2 (Character) Y axis cell info / gene
 # @param inpsub1 (Character) Name of metadata column for subsetting
 # @param inpsub2 (Character/Vector) Levels under metadata column for subsetting
 # @param inpH5 (Character) Path to gene expression h5 file (sc1gexpr.h5)
 # @param inpGene (integer) Named integer vector of gene expression values (sc1gene.rds)
-# @param inptyp (Character) Plot type. "violin" else boxplot.
+# @param inptyp (Character) Plot type. "violin", "boxplot" or "lineplot".
 # @param inppts (Logical) Should points be displayed?
 # @param inpsiz (Numeric) Point size
 # @param inpfsz (Character) Custom font size
@@ -1345,7 +1345,7 @@ output$sc1_gec_.dt <- renderDataTable({
 
 
 
-### Tab vio violinplot / boxplot ----
+### Tab vio violinplot / boxplot / lineplot ----
 
   output$sc1_vio_sub1.ui <- renderUI({
     sub = strsplit(sc1conf[UI == input$sc1_vio_sub1]$fID, "\\|")[[1]]
@@ -1361,7 +1361,8 @@ output$sc1_gec_.dt <- renderDataTable({
   })
 
 output$sc1_vio_oup <- renderPlot({
-  scVioBox(sc1conf, sc1meta, input$sc1_vio_inp1, input$sc1_vio_inp2, input$sc1_vio_sub1, input$sc1_vio_sub2, "sc1gexpr.h5", sc1gene, input$sc1_vio_typ, input$sc1_vio_pts, input$sc1_vio_siz, input$sc1_vio_fsz, input$sc1_vio_barsz)
+  gh5 <- ifelse(input$sc1_vio_datatype == "normalised","sc1gexpr.h5","sc1gexpr2.h5")
+  scVioBox(sc1conf, sc1meta, input$sc1_vio_inp1, input$sc1_vio_inp2, input$sc1_vio_sub1, input$sc1_vio_sub2, gh5, sc1gene, input$sc1_vio_typ, input$sc1_vio_pts, input$sc1_vio_siz, input$sc1_vio_fsz, input$sc1_vio_barsz)
 })
 
 output$sc1_vio_oup.ui <- renderUI({
@@ -1371,18 +1372,20 @@ output$sc1_vio_oup.ui <- renderUI({
 output$sc1_vio_oup.pdf <- downloadHandler(
   filename = function() { paste0("sc1", input$sc1_vio_typ, "_", input$sc1_vio_inp1, "_", input$sc1_vio_inp2, ".pdf") },
   content = function(file) {
+    gh5 <- ifelse(input$sc1_vio_datatype == "normalised","sc1gexpr.h5","sc1gexpr2.h5")
     ggsave(
     file, device = "pdf", useDingbats = FALSE, bg = "white",
-    plot = scVioBox(sc1conf, sc1meta, input$sc1_vio_inp1, input$sc1_vio_inp2, input$sc1_vio_sub1, input$sc1_vio_sub2, "sc1gexpr.h5", sc1gene, input$sc1_vio_typ, input$sc1_vio_pts, input$sc1_vio_siz, input$sc1_vio_fsz, input$sc1_vio_barsz)
+    plot = scVioBox(sc1conf, sc1meta, input$sc1_vio_inp1, input$sc1_vio_inp2, input$sc1_vio_sub1, input$sc1_vio_sub2, gh5, sc1gene, input$sc1_vio_typ, input$sc1_vio_pts, input$sc1_vio_siz, input$sc1_vio_fsz, input$sc1_vio_barsz)
     )
 })
 
 output$sc1_vio_oup.png <- downloadHandler(
   filename = function() { paste0("sc1", input$sc1_vio_typ, "_", input$sc1_vio_inp1, "_", input$sc1_vio_inp2,".png") },
   content = function(file) {
+    gh5 <- ifelse(input$sc1_vio_datatype == "normalised","sc1gexpr.h5","sc1gexpr2.h5")
     ggsave(
     file, device = "png", bg = "white", dpi = input$sc1_vio_oup.res,
-    plot = scVioBox(sc1conf, sc1meta, input$sc1_vio_inp1, input$sc1_vio_inp2, input$sc1_vio_sub1, input$sc1_vio_sub2, "sc1gexpr.h5", sc1gene, input$sc1_vio_typ, input$sc1_vio_pts, input$sc1_vio_siz, input$sc1_vio_fsz, input$sc1_vio_barsz)
+    plot = scVioBox(sc1conf, sc1meta, input$sc1_vio_inp1, input$sc1_vio_inp2, input$sc1_vio_sub1, input$sc1_vio_sub2, gh5, sc1gene, input$sc1_vio_typ, input$sc1_vio_pts, input$sc1_vio_siz, input$sc1_vio_fsz, input$sc1_vio_barsz)
     )
 }) # End of tab vio
 
@@ -1831,7 +1834,7 @@ output$sc2_gec_.dt <- renderDataTable({
 
 
 
-### Tab vio violinplot / boxplot ----
+### Tab vio violinplot / boxplot / lineplot ----
 
   output$sc2_vio_sub1.ui <- renderUI({
     sub = strsplit(sc2conf[UI == input$sc2_vio_sub1]$fID, "\\|")[[1]]
@@ -1847,7 +1850,8 @@ output$sc2_gec_.dt <- renderDataTable({
   })
 
 output$sc2_vio_oup <- renderPlot({
-  scVioBox(sc2conf, sc2meta, input$sc2_vio_inp1, input$sc2_vio_inp2, input$sc2_vio_sub1, input$sc2_vio_sub2, "sc2gexpr.h5", sc2gene, input$sc2_vio_typ, input$sc2_vio_pts, input$sc2_vio_siz, input$sc2_vio_fsz, input$sc2_vio_barsz)
+  gh5 <- ifelse(input$sc2_vio_datatype == "normalised","sc2gexpr.h5","sc2gexpr2.h5")
+  scVioBox(sc2conf, sc2meta, input$sc2_vio_inp1, input$sc2_vio_inp2, input$sc2_vio_sub1, input$sc2_vio_sub2, gh5, sc2gene, input$sc2_vio_typ, input$sc2_vio_pts, input$sc2_vio_siz, input$sc2_vio_fsz, input$sc2_vio_barsz)
 })
 
 output$sc2_vio_oup.ui <- renderUI({
@@ -1857,18 +1861,20 @@ output$sc2_vio_oup.ui <- renderUI({
 output$sc2_vio_oup.pdf <- downloadHandler(
   filename = function() { paste0("sc2", input$sc2_vio_typ, "_", input$sc2_vio_inp1, "_", input$sc2_vio_inp2, ".pdf") },
   content = function(file) {
+    gh5 <- ifelse(input$sc2_vio_datatype == "normalised","sc2gexpr.h5","sc2gexpr2.h5")
     ggsave(
     file, device = "pdf", useDingbats = FALSE, bg = "white",
-    plot = scVioBox(sc2conf, sc2meta, input$sc2_vio_inp1, input$sc2_vio_inp2, input$sc2_vio_sub1, input$sc2_vio_sub2, "sc2gexpr.h5", sc2gene, input$sc2_vio_typ, input$sc2_vio_pts, input$sc2_vio_siz, input$sc2_vio_fsz, input$sc2_vio_barsz)
+    plot = scVioBox(sc2conf, sc2meta, input$sc2_vio_inp1, input$sc2_vio_inp2, input$sc2_vio_sub1, input$sc2_vio_sub2, gh5, sc2gene, input$sc2_vio_typ, input$sc2_vio_pts, input$sc2_vio_siz, input$sc2_vio_fsz, input$sc2_vio_barsz)
     )
 })
 
 output$sc2_vio_oup.png <- downloadHandler(
   filename = function() { paste0("sc2", input$sc2_vio_typ, "_", input$sc2_vio_inp1, "_", input$sc2_vio_inp2,".png") },
   content = function(file) {
+    gh5 <- ifelse(input$sc2_vio_datatype == "normalised","sc2gexpr.h5","sc2gexpr2.h5")
     ggsave(
     file, device = "png", bg = "white", dpi = input$sc2_vio_oup.res,
-    plot = scVioBox(sc2conf, sc2meta, input$sc2_vio_inp1, input$sc2_vio_inp2, input$sc2_vio_sub1, input$sc2_vio_sub2, "sc2gexpr.h5", sc2gene, input$sc2_vio_typ, input$sc2_vio_pts, input$sc2_vio_siz, input$sc2_vio_fsz, input$sc2_vio_barsz)
+    plot = scVioBox(sc2conf, sc2meta, input$sc2_vio_inp1, input$sc2_vio_inp2, input$sc2_vio_sub1, input$sc2_vio_sub2, gh5, sc2gene, input$sc2_vio_typ, input$sc2_vio_pts, input$sc2_vio_siz, input$sc2_vio_fsz, input$sc2_vio_barsz)
     )
 }) # End of tab vio
 
@@ -2317,7 +2323,7 @@ output$sc3_gec_.dt <- renderDataTable({
 
 
 
-### Tab vio violinplot / boxplot ----
+### Tab vio violinplot / boxplot / lineplot ----
 
   output$sc3_vio_sub1.ui <- renderUI({
     sub = strsplit(sc3conf[UI == input$sc3_vio_sub1]$fID, "\\|")[[1]]
@@ -2333,7 +2339,8 @@ output$sc3_gec_.dt <- renderDataTable({
   })
 
 output$sc3_vio_oup <- renderPlot({
-  scVioBox(sc3conf, sc3meta, input$sc3_vio_inp1, input$sc3_vio_inp2, input$sc3_vio_sub1, input$sc3_vio_sub2, "sc3gexpr.h5", sc3gene, input$sc3_vio_typ, input$sc3_vio_pts, input$sc3_vio_siz, input$sc3_vio_fsz, input$sc3_vio_barsz)
+  gh5 <- ifelse(input$sc3_vio_datatype == "normalised","sc3gexpr.h5","sc3gexpr2.h5")
+  scVioBox(sc3conf, sc3meta, input$sc3_vio_inp1, input$sc3_vio_inp2, input$sc3_vio_sub1, input$sc3_vio_sub2, gh5, sc3gene, input$sc3_vio_typ, input$sc3_vio_pts, input$sc3_vio_siz, input$sc3_vio_fsz, input$sc3_vio_barsz)
 })
 
 output$sc3_vio_oup.ui <- renderUI({
@@ -2343,18 +2350,20 @@ output$sc3_vio_oup.ui <- renderUI({
 output$sc3_vio_oup.pdf <- downloadHandler(
   filename = function() { paste0("sc3", input$sc3_vio_typ, "_", input$sc3_vio_inp1, "_", input$sc3_vio_inp2, ".pdf") },
   content = function(file) {
+    gh5 <- ifelse(input$sc3_vio_datatype == "normalised","sc3gexpr.h5","sc3gexpr2.h5")
     ggsave(
     file, device = "pdf", useDingbats = FALSE, bg = "white",
-    plot = scVioBox(sc3conf, sc3meta, input$sc3_vio_inp1, input$sc3_vio_inp2, input$sc3_vio_sub1, input$sc3_vio_sub2, "sc3gexpr.h5", sc3gene, input$sc3_vio_typ, input$sc3_vio_pts, input$sc3_vio_siz, input$sc3_vio_fsz, input$sc3_vio_barsz)
+    plot = scVioBox(sc3conf, sc3meta, input$sc3_vio_inp1, input$sc3_vio_inp2, input$sc3_vio_sub1, input$sc3_vio_sub2, gh5, sc3gene, input$sc3_vio_typ, input$sc3_vio_pts, input$sc3_vio_siz, input$sc3_vio_fsz, input$sc3_vio_barsz)
     )
 })
 
 output$sc3_vio_oup.png <- downloadHandler(
   filename = function() { paste0("sc3", input$sc3_vio_typ, "_", input$sc3_vio_inp1, "_", input$sc3_vio_inp2,".png") },
   content = function(file) {
+    gh5 <- ifelse(input$sc3_vio_datatype == "normalised","sc3gexpr.h5","sc3gexpr2.h5")
     ggsave(
     file, device = "png", bg = "white", dpi = input$sc3_vio_oup.res,
-    plot = scVioBox(sc3conf, sc3meta, input$sc3_vio_inp1, input$sc3_vio_inp2, input$sc3_vio_sub1, input$sc3_vio_sub2, "sc3gexpr.h5", sc3gene, input$sc3_vio_typ, input$sc3_vio_pts, input$sc3_vio_siz, input$sc3_vio_fsz, input$sc3_vio_barsz)
+    plot = scVioBox(sc3conf, sc3meta, input$sc3_vio_inp1, input$sc3_vio_inp2, input$sc3_vio_sub1, input$sc3_vio_sub2, gh5, sc3gene, input$sc3_vio_typ, input$sc3_vio_pts, input$sc3_vio_siz, input$sc3_vio_fsz, input$sc3_vio_barsz)
     )
 }) # End of tab vio
 
@@ -2803,7 +2812,7 @@ output$sc4_gec_.dt <- renderDataTable({
 
 
 
-### Tab vio violinplot / boxplot ----
+### Tab vio violinplot / boxplot / lineplot ----
 
   output$sc4_vio_sub1.ui <- renderUI({
     sub = strsplit(sc4conf[UI == input$sc4_vio_sub1]$fID, "\\|")[[1]]
@@ -2819,7 +2828,8 @@ output$sc4_gec_.dt <- renderDataTable({
   })
 
 output$sc4_vio_oup <- renderPlot({
-  scVioBox(sc4conf, sc4meta, input$sc4_vio_inp1, input$sc4_vio_inp2, input$sc4_vio_sub1, input$sc4_vio_sub2, "sc4gexpr.h5", sc4gene, input$sc4_vio_typ, input$sc4_vio_pts, input$sc4_vio_siz, input$sc4_vio_fsz, input$sc4_vio_barsz)
+  gh5 <- ifelse(input$sc4_vio_datatype == "normalised","sc4gexpr.h5","sc4gexpr2.h5")
+  scVioBox(sc4conf, sc4meta, input$sc4_vio_inp1, input$sc4_vio_inp2, input$sc4_vio_sub1, input$sc4_vio_sub2, gh5, sc4gene, input$sc4_vio_typ, input$sc4_vio_pts, input$sc4_vio_siz, input$sc4_vio_fsz, input$sc4_vio_barsz)
 })
 
 output$sc4_vio_oup.ui <- renderUI({
@@ -2829,18 +2839,20 @@ output$sc4_vio_oup.ui <- renderUI({
 output$sc4_vio_oup.pdf <- downloadHandler(
   filename = function() { paste0("sc4", input$sc4_vio_typ, "_", input$sc4_vio_inp1, "_", input$sc4_vio_inp2, ".pdf") },
   content = function(file) {
+    gh5 <- ifelse(input$sc4_vio_datatype == "normalised","sc4gexpr.h5","sc4gexpr2.h5")
     ggsave(
     file, device = "pdf", useDingbats = FALSE, bg = "white",
-    plot = scVioBox(sc4conf, sc4meta, input$sc4_vio_inp1, input$sc4_vio_inp2, input$sc4_vio_sub1, input$sc4_vio_sub2, "sc4gexpr.h5", sc4gene, input$sc4_vio_typ, input$sc4_vio_pts, input$sc4_vio_siz, input$sc4_vio_fsz, input$sc4_vio_barsz)
+    plot = scVioBox(sc4conf, sc4meta, input$sc4_vio_inp1, input$sc4_vio_inp2, input$sc4_vio_sub1, input$sc4_vio_sub2, gh5, sc4gene, input$sc4_vio_typ, input$sc4_vio_pts, input$sc4_vio_siz, input$sc4_vio_fsz, input$sc4_vio_barsz)
     )
 })
 
 output$sc4_vio_oup.png <- downloadHandler(
   filename = function() { paste0("sc4", input$sc4_vio_typ, "_", input$sc4_vio_inp1, "_", input$sc4_vio_inp2,".png") },
   content = function(file) {
+    gh5 <- ifelse(input$sc4_vio_datatype == "normalised","sc4gexpr.h5","sc4gexpr2.h5")
     ggsave(
     file, device = "png", bg = "white", dpi = input$sc4_vio_oup.res,
-    plot = scVioBox(sc4conf, sc4meta, input$sc4_vio_inp1, input$sc4_vio_inp2, input$sc4_vio_sub1, input$sc4_vio_sub2, "sc4gexpr.h5", sc4gene, input$sc4_vio_typ, input$sc4_vio_pts, input$sc4_vio_siz, input$sc4_vio_fsz, input$sc4_vio_barsz)
+    plot = scVioBox(sc4conf, sc4meta, input$sc4_vio_inp1, input$sc4_vio_inp2, input$sc4_vio_sub1, input$sc4_vio_sub2, gh5, sc4gene, input$sc4_vio_typ, input$sc4_vio_pts, input$sc4_vio_siz, input$sc4_vio_fsz, input$sc4_vio_barsz)
     )
 }) # End of tab vio
 

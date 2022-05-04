@@ -2,14 +2,14 @@ Package: support5860
 Type: Package
 Title: Interactive shiny GUI
 Version: 0.0.0.9000
-Date: 2021-12-23
+Date: 2022-05-04
 Author: Roy Mathew Francis
 Authors@R: person("Roy", "Francis", email = "roy.francis@nbis.se",role = c("aut", "cre"))
 Maintainer: Roy Mathew Francis <roy.francis@nbis.se>
 Description: Interactive interface for scRNA-Seq.
 URL: https://github.com/NBISweden/support-5860
 Depends:
-    R(>= 3.5.0),
+    R(>= 4.0.0),
     data.table   (>= 1.12.2),
     hdf5r        (>= 1.2.0),
     reticulate   (>= 1.13),

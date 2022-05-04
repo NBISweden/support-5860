@@ -1042,7 +1042,8 @@ tabPanel(
               condition = "input.sc1_vio_typ == 'lineplot'",
               sliderInput("sc1_vio_barsz", "Line size", min = 0.05, max = 0.5, step = 0.01, value = 0.3)
               )
-            )
+            ),
+            selectInput("sc1_vio_datatype", "Data type", choices = c("normalised", "raw"), selected = "normalised"),
           ),
           div(
             class = "input-panel",
@@ -2313,7 +2314,8 @@ tabPanel(
               condition = "input.sc2_vio_typ == 'lineplot'",
               sliderInput("sc2_vio_barsz", "Line size", min = 0.05, max = 0.5, step = 0.01, value = 0.3)
               )
-            )
+            ),
+            selectInput("sc2_vio_datatype", "Data type", choices = c("normalised", "raw"), selected = "normalised"),
           ),
           div(
             class = "input-panel",
@@ -3584,7 +3586,8 @@ tabPanel(
               condition = "input.sc3_vio_typ == 'lineplot'",
               sliderInput("sc3_vio_barsz", "Line size", min = 0.05, max = 0.5, step = 0.01, value = 0.3)
               )
-            )
+            ),
+            selectInput("sc3_vio_datatype", "Data type", choices = c("normalised", "raw"), selected = "normalised"),
           ),
           div(
             class = "input-panel",
@@ -4855,7 +4858,8 @@ tabPanel(
               condition = "input.sc4_vio_typ == 'lineplot'",
               sliderInput("sc4_vio_barsz", "Line size", min = 0.05, max = 0.5, step = 0.01, value = 0.3)
               )
-            )
+            ),
+            selectInput("sc4_vio_datatype", "Data type", choices = c("normalised", "raw"), selected = "normalised"),
           ),
           div(
             class = "input-panel",
