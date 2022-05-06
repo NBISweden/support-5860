@@ -10,7 +10,7 @@ RUN apt-get update && \
     apt-get install -y git libxml2-dev libudunits2-dev libhdf5-dev && \
     rm -rf /var/lib/apt/lists/*
 
-RUN Rscript -e 'reqPkg = c("data.table", "DT", "ggdendro", "ggplot2", "ggplotify", "ggrepel", "glue", "gridExtra", "hdf5r", "magrittr", "Matrix", "RColorBrewer", "readr", "remotes", "reticulate", "R.utils", "Seurat", "shiny", "shinycssloaders", "shinyhelper", "showtext", "shinythemes"); newPkg = reqPkg[!(reqPkg %in% installed.packages()[,"Package"])]; if(length(newPkg)){install.packages(newPkg)}'
+RUN Rscript -e 'reqPkg = c("data.table", "DT", "ggdendro", "ggplot2", "ggplotify", "ggrepel", "glue", "grid", "hdf5r", "magrittr", "Matrix", "patchwork", "RColorBrewer", "readr", "remotes", "reticulate", "R.utils", "Seurat", "shiny", "shinycssloaders", "shinyhelper", "showtext", "shinythemes"); newPkg = reqPkg[!(reqPkg %in% installed.packages()[,"Package"])]; if(length(newPkg)){install.packages(newPkg)}'
 
 RUN cd /srv/shiny-server/ && \
     git clone https://github.com/${REPO}.git temp && \

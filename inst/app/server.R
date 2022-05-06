@@ -9,35 +9,36 @@ library(ggplotify)
 library(ggrepel)
 library(hdf5r)
 library(ggdendro)
-library(gridExtra)
+library(grid)
 library(shinycssloaders)
+library(patchwork)
 
 # load font for plot
 sysfonts::font_add_google(name = "Lato", family = "Lato")
 showtext::showtext_auto()
 
-if(!exists("sc1conf")) sc1conf = readRDS("sc1conf.rds")
-if(!exists("sc1def")) sc1def  = readRDS("sc1def.rds")
-if(!exists("sc1gene")) sc1gene = readRDS("sc1gene.rds")
-if(!exists("sc1meta")) sc1meta = readRDS("sc1meta.rds")
-if(!exists("sc1mar")) sc1mar = readRDS("sc1mar.rds")
-if(!exists("sc2conf")) sc2conf = readRDS("sc2conf.rds")
-if(!exists("sc2def")) sc2def  = readRDS("sc2def.rds")
-if(!exists("sc2gene")) sc2gene = readRDS("sc2gene.rds")
-if(!exists("sc2meta")) sc2meta = readRDS("sc2meta.rds")
-if(!exists("sc2mar")) sc2mar = readRDS("sc2mar.rds")
-if(!exists("sc3conf")) sc3conf = readRDS("sc3conf.rds")
-if(!exists("sc3def")) sc3def  = readRDS("sc3def.rds")
-if(!exists("sc3gene")) sc3gene = readRDS("sc3gene.rds")
-if(!exists("sc3meta")) sc3meta = readRDS("sc3meta.rds")
-if(!exists("sc3mar")) sc3mar = readRDS("sc3mar.rds")
-if(!exists("sc4conf")) sc4conf = readRDS("sc4conf.rds")
-if(!exists("sc4def")) sc4def  = readRDS("sc4def.rds")
-if(!exists("sc4gene")) sc4gene = readRDS("sc4gene.rds")
-if(!exists("sc4meta")) sc4meta = readRDS("sc4meta.rds")
-if(!exists("sc4mar")) sc4mar = readRDS("sc4mar.rds")
+if(!exists("lcconf")) lcconf = readRDS("lcconf.rds")
+if(!exists("lcdef")) lcdef  = readRDS("lcdef.rds")
+if(!exists("lcgene")) lcgene = readRDS("lcgene.rds")
+if(!exists("lcmeta")) lcmeta = readRDS("lcmeta.rds")
+if(!exists("lcmar")) lcmar = readRDS("lcmar.rds")
+if(!exists("ldconf")) ldconf = readRDS("ldconf.rds")
+if(!exists("lddef")) lddef  = readRDS("lddef.rds")
+if(!exists("ldgene")) ldgene = readRDS("ldgene.rds")
+if(!exists("ldmeta")) ldmeta = readRDS("ldmeta.rds")
+if(!exists("ldmar")) ldmar = readRDS("ldmar.rds")
+if(!exists("lhconf")) lhconf = readRDS("lhconf.rds")
+if(!exists("lhdef")) lhdef  = readRDS("lhdef.rds")
+if(!exists("lhgene")) lhgene = readRDS("lhgene.rds")
+if(!exists("lhmeta")) lhmeta = readRDS("lhmeta.rds")
+if(!exists("lhmar")) lhmar = readRDS("lhmar.rds")
+if(!exists("vhconf")) vhconf = readRDS("vhconf.rds")
+if(!exists("vhdef")) vhdef  = readRDS("vhdef.rds")
+if(!exists("vhgene")) vhgene = readRDS("vhgene.rds")
+if(!exists("vhmeta")) vhmeta = readRDS("vhmeta.rds")
+if(!exists("vhmar")) vhmar = readRDS("vhmar.rds")
 
-### Useful stuff ----
+### Initialise variables and functions ----
 
 # Colour palette
 cList <- list(
@@ -229,7 +230,7 @@ scFeature <- function(inpConf, inpMeta, inpdrX, inpdrY, inp, inpsub1, inpsub2, i
   }
 
   if(inpncol < 1) inpncol <- floor(sqrt(length(plist)))
-  ggOut <- ggplotify::as.ggplot(arrangeGrob(grobs = plist, ncol = inpncol))
+  ggOut <- wrap_plots(plist) + plot_layout(ncol = inpncol)
   return(ggOut)
 }
 
@@ -481,7 +482,8 @@ scDRcoexFull <- function(inpConf, inpMeta, inpdrX, inpdrY, inp1, inp2, inpsub1,
                        inpsub2, inpH5, inpGene, inpsiz, inpcol, inpord, inpfsz,
                        inpasp, inptxt)
   g2 <- scDRcoexLeg(inp1, inp2, inpcol, inpfsz)
-  return(ggplotify::as.ggplot(gridExtra::arrangeGrob(g1, g2, nrow = 1, ncol = 2, widths = c(5, 2))))
+  g <- wrap_plots(g1, g2) + plot_layout(ncol = 2, nrow = 1, widths = c(10, 2))
+  return(g)
 }
 
 # @description Gene Co-expression on dimred
@@ -825,8 +827,7 @@ scProp <- function(inpConf, inpMeta, inp1, inp2, inpsub1, inpsub2, inptyp, inpfl
 # Get gene list
 scGeneList <- function(inp, inpGene) {
   geneList <- data.table(
-  gene = unique(trimws(strsplit(inp, ",|;|
-")[[1]])),
+  gene = inp,
   present = TRUE
   )
   geneList[!gene %in% names(inpGene)]$present <- FALSE
@@ -850,9 +851,8 @@ scGeneList <- function(inp, inpGene) {
 # @param inpcols
 # @param inpfsz (Character) Custom font size
 # @param col_line (Character) Line colour
-# @param save
 #
-scBubbHeat <- function(inpConf, inpMeta, inp, inpGrp, inpPlt, inpsub1, inpsub2, inpH5, inpGene, inpScl, inpRow, inpCol, inpcols, inpfsz, col_line = "grey60", save = FALSE) {
+scBubbHeat <- function(inpConf, inpMeta, inp, inpGrp, inpPlt, inpsub1, inpsub2, inpH5, inpGene, inpScl, inpRow, inpCol, inpcols, inpfsz, col_line = "grey60") {
   
   if (is.null(inpsub1)) { inpsub1 <- inpConf$UI[1] }
 
@@ -975,27 +975,19 @@ scBubbHeat <- function(inpConf, inpMeta, inp, inpGrp, inpPlt, inpsub1, inpsub2, 
   # Final tidy
   ggLeg <- g_legend(ggOut)
   ggOut <- ggOut + theme(legend.position = "none")
-  if (!save) { 
-    if (inpRow & inpCol) {
-      ggOut <- grid.arrange(ggOut, ggLeg, ggCol, ggRow, widths = c(7, 1), heights = c(1, 7, 2), layout_matrix = rbind(c(3, NA), c(1, 4), c(2, NA)))
-    } else if (inpRow) {
-      ggOut <- grid.arrange(ggOut, ggLeg, ggRow, widths = c(7, 1), heights = c(7, 2), layout_matrix = rbind(c(1, 3), c(2, NA)))
-    } else if (inpCol) { 
-      ggOut <- grid.arrange(ggOut, ggLeg, ggCol, heights = c(1, 7, 2), layout_matrix = rbind(c(3), c(1), c(2))) 
-    } else {
-      ggOut <- grid.arrange(ggOut, ggLeg, heights = c(7, 2), layout_matrix = rbind(c(1), c(2))
-      ) 
-    }
+  
+  if (inpRow & inpCol) {
+    ggOut <- wrap_plots(ggCol, plot_spacer(), ggOut, ggRow, ggplotify::as.ggplot(ggLeg))+
+              plot_layout(ncol = 2, widths = c(7,1), heights = c(1,7,2))
+  } else if (inpRow) {
+    ggOut <- wrap_plots(ggOut, ggRow, ggplotify::as.ggplot(ggLeg))+
+              plot_layout(ncol = 2, widths = c(7,1), heights = c(7,2))
+  } else if (inpCol) {
+    ggOut <- wrap_plots(ggCol, ggOut, ggplotify::as.ggplot(ggLeg))+
+               plot_layout(ncol = 1, heights = c(1,7,2))
   } else {
-    if (inpRow & inpCol) {
-      ggOut <- arrangeGrob(ggOut, ggLeg, ggCol, ggRow, widths = c(7, 1), heights = c(1, 7, 2), layout_matrix = rbind(c(3, NA), c(1, 4), c(2, NA))) 
-    } else if (inpRow) {
-      ggOut <- arrangeGrob(ggOut, ggLeg, ggRow, widths = c(7, 1), heights = c(7, 2), layout_matrix = rbind(c(1, 3), c(2, NA))) 
-    } else if (inpCol) { 
-      ggOut <- arrangeGrob(ggOut, ggLeg, ggCol, heights = c(1, 7, 2), layout_matrix = rbind(c(3), c(1), c(2))) 
-    } else {
-      ggOut <- arrangeGrob(ggOut, ggLeg, heights = c(7, 2), layout_matrix = rbind(c(1), c(2))) 
-    }
+    ggOut <- wrap_plots(ggOut, ggplotify::as.ggplot(ggLeg))+
+      plot_layout(ncol = 1, heights = c(7,2))
   }
   
   return(ggOut)
@@ -1008,99 +1000,123 @@ shinyServer(function(input, output, session) {
 ### For all tags and Server-side selectize
 observe_helpers()
 optCrt="{ option_create: function(data,escape) {return('<div class=\"create\"><strong>' + '</strong></div>');} }"
-updateSelectizeInput(session, "sc1_civge_inp2", choices = names(sc1gene), server = TRUE,
-                     selected = sc1def$gene1, options = list(
+updateSelectizeInput(session, "lc_civge_inp2", choices = names(lcgene), server = TRUE,
+                     selected = lcdef$gene1, options = list(
                        maxOptions = 7, create = TRUE, persist = TRUE, render = I(optCrt)))
-updateSelectizeInput(session, "sc1_gevge_inp1", choices = names(sc1gene), server = TRUE,
-                     selected = sc1def$gene1, options = list(
+updateSelectizeInput(session, "lc_gevge_inp1", choices = names(lcgene), server = TRUE,
+                     selected = lcdef$gene1, options = list(
                        maxOptions = 7, create = TRUE, persist = TRUE, render = I(optCrt)))
-updateSelectizeInput(session, "sc1_gevge_inp2", choices = names(sc1gene), server = TRUE,
-                     selected = sc1def$gene2, options = list(
+updateSelectizeInput(session, "lc_gevge_inp2", choices = names(lcgene), server = TRUE,
+                     selected = lcdef$gene2, options = list(
                        maxOptions = 7, create = TRUE, persist = TRUE, render = I(optCrt)))
-updateSelectizeInput(session, "sc1_gec_inp1", choices = names(sc1gene), server = TRUE,
-                     selected = sc1def$gene1, options = list(
+updateSelectizeInput(session, "lc_gec_inp1", choices = names(lcgene), server = TRUE,
+                     selected = lcdef$gene1, options = list(
                        maxOptions = 7, create = TRUE, persist = TRUE, render = I(optCrt)))
-updateSelectizeInput(session, "sc1_gec_inp2", choices = names(sc1gene), server = TRUE,
-                     selected = sc1def$gene2, options = list(
+updateSelectizeInput(session, "lc_gec_inp2", choices = names(lcgene), server = TRUE,
+                     selected = lcdef$gene2, options = list(
                        maxOptions = 7, create = TRUE, persist = TRUE, render = I(optCrt)))
-updateSelectizeInput(session, "sc1_vio_inp2", server = TRUE,
-                     choices = c(sc1conf[is.na(fID)]$UI,names(sc1gene)),
-                     selected = sc1conf[is.na(fID)]$UI[1], options = list(
-                       maxOptions = length(sc1conf[is.na(fID)]$UI) + 3,
+updateSelectizeInput(session, "lc_gem_inp", choices = names(lcgene), server = TRUE,
+                     selected = lcdef$genes[1:9], options = list(
+                     create = TRUE, persist = TRUE, render = I(optCrt)))
+updateSelectizeInput(session, "lc_hea_inp", choices = names(lcgene), server = TRUE,
+                     selected = lcdef$genes[1:12], options = list(
+                     create = TRUE, persist = TRUE, render = I(optCrt)))
+updateSelectizeInput(session, "lc_vio_inp2", server = TRUE,
+                     choices = c(lcconf[is.na(fID)]$UI,names(lcgene)),
+                     selected = lcconf[is.na(fID)]$UI[1], options = list(
+                       maxOptions = length(lcconf[is.na(fID)]$UI) + 3,
                        create = TRUE, persist = TRUE, render = I(optCrt)))  
 ### Tab civge cell info vs gene exp ----
 
-  output$sc1_civge_sub1.ui <- renderUI({
-    sub = strsplit(sc1conf[UI == input$sc1_civge_sub1]$fID, "\\|")[[1]]
-    checkboxGroupInput("sc1_civge_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
+  output$lc_civge_sub1.ui <- renderUI({
+    sub = strsplit(lcconf[UI == input$lc_civge_sub1]$fID, "\\|")[[1]]
+    checkboxGroupInput("lc_civge_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
   })
-  observeEvent(input$sc1_civge_sub1non, {
-    sub = strsplit(sc1conf[UI == input$sc1_civge_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc1_civge_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
+  observeEvent(input$lc_civge_sub1non, {
+    sub = strsplit(lcconf[UI == input$lc_civge_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "lc_civge_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
   })
-  observeEvent(input$sc1_civge_sub1all, {
-    sub = strsplit(sc1conf[UI == input$sc1_civge_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc1_civge_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
+  observeEvent(input$lc_civge_sub1all, {
+    sub = strsplit(lcconf[UI == input$lc_civge_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "lc_civge_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc1_civge_oup1 <- renderPlot({
-  req(input$sc1_civge_inp1)
-  scDRcell(sc1conf, sc1meta, input$sc1_civge_drX, input$sc1_civge_drY, input$sc1_civge_inp1, input$sc1_civge_sub1, input$sc1_civge_sub2, input$sc1_civge_siz, input$sc1_civge_col1, input$sc1_civge_ord1, input$sc1_civge_fsz, input$sc1_civge_asp, input$sc1_civge_txt, input$sc1_civge_lab1)
+output$lc_civge_oup1 <- renderPlot({
+  req(input$lc_civge_inp1)
+  scDRcell(lcconf, lcmeta, input$lc_civge_drX, input$lc_civge_drY, input$lc_civge_inp1, input$lc_civge_sub1, input$lc_civge_sub2, input$lc_civge_siz, input$lc_civge_col1, input$lc_civge_ord1, input$lc_civge_fsz, input$lc_civge_asp, input$lc_civge_txt, input$lc_civge_lab1)
 })
 
-output$sc1_civge_oup1.ui <- renderUI({
-  show_progress(imageOutput("sc1_civge_oup1", height = pList[input$sc1_civge_psz]))
+output$lc_civge_oup1.ui <- renderUI({
+  show_progress(imageOutput("lc_civge_oup1", height = pList[input$lc_civge_psz]))
 })
 
-output$sc1_civge_oup1.pdf <- downloadHandler(
- filename = function() { paste0("sc1", input$sc1_civge_drX,"_", input$sc1_civge_drY,"_", input$sc1_civge_inp1,".pdf") },
+output$lc_civge_oup1.png <- downloadHandler(
+ filename = function() { tolower(paste0("lc", "_", input$lc_civge_drX, "_", input$lc_civge_drY, "_", input$lc_civge_inp1, ".png")) },
  content = function(file) {
    ggsave(
-   file, device = "pdf", useDingbats = FALSE, bg = "white",
-   plot = scDRcell(sc1conf, sc1meta, input$sc1_civge_drX, input$sc1_civge_drY, input$sc1_civge_inp1,   input$sc1_civge_sub1, input$sc1_civge_sub2, input$sc1_civge_siz, input$sc1_civge_col1, input$sc1_civge_ord1,  input$sc1_civge_fsz, input$sc1_civge_asp, input$sc1_civge_txt, input$sc1_civge_lab1)
+   file, device = "png", dpi = input$lc_civge_oup1.res, bg = "white",
+   plot = scDRcell(lcconf, lcmeta, input$lc_civge_drX, input$lc_civge_drY, input$lc_civge_inp1,   input$lc_civge_sub1, input$lc_civge_sub2, input$lc_civge_siz, input$lc_civge_col1, input$lc_civge_ord1,  input$lc_civge_fsz, input$lc_civge_asp, input$lc_civge_txt, input$lc_civge_lab1)
    )
 })
 
-output$sc1_civge_oup1.png <- downloadHandler(
- filename = function() { paste0("sc1",input$sc1_civge_drX,"_",input$sc1_civge_drY,"_", input$sc1_civge_inp1,".png") },
+output$lc_civge_oup1.pdf <- downloadHandler(
+ filename = function() { tolower(paste0("lc", "_", input$lc_civge_drX,"_", input$lc_civge_drY,"_", input$lc_civge_inp1,".pdf")) },
  content = function(file) {
    ggsave(
-   file, device = "png", dpi = input$sc1_civge_oup1.res, bg = "white",
-   plot = scDRcell(sc1conf, sc1meta, input$sc1_civge_drX, input$sc1_civge_drY, input$sc1_civge_inp1,   input$sc1_civge_sub1, input$sc1_civge_sub2, input$sc1_civge_siz, input$sc1_civge_col1, input$sc1_civge_ord1,  input$sc1_civge_fsz, input$sc1_civge_asp, input$sc1_civge_txt, input$sc1_civge_lab1)
+   file, device = "pdf", useDingbats = FALSE, bg = "white", onefile = TRUE,
+   plot = scDRcell(lcconf, lcmeta, input$lc_civge_drX, input$lc_civge_drY, input$lc_civge_inp1,   input$lc_civge_sub1, input$lc_civge_sub2, input$lc_civge_siz, input$lc_civge_col1, input$lc_civge_ord1,  input$lc_civge_fsz, input$lc_civge_asp, input$lc_civge_txt, input$lc_civge_lab1)
    )
 })
 
-output$sc1_civge_.dt <- renderDataTable({
- req(input$sc1_civge_inp2)
- ggData = scDRnum(sc1conf, sc1meta, input$sc1_civge_inp1, input$sc1_civge_inp2, input$sc1_civge_sub1, input$sc1_civge_sub2, "sc1gexpr.h5", sc1gene, input$sc1_civge_splt)
+output$lc_civge_oup1.svg <- downloadHandler(
+ filename = function() { tolower(paste0("lc", "_", input$lc_civge_drX,"_", input$lc_civge_drY,"_", input$lc_civge_inp1,".svg")) },
+ content = function(file) {
+   ggsave(
+   file, device = "svg", bg = "white",
+   plot = scDRcell(lcconf, lcmeta, input$lc_civge_drX, input$lc_civge_drY, input$lc_civge_inp1,   input$lc_civge_sub1, input$lc_civge_sub2, input$lc_civge_siz, input$lc_civge_col1, input$lc_civge_ord1,  input$lc_civge_fsz, input$lc_civge_asp, input$lc_civge_txt, input$lc_civge_lab1)
+   )
+})
+
+output$lc_civge_.dt <- renderDataTable({
+ req(input$lc_civge_inp2)
+ ggData = scDRnum(lcconf, lcmeta, input$lc_civge_inp1, input$lc_civge_inp2, input$lc_civge_sub1, input$lc_civge_sub2, "lcgexpr.h5", lcgene, input$lc_civge_splt)
  datatable(ggData, rownames = FALSE, extensions = "Buttons", options = list(pageLength = -1, dom = "tB", buttons = c("copy", "csv", "excel"))) %>%
    formatRound(columns = c("pctExpress"), digits = 2)
 })
 
-output$sc1_civge_oup2 <- renderPlot({
- req(input$sc1_civge_inp2)
- scDRgene(sc1conf, sc1meta, input$sc1_civge_drX, input$sc1_civge_drY, input$sc1_civge_inp2, input$sc1_civge_sub1, input$sc1_civge_sub2, "sc1gexpr.h5", sc1gene, input$sc1_civge_siz, input$sc1_civge_col2, input$sc1_civge_ord2, input$sc1_civge_fsz, input$sc1_civge_asp, input$sc1_civge_txt)
+output$lc_civge_oup2 <- renderPlot({
+ req(input$lc_civge_inp2)
+ scDRgene(lcconf, lcmeta, input$lc_civge_drX, input$lc_civge_drY, input$lc_civge_inp2, input$lc_civge_sub1, input$lc_civge_sub2, "lcgexpr.h5", lcgene, input$lc_civge_siz, input$lc_civge_col2, input$lc_civge_ord2, input$lc_civge_fsz, input$lc_civge_asp, input$lc_civge_txt)
 })
 
-output$sc1_civge_oup2.ui <- renderUI({
- show_progress(imageOutput("sc1_civge_oup2", height = pList[input$sc1_civge_psz]))
+output$lc_civge_oup2.ui <- renderUI({
+ show_progress(imageOutput("lc_civge_oup2", height = pList[input$lc_civge_psz]))
 })
 
-output$sc1_civge_oup2.pdf <- downloadHandler(
- filename = function() { paste0("sc1",input$sc1_civge_drX,"_",input$sc1_civge_drY,"_", input$sc1_civge_inp2,".pdf") },
+output$lc_civge_oup2.png <- downloadHandler(
+ filename = function() { tolower(paste0("lc", "_", input$lc_civge_drX,"_",input$lc_civge_drY,"_", input$lc_civge_inp2,".png")) },
  content = function(file) {
    ggsave(
-   file, device = "pdf", useDingbats = FALSE, bg = "white",
-   plot = scDRgene(sc1conf, sc1meta, input$sc1_civge_drX, input$sc1_civge_drY, input$sc1_civge_inp2,  input$sc1_civge_sub1, input$sc1_civge_sub2, "sc1gexpr.h5", sc1gene, input$sc1_civge_siz, input$sc1_civge_col2, input$sc1_civge_ord2, input$sc1_civge_fsz, input$sc1_civge_asp, input$sc1_civge_txt)
+   file, device = "png", dpi = input$lc_civge_oup2.res, bg = "white",
+   plot = scDRgene(lcconf, lcmeta, input$lc_civge_drX, input$lc_civge_drY, input$lc_civge_inp2, input$lc_civge_sub1, input$lc_civge_sub2, "lcgexpr.h5", lcgene, input$lc_civge_siz, input$lc_civge_col2, input$lc_civge_ord2, input$lc_civge_fsz, input$lc_civge_asp, input$lc_civge_txt)
    )
 })
 
-output$sc1_civge_oup2.png <- downloadHandler(
- filename = function() { paste0("sc1",input$sc1_civge_drX,"_",input$sc1_civge_drY,"_", input$sc1_civge_inp2,".png") },
+output$lc_civge_oup2.pdf <- downloadHandler(
+ filename = function() { tolower(paste0("lc", "_", input$lc_civge_drX,"_",input$lc_civge_drY,"_", input$lc_civge_inp2,".pdf")) },
  content = function(file) {
    ggsave(
-   file, device = "png", dpi = input$sc1_civge_oup2.res, bg = "white",
-   plot = scDRgene(sc1conf, sc1meta, input$sc1_civge_drX, input$sc1_civge_drY, input$sc1_civge_inp2, input$sc1_civge_sub1, input$sc1_civge_sub2, "sc1gexpr.h5", sc1gene, input$sc1_civge_siz, input$sc1_civge_col2, input$sc1_civge_ord2, input$sc1_civge_fsz, input$sc1_civge_asp, input$sc1_civge_txt)
+   file, device = "pdf", useDingbats = FALSE, bg = "white", onefile = TRUE,
+   plot = scDRgene(lcconf, lcmeta, input$lc_civge_drX, input$lc_civge_drY, input$lc_civge_inp2,  input$lc_civge_sub1, input$lc_civge_sub2, "lcgexpr.h5", lcgene, input$lc_civge_siz, input$lc_civge_col2, input$lc_civge_ord2, input$lc_civge_fsz, input$lc_civge_asp, input$lc_civge_txt)
+   )
+}) 
+
+output$lc_civge_oup2.svg <- downloadHandler(
+ filename = function() { tolower(paste0("lc", "_", input$lc_civge_drX,"_",input$lc_civge_drY,"_", input$lc_civge_inp2,".svg")) },
+ content = function(file) {
+   ggsave(
+   file, device = "svg", bg = "white",
+   plot = scDRgene(lcconf, lcmeta, input$lc_civge_drX, input$lc_civge_drY, input$lc_civge_inp2,  input$lc_civge_sub1, input$lc_civge_sub2, "lcgexpr.h5", lcgene, input$lc_civge_siz, input$lc_civge_col2, input$lc_civge_ord2, input$lc_civge_fsz, input$lc_civge_asp, input$lc_civge_txt)
    )
 }) # End of tab civge
 
@@ -1108,68 +1124,84 @@ output$sc1_civge_oup2.png <- downloadHandler(
 
 ### Tab civci cell info vs cell info ----
   
-  output$sc1_civci_sub1.ui <- renderUI({
-    sub = strsplit(sc1conf[UI == input$sc1_civci_sub1]$fID, "\\|")[[1]]
-    checkboxGroupInput("sc1_civci_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
+  output$lc_civci_sub1.ui <- renderUI({
+    sub = strsplit(lcconf[UI == input$lc_civci_sub1]$fID, "\\|")[[1]]
+    checkboxGroupInput("lc_civci_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
   })
-  observeEvent(input$sc1_civci_sub1non, {
-    sub = strsplit(sc1conf[UI == input$sc1_civci_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc1_civci_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
+  observeEvent(input$lc_civci_sub1non, {
+    sub = strsplit(lcconf[UI == input$lc_civci_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "lc_civci_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
   })
-  observeEvent(input$sc1_civci_sub1all, {
-    sub = strsplit(sc1conf[UI == input$sc1_civci_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc1_civci_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
+  observeEvent(input$lc_civci_sub1all, {
+    sub = strsplit(lcconf[UI == input$lc_civci_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "lc_civci_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc1_civci_oup1 <- renderPlot({
-  req(input$sc1_civci_inp1)
-  scDRcell(sc1conf, sc1meta, input$sc1_civci_drX, input$sc1_civci_drY, input$sc1_civci_inp1, input$sc1_civci_sub1, input$sc1_civci_sub2, input$sc1_civci_siz, input$sc1_civci_col1, input$sc1_civci_ord1, input$sc1_civci_fsz, input$sc1_civci_asp, input$sc1_civci_txt, input$sc1_civci_lab1)
+output$lc_civci_oup1 <- renderPlot({
+  req(input$lc_civci_inp1)
+  scDRcell(lcconf, lcmeta, input$lc_civci_drX, input$lc_civci_drY, input$lc_civci_inp1, input$lc_civci_sub1, input$lc_civci_sub2, input$lc_civci_siz, input$lc_civci_col1, input$lc_civci_ord1, input$lc_civci_fsz, input$lc_civci_asp, input$lc_civci_txt, input$lc_civci_lab1)
 })
 
-output$sc1_civci_oup1.ui <- renderUI({
-  show_progress(imageOutput("sc1_civci_oup1", height = pList[input$sc1_civci_psz]))
+output$lc_civci_oup1.ui <- renderUI({
+  show_progress(imageOutput("lc_civci_oup1", height = pList[input$lc_civci_psz]))
 })
 
-output$sc1_civci_oup1.pdf <- downloadHandler(
-  filename = function() { paste0("sc1", input$sc1_civci_drX, "_", input$sc1_civci_drY, "_", input$sc1_civci_inp1, ".pdf") },
+output$lc_civci_oup1.png <- downloadHandler(
+  filename = function() { tolower(paste0("lc", "_", input$lc_civci_drX, "_", input$lc_civci_drY, "_", input$lc_civci_inp1, ".png")) },
+  content = function(file) {
+    ggsave(
+    file, device = "png", dpi = input$lc_civci_oup1.res, bg = "white",
+    plot = scDRcell(lcconf, lcmeta, input$lc_civci_drX, input$lc_civci_drY, input$lc_civci_inp1, input$lc_civci_sub1, input$lc_civci_sub2, input$lc_civci_siz, input$lc_civci_col1, input$lc_civci_ord1, input$lc_civci_fsz, input$lc_civci_asp, input$lc_civci_txt, input$lc_civci_lab1)
+    )
+})
+
+output$lc_civci_oup1.pdf <- downloadHandler(
+  filename = function() { tolower(paste0("lc", "_", input$lc_civci_drX, "_", input$lc_civci_drY, "_", input$lc_civci_inp1, ".pdf")) },
   content = function(file) { ggsave(
-    file, device = "pdf", useDingbats = FALSE, bg = "white",
-    plot = scDRcell(sc1conf, sc1meta, input$sc1_civci_drX, input$sc1_civci_drY, input$sc1_civci_inp1, input$sc1_civci_sub1, input$sc1_civci_sub2, input$sc1_civci_siz, input$sc1_civci_col1, input$sc1_civci_ord1, input$sc1_civci_fsz, input$sc1_civci_asp, input$sc1_civci_txt, input$sc1_civci_lab1) )
+    file, device = "pdf", useDingbats = FALSE, bg = "white", onefile = TRUE,
+    plot = scDRcell(lcconf, lcmeta, input$lc_civci_drX, input$lc_civci_drY, input$lc_civci_inp1, input$lc_civci_sub1, input$lc_civci_sub2, input$lc_civci_siz, input$lc_civci_col1, input$lc_civci_ord1, input$lc_civci_fsz, input$lc_civci_asp, input$lc_civci_txt, input$lc_civci_lab1) )
 })
 
-output$sc1_civci_oup1.png <- downloadHandler(
-  filename = function() { paste0("sc1", input$sc1_civci_drX, "_", input$sc1_civci_drY, "_", input$sc1_civci_inp1, ".png") },
+output$lc_civci_oup1.svg <- downloadHandler(
+  filename = function() { tolower(paste0("lc", "_", input$lc_civci_drX, "_", input$lc_civci_drY, "_", input$lc_civci_inp1, ".svg")) },
+  content = function(file) { ggsave(
+    file, device = "svg", bg = "white",
+    plot = scDRcell(lcconf, lcmeta, input$lc_civci_drX, input$lc_civci_drY, input$lc_civci_inp1, input$lc_civci_sub1, input$lc_civci_sub2, input$lc_civci_siz, input$lc_civci_col1, input$lc_civci_ord1, input$lc_civci_fsz, input$lc_civci_asp, input$lc_civci_txt, input$lc_civci_lab1) )
+})
+
+output$lc_civci_oup2 <- renderPlot({
+  req(input$lc_civci_inp2)
+  scDRcell(lcconf, lcmeta, input$lc_civci_drX, input$lc_civci_drY, input$lc_civci_inp2, input$lc_civci_sub1, input$lc_civci_sub2, input$lc_civci_siz, input$lc_civci_col2, input$lc_civci_ord2, input$lc_civci_fsz, input$lc_civci_asp, input$lc_civci_txt, input$lc_civci_lab2)
+})
+
+output$lc_civci_oup2.ui <- renderUI({
+  show_progress(imageOutput("lc_civci_oup2", height = pList[input$lc_civci_psz]))
+})
+
+output$lc_civci_oup2.png <- downloadHandler(
+  filename = function() { tolower(paste0("lc", "_", input$lc_civci_drX,"_",input$lc_civci_drY,"_", input$lc_civci_inp2,".png")) },
   content = function(file) {
     ggsave(
-    file, device = "png", dpi = input$sc1_civci_oup1.res, bg = "white",
-    plot = scDRcell(sc1conf, sc1meta, input$sc1_civci_drX, input$sc1_civci_drY, input$sc1_civci_inp1, input$sc1_civci_sub1, input$sc1_civci_sub2, input$sc1_civci_siz, input$sc1_civci_col1, input$sc1_civci_ord1, input$sc1_civci_fsz, input$sc1_civci_asp, input$sc1_civci_txt, input$sc1_civci_lab1)
+    file, device = "png", bg = "white", dpi = input$lc_civci_oup2.res,
+    plot = scDRcell(lcconf, lcmeta, input$lc_civci_drX, input$lc_civci_drY, input$lc_civci_inp2, input$lc_civci_sub1, input$lc_civci_sub2, input$lc_civci_siz, input$lc_civci_col2, input$lc_civci_ord2, input$lc_civci_fsz, input$lc_civci_asp, input$lc_civci_txt, input$lc_civci_lab2)
+    )
+}) 
+
+output$lc_civci_oup2.pdf <- downloadHandler(
+  filename = function() { tolower(paste0("lc", "_", input$lc_civci_drX,"_",input$lc_civci_drY,"_", input$lc_civci_inp2,".pdf")) },
+  content = function(file) {
+    ggsave(
+    file, device = "pdf", useDingbats = FALSE, bg = "white", onefile = TRUE,
+    plot = scDRcell(lcconf, lcmeta, input$lc_civci_drX, input$lc_civci_drY, input$lc_civci_inp2, input$lc_civci_sub1, input$lc_civci_sub2, input$lc_civci_siz, input$lc_civci_col2, input$lc_civci_ord2, input$lc_civci_fsz, input$lc_civci_asp, input$lc_civci_txt, input$lc_civci_lab2) 
     )
 })
 
-output$sc1_civci_oup2 <- renderPlot({
-  req(input$sc1_civci_inp2)
-  scDRcell(sc1conf, sc1meta, input$sc1_civci_drX, input$sc1_civci_drY, input$sc1_civci_inp2, input$sc1_civci_sub1, input$sc1_civci_sub2, input$sc1_civci_siz, input$sc1_civci_col2, input$sc1_civci_ord2, input$sc1_civci_fsz, input$sc1_civci_asp, input$sc1_civci_txt, input$sc1_civci_lab2)
-})
-
-output$sc1_civci_oup2.ui <- renderUI({
-  show_progress(imageOutput("sc1_civci_oup2", height = pList[input$sc1_civci_psz]))
-})
-
-output$sc1_civci_oup2.pdf <- downloadHandler(
-  filename = function() { paste0("sc1",input$sc1_civci_drX,"_",input$sc1_civci_drY,"_", input$sc1_civci_inp2,".pdf") },
+output$lc_civci_oup2.svg <- downloadHandler(
+  filename = function() { tolower(paste0("lc", "_", input$lc_civci_drX,"_",input$lc_civci_drY,"_", input$lc_civci_inp2,".svg")) },
   content = function(file) {
     ggsave(
-    file, device = "pdf", useDingbats = FALSE, bg = "white",
-    plot = scDRcell(sc1conf, sc1meta, input$sc1_civci_drX, input$sc1_civci_drY, input$sc1_civci_inp2, input$sc1_civci_sub1, input$sc1_civci_sub2, input$sc1_civci_siz, input$sc1_civci_col2, input$sc1_civci_ord2, input$sc1_civci_fsz, input$sc1_civci_asp, input$sc1_civci_txt, input$sc1_civci_lab2) 
-    )
-})
-
-output$sc1_civci_oup2.png <- downloadHandler(
-  filename = function() { paste0("sc1",input$sc1_civci_drX,"_",input$sc1_civci_drY,"_", input$sc1_civci_inp2,".png") },
-  content = function(file) {
-    ggsave(
-    file, device = "png", bg = "white", dpi = input$sc1_civci_oup2.res,
-    plot = scDRcell(sc1conf, sc1meta, input$sc1_civci_drX, input$sc1_civci_drY, input$sc1_civci_inp2, input$sc1_civci_sub1, input$sc1_civci_sub2, input$sc1_civci_siz, input$sc1_civci_col2, input$sc1_civci_ord2, input$sc1_civci_fsz, input$sc1_civci_asp, input$sc1_civci_txt, input$sc1_civci_lab2)
+    file, device = "svg", bg = "white",
+    plot = scDRcell(lcconf, lcmeta, input$lc_civci_drX, input$lc_civci_drY, input$lc_civci_inp2, input$lc_civci_sub1, input$lc_civci_sub2, input$lc_civci_siz, input$lc_civci_col2, input$lc_civci_ord2, input$lc_civci_fsz, input$lc_civci_asp, input$lc_civci_txt, input$lc_civci_lab2) 
     )
 }) # End of tab civci
 
@@ -1177,78 +1209,100 @@ output$sc1_civci_oup2.png <- downloadHandler(
 
 ### Tab gevge gene exp vs gene exp ----
 
-  output$sc1_gevge_sub1.ui <- renderUI({
-    sub = strsplit(sc1conf[UI == input$sc1_gevge_sub1]$fID, "\\|")[[1]]
-    checkboxGroupInput("sc1_gevge_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
+  output$lc_gevge_sub1.ui <- renderUI({
+    sub = strsplit(lcconf[UI == input$lc_gevge_sub1]$fID, "\\|")[[1]]
+    checkboxGroupInput("lc_gevge_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
   })
-  observeEvent(input$sc1_gevge_sub1non, {
-    sub = strsplit(sc1conf[UI == input$sc1_gevge_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc1_gevge_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
+  observeEvent(input$lc_gevge_sub1non, {
+    sub = strsplit(lcconf[UI == input$lc_gevge_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "lc_gevge_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
   })
-  observeEvent(input$sc1_gevge_sub1all, {
-    sub = strsplit(sc1conf[UI == input$sc1_gevge_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc1_gevge_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
+  observeEvent(input$lc_gevge_sub1all, {
+    sub = strsplit(lcconf[UI == input$lc_gevge_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "lc_gevge_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc1_gevge_oup1 <- renderPlot({
-  req(input$sc1_gevge_inp1)
-  scDRgene(sc1conf, sc1meta, input$sc1_gevge_drX, input$sc1_gevge_drY, input$sc1_gevge_inp1, input$sc1_gevge_sub1, input$sc1_gevge_sub2, "sc1gexpr.h5", sc1gene, input$sc1_gevge_siz, input$sc1_gevge_col1, input$sc1_gevge_ord1, input$sc1_gevge_fsz, input$sc1_gevge_asp, input$sc1_gevge_txt)
+output$lc_gevge_oup1 <- renderPlot({
+  req(input$lc_gevge_inp1)
+  scDRgene(lcconf, lcmeta, input$lc_gevge_drX, input$lc_gevge_drY, input$lc_gevge_inp1, input$lc_gevge_sub1, input$lc_gevge_sub2, "lcgexpr.h5", lcgene, input$lc_gevge_siz, input$lc_gevge_col1, input$lc_gevge_ord1, input$lc_gevge_fsz, input$lc_gevge_asp, input$lc_gevge_txt)
 })
 
-output$sc1_gevge_oup1.ui <- renderUI({
-  show_progress(imageOutput("sc1_gevge_oup1", height = pList[input$sc1_gevge_psz]))
+output$lc_gevge_oup1.ui <- renderUI({
+  show_progress(imageOutput("lc_gevge_oup1", height = pList[input$lc_gevge_psz]))
 })
 
-output$sc1_gevge_oup1.pdf <- downloadHandler(
-  filename = function() { paste0("sc1", input$sc1_gevge_drX, "_", input$sc1_gevge_drY, "_", input$sc1_gevge_inp1, ".pdf") },
+output$lc_gevge_oup1.png <- downloadHandler(
+  filename = function() { tolower(paste0("lc", "_", input$lc_gevge_drX, "_", input$lc_gevge_drY, "_", input$lc_gevge_inp1,".png")) },
   content = function(file) {
     ggsave(
-    file, device = "pdf", useDingbats = FALSE, bg = "white",
-    plot = scDRgene(sc1conf, sc1meta, input$sc1_gevge_drX, input$sc1_gevge_drY, input$sc1_gevge_inp1, input$sc1_gevge_sub1, input$sc1_gevge_sub2, "sc1gexpr.h5", sc1gene, input$sc1_gevge_siz, input$sc1_gevge_col1, input$sc1_gevge_ord1, input$sc1_gevge_fsz, input$sc1_gevge_asp, input$sc1_gevge_txt)
+    file, device = "png", bg = "white", dpi = input$lc_gevge_oup1.res,
+    plot = scDRgene(lcconf, lcmeta, input$lc_gevge_drX, input$lc_gevge_drY, input$lc_gevge_inp1, 
+                    input$lc_gevge_sub1, input$lc_gevge_sub2,
+                    "lcgexpr.h5", lcgene,
+                    input$lc_gevge_siz, input$lc_gevge_col1, input$lc_gevge_ord1,
+                    input$lc_gevge_fsz, input$lc_gevge_asp, input$lc_gevge_txt)
     )
 })
 
-output$sc1_gevge_oup1.png <- downloadHandler(
-  filename = function() { paste0("sc1", input$sc1_gevge_drX, "_", input$sc1_gevge_drY, "_", input$sc1_gevge_inp1,".png") },
+output$lc_gevge_oup1.pdf <- downloadHandler(
+  filename = function() { tolower(paste0("lc", "_", input$lc_gevge_drX, "_", input$lc_gevge_drY, "_", input$lc_gevge_inp1, ".pdf")) },
   content = function(file) {
     ggsave(
-    file, device = "png", bg = "white", dpi = input$sc1_gevge_oup1.res,
-    plot = scDRgene(sc1conf, sc1meta, input$sc1_gevge_drX, input$sc1_gevge_drY, input$sc1_gevge_inp1, 
-                    input$sc1_gevge_sub1, input$sc1_gevge_sub2,
-                    "sc1gexpr.h5", sc1gene,
-                    input$sc1_gevge_siz, input$sc1_gevge_col1, input$sc1_gevge_ord1,
-                    input$sc1_gevge_fsz, input$sc1_gevge_asp, input$sc1_gevge_txt)
+    file, device = "pdf", useDingbats = FALSE, bg = "white", onefile = TRUE,
+    plot = scDRgene(lcconf, lcmeta, input$lc_gevge_drX, input$lc_gevge_drY, input$lc_gevge_inp1, input$lc_gevge_sub1, input$lc_gevge_sub2, "lcgexpr.h5", lcgene, input$lc_gevge_siz, input$lc_gevge_col1, input$lc_gevge_ord1, input$lc_gevge_fsz, input$lc_gevge_asp, input$lc_gevge_txt)
     )
 })
 
-output$sc1_gevge_oup2 <- renderPlot({
-  req(input$sc1_gevge_inp2)
-  scDRgene(sc1conf, sc1meta, input$sc1_gevge_drX, input$sc1_gevge_drY, input$sc1_gevge_inp2, input$sc1_gevge_sub1, input$sc1_gevge_sub2, "sc1gexpr.h5", sc1gene, input$sc1_gevge_siz, input$sc1_gevge_col2, input$sc1_gevge_ord2, input$sc1_gevge_fsz, input$sc1_gevge_asp, input$sc1_gevge_txt)
-})
-
-output$sc1_gevge_oup2.ui <- renderUI({
-  show_progress(imageOutput("sc1_gevge_oup2", height = pList[input$sc1_gevge_psz]))
-})
-
-output$sc1_gevge_oup2.pdf <- downloadHandler(
-  filename = function() { paste0("sc1", input$sc1_gevge_drX, "_", input$sc1_gevge_drY, "_", input$sc1_gevge_inp2,".pdf") },
+output$lc_gevge_oup1.svg <- downloadHandler(
+  filename = function() { tolower(paste0("lc", "_", input$lc_gevge_drX, "_", input$lc_gevge_drY, "_", input$lc_gevge_inp1, ".svg")) },
   content = function(file) {
     ggsave(
-    file, device = "pdf", useDingbats = FALSE, bg = "white",
-    plot = scDRgene(sc1conf, sc1meta, input$sc1_gevge_drX, input$sc1_gevge_drY, input$sc1_gevge_inp2, 
-                    input$sc1_gevge_sub1, input$sc1_gevge_sub2,
-                    "sc1gexpr.h5", sc1gene,
-                    input$sc1_gevge_siz, input$sc1_gevge_col2, input$sc1_gevge_ord2,
-                    input$sc1_gevge_fsz, input$sc1_gevge_asp, input$sc1_gevge_txt)
+    file, device = "svg", bg = "white",
+    plot = scDRgene(lcconf, lcmeta, input$lc_gevge_drX, input$lc_gevge_drY, input$lc_gevge_inp1, input$lc_gevge_sub1, input$lc_gevge_sub2, "lcgexpr.h5", lcgene, input$lc_gevge_siz, input$lc_gevge_col1, input$lc_gevge_ord1, input$lc_gevge_fsz, input$lc_gevge_asp, input$lc_gevge_txt)
     )
 })
 
-output$sc1_gevge_oup2.png <- downloadHandler(
-  filename = function() { paste0("sc1", input$sc1_gevge_drX, "_", input$sc1_gevge_drY, "_", input$sc1_gevge_inp2,".png") },
+output$lc_gevge_oup2 <- renderPlot({
+  req(input$lc_gevge_inp2)
+  scDRgene(lcconf, lcmeta, input$lc_gevge_drX, input$lc_gevge_drY, input$lc_gevge_inp2, input$lc_gevge_sub1, input$lc_gevge_sub2, "lcgexpr.h5", lcgene, input$lc_gevge_siz, input$lc_gevge_col2, input$lc_gevge_ord2, input$lc_gevge_fsz, input$lc_gevge_asp, input$lc_gevge_txt)
+})
+
+output$lc_gevge_oup2.ui <- renderUI({
+  show_progress(imageOutput("lc_gevge_oup2", height = pList[input$lc_gevge_psz]))
+})
+
+output$lc_gevge_oup2.png <- downloadHandler(
+  filename = function() { tolower(paste0("lc", "_", input$lc_gevge_drX, "_", input$lc_gevge_drY, "_", input$lc_gevge_inp2,".png")) },
   content = function(file) {
     ggsave(
-    file, device = "png", bg = "white", dpi = input$sc1_gevge_oup2.res,
-    plot = scDRgene(sc1conf, sc1meta, input$sc1_gevge_drX, input$sc1_gevge_drY, input$sc1_gevge_inp2, input$sc1_gevge_sub1, input$sc1_gevge_sub2, "sc1gexpr.h5", sc1gene, input$sc1_gevge_siz, input$sc1_gevge_col2, input$sc1_gevge_ord2, input$sc1_gevge_fsz, input$sc1_gevge_asp, input$sc1_gevge_txt)
+    file, device = "png", bg = "white", dpi = input$lc_gevge_oup2.res,
+    plot = scDRgene(lcconf, lcmeta, input$lc_gevge_drX, input$lc_gevge_drY, input$lc_gevge_inp2, input$lc_gevge_sub1, input$lc_gevge_sub2, "lcgexpr.h5", lcgene, input$lc_gevge_siz, input$lc_gevge_col2, input$lc_gevge_ord2, input$lc_gevge_fsz, input$lc_gevge_asp, input$lc_gevge_txt)
+    )
+}) 
+
+output$lc_gevge_oup2.pdf <- downloadHandler(
+  filename = function() { tolower(paste0("lc", "_", input$lc_gevge_drX, "_", input$lc_gevge_drY, "_", input$lc_gevge_inp2,".pdf")) },
+  content = function(file) {
+    ggsave(
+    file, device = "pdf", useDingbats = FALSE, bg = "white", onefile = TRUE,
+    plot = scDRgene(lcconf, lcmeta, input$lc_gevge_drX, input$lc_gevge_drY, input$lc_gevge_inp2, 
+                    input$lc_gevge_sub1, input$lc_gevge_sub2,
+                    "lcgexpr.h5", lcgene,
+                    input$lc_gevge_siz, input$lc_gevge_col2, input$lc_gevge_ord2,
+                    input$lc_gevge_fsz, input$lc_gevge_asp, input$lc_gevge_txt)
+    )
+})
+
+output$lc_gevge_oup2.svg <- downloadHandler(
+  filename = function() { tolower(paste0("lc", "_", input$lc_gevge_drX, "_", input$lc_gevge_drY, "_", input$lc_gevge_inp2,".svg")) },
+  content = function(file) {
+    ggsave(
+    file, device = "svg", bg = "white",
+    plot = scDRgene(lcconf, lcmeta, input$lc_gevge_drX, input$lc_gevge_drY, input$lc_gevge_inp2, 
+                    input$lc_gevge_sub1, input$lc_gevge_sub2,
+                    "lcgexpr.h5", lcgene,
+                    input$lc_gevge_siz, input$lc_gevge_col2, input$lc_gevge_ord2,
+                    input$lc_gevge_fsz, input$lc_gevge_asp, input$lc_gevge_txt)
     )
 }) # End of tab gevge
 
@@ -1257,88 +1311,107 @@ output$sc1_gevge_oup2.png <- downloadHandler(
 
 ### Tab gem gene expression multi ----
 
-output$sc1_gem_sub1.ui <- renderUI({
-  sub = strsplit(sc1conf[UI == input$sc1_gem_sub1]$fID, "\\|")[[1]]
-  checkboxGroupInput("sc1_gem_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
+output$lc_gem_sub1.ui <- renderUI({
+  sub = strsplit(lcconf[UI == input$lc_gem_sub1]$fID, "\\|")[[1]]
+  checkboxGroupInput("lc_gem_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
 })
-observeEvent(input$sc1_gem_sub1non, {
-  sub = strsplit(sc1conf[UI == input$sc1_gem_sub1]$fID, "\\|")[[1]]
-  updateCheckboxGroupInput(session, inputId = "sc1_gem_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
+observeEvent(input$lc_gem_sub1non, {
+  sub = strsplit(lcconf[UI == input$lc_gem_sub1]$fID, "\\|")[[1]]
+  updateCheckboxGroupInput(session, inputId = "lc_gem_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
 })
-observeEvent(input$sc1_gem_sub1all, {
-  sub = strsplit(sc1conf[UI == input$sc1_gem_sub1]$fID, "\\|")[[1]]
-  updateCheckboxGroupInput(session, inputId = "sc1_gem_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
+observeEvent(input$lc_gem_sub1all, {
+  sub = strsplit(lcconf[UI == input$lc_gem_sub1]$fID, "\\|")[[1]]
+  updateCheckboxGroupInput(session, inputId = "lc_gem_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
 })
 
-output$sc1_gem_oup1 <- renderPlot({
-  req(input$sc1_gem_inp)
+output$lc_gem_oup1 <- renderPlot({
+  req(input$lc_gem_inp)
   
-  scFeature(sc1conf, sc1meta, input$sc1_gem_drX, input$sc1_gem_drY, input$sc1_gem_inp, input$sc1_gem_sub1, input$sc1_gem_sub2, "sc1gexpr.h5", sc1gene, input$sc1_gem_siz, input$sc1_gem_col, input$sc1_gem_ord, input$sc1_gem_fsz, input$sc1_gem_asp, input$sc1_gem_txt, input$sc1_gem_ncol)
+  scFeature(lcconf, lcmeta, input$lc_gem_drX, input$lc_gem_drY, input$lc_gem_inp, input$lc_gem_sub1, input$lc_gem_sub2, "lcgexpr.h5", lcgene, input$lc_gem_siz, input$lc_gem_col, input$lc_gem_ord, input$lc_gem_fsz, input$lc_gem_asp, input$lc_gem_txt, input$lc_gem_ncol)
 })
 
-output$sc1_gem_oup1.ui <- renderUI({
-  show_progress(imageOutput("sc1_gem_oup1", height = pList[input$sc1_gem_psz]))
+output$lc_gem_oup1.ui <- renderUI({
+  show_progress(imageOutput("lc_gem_oup1", height = pList[input$lc_gem_psz]))
 })
 
-output$sc1_gem_oup1.pdf <- downloadHandler(
-  filename = function() { paste0("sc1", input$sc1_gem_drX, "_", input$sc1_gem_drY, "_expression.pdf") },
-  content = function(file) { ggsave(
-    file, device = "pdf", useDingbats = FALSE, height = input$sc1_gem_oup1.height, width = input$sc1_gem_oup1.width, units = "cm", bg = "white",
-    plot = scFeature(sc1conf, sc1meta, input$sc1_gem_drX, input$sc1_gem_drY, input$sc1_gem_inp, input$sc1_gem_sub1, input$sc1_gem_sub2, "sc1gexpr.h5", sc1gene, input$sc1_gem_siz, input$sc1_gem_col, input$sc1_gem_ord, input$sc1_gem_fsz, input$sc1_gem_asp, input$sc1_gem_txt, input$sc1_gem_ncol))
-})
-
-output$sc1_gem_oup1.png <- downloadHandler(
-  filename = function() { paste0("sc1", input$sc1_gem_drX, "_", input$sc1_gem_drY, "_expression.png") },
+output$lc_gem_oup1.png <- downloadHandler(
+  filename = function() { tolower(paste0("lc", "_", input$lc_gem_drX, "_", input$lc_gem_drY, "_expression.png")) },
   content = function(file) {
     ggsave(
-      file, device = "png", height = input$sc1_gem_oup1.height, width = input$sc1_gem_oup1.width, dpi = input$sc1_gem_oup1.res, units = "cm", bg = "white",
-      plot = scFeature(sc1conf, sc1meta, input$sc1_gem_drX, input$sc1_gem_drY, input$sc1_gem_inp, input$sc1_gem_sub1, input$sc1_gem_sub2, "sc1gexpr.h5", sc1gene, input$sc1_gem_siz, input$sc1_gem_col, input$sc1_gem_ord, input$sc1_gem_fsz, input$sc1_gem_asp, input$sc1_gem_txt, input$sc1_gem_ncol)
+      file, device = "png", height = input$lc_gem_oup1.height, width = input$lc_gem_oup1.width, dpi = input$lc_gem_oup1.res, units = "cm", bg = "white",
+      plot = scFeature(lcconf, lcmeta, input$lc_gem_drX, input$lc_gem_drY, input$lc_gem_inp, input$lc_gem_sub1, input$lc_gem_sub2, "lcgexpr.h5", lcgene, input$lc_gem_siz, input$lc_gem_col, input$lc_gem_ord, input$lc_gem_fsz, input$lc_gem_asp, input$lc_gem_txt, input$lc_gem_ncol)
     )
+}) 
+
+output$lc_gem_oup1.pdf <- downloadHandler(
+  filename = function() { tolower(paste0("lc", "_", input$lc_gem_drX, "_", input$lc_gem_drY, "_expression.pdf")) },
+  content = function(file) {
+  pdf(file, useDingbats = FALSE, height = input$lc_gem_oup1.height/2.54, width = input$lc_gem_oup1.width/2.54, bg = "white", onefile = TRUE)
+  showtext::showtext_begin()
+  print(scFeature(lcconf, lcmeta, input$lc_gem_drX, input$lc_gem_drY, input$lc_gem_inp, input$lc_gem_sub1, input$lc_gem_sub2, "lcgexpr.h5", lcgene, input$lc_gem_siz, input$lc_gem_col, input$lc_gem_ord, input$lc_gem_fsz, input$lc_gem_asp, input$lc_gem_txt, input$lc_gem_ncol))
+  showtext::showtext_end()
+  dev.off()
+})
+
+output$lc_gem_oup1.svg <- downloadHandler(
+  filename = function() { tolower(paste0("lc", "_", input$lc_gem_drX, "_", input$lc_gem_drY, "_expression.svg")) },
+  content = function(file) { ggsave(
+    file, device = "svg", height = input$lc_gem_oup1.height, width = input$lc_gem_oup1.width, units = "cm", bg = "white",
+    plot = scFeature(lcconf, lcmeta, input$lc_gem_drX, input$lc_gem_drY, input$lc_gem_inp, input$lc_gem_sub1, input$lc_gem_sub2, "lcgexpr.h5", lcgene, input$lc_gem_siz, input$lc_gem_col, input$lc_gem_ord, input$lc_gem_fsz, input$lc_gem_asp, input$lc_gem_txt, input$lc_gem_ncol))
 }) # End of tab gem
 
 
 
 ### Tab gec gene co-expression ----
 
-  output$sc1_gec_sub1.ui <- renderUI({
-    sub = strsplit(sc1conf[UI == input$sc1_gec_sub1]$fID, "\\|")[[1]]
-    checkboxGroupInput("sc1_gec_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
+  output$lc_gec_sub1.ui <- renderUI({
+    sub = strsplit(lcconf[UI == input$lc_gec_sub1]$fID, "\\|")[[1]]
+    checkboxGroupInput("lc_gec_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
   })
-  observeEvent(input$sc1_gec_sub1non, {
-    sub = strsplit(sc1conf[UI == input$sc1_gec_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc1_gec_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
+  observeEvent(input$lc_gec_sub1non, {
+    sub = strsplit(lcconf[UI == input$lc_gec_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "lc_gec_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
   })
-  observeEvent(input$sc1_gec_sub1all, {
-    sub = strsplit(sc1conf[UI == input$sc1_gec_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc1_gec_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
+  observeEvent(input$lc_gec_sub1all, {
+    sub = strsplit(lcconf[UI == input$lc_gec_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "lc_gec_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc1_gec_oup1 <- renderPlot({
-  scDRcoexFull(sc1conf, sc1meta, input$sc1_gec_drX, input$sc1_gec_drY, input$sc1_gec_inp1, input$sc1_gec_inp2, input$sc1_gec_sub1, input$sc1_gec_sub2, "sc1gexpr.h5", sc1gene, input$sc1_gec_siz, input$sc1_gec_col1, input$sc1_gec_ord1, input$sc1_gec_fsz, input$sc1_gec_asp, input$sc1_gec_txt)
+output$lc_gec_oup1 <- renderPlot({
+  scDRcoexFull(lcconf, lcmeta, input$lc_gec_drX, input$lc_gec_drY, input$lc_gec_inp1, input$lc_gec_inp2, input$lc_gec_sub1, input$lc_gec_sub2, "lcgexpr.h5", lcgene, input$lc_gec_siz, input$lc_gec_col1, input$lc_gec_ord1, input$lc_gec_fsz, input$lc_gec_asp, input$lc_gec_txt)
 })
 
-output$sc1_gec_oup1.ui <- renderUI({
-  show_progress(imageOutput("sc1_gec_oup1", height = pList2[input$sc1_gec_psz]))
+output$lc_gec_oup1.ui <- renderUI({
+  show_progress(imageOutput("lc_gec_oup1", height = pList2[input$lc_gec_psz]))
 })
 
-output$sc1_gec_oup1.pdf <- downloadHandler(
-  filename = function() { paste0("sc1", input$sc1_gec_drX, "_", input$sc1_gec_drY, "_", input$sc1_gec_inp1, "_", input$sc1_gec_inp2, ".pdf") },
+output$lc_gec_oup1.png <- downloadHandler(
+  filename = function() { tolower(paste0("lc", "_", input$lc_gec_drX, "_", input$lc_gec_drY, "_", input$lc_gec_inp1, "_", input$lc_gec_inp2, ".png")) },
+  content = function(file) { ggsave(
+    file, device = "png", bg = "white", dpi = input$lc_gec_oup1.res,
+    plot = scDRcoexFull(lcconf, lcmeta, input$lc_gec_drX, input$lc_gec_drY, input$lc_gec_inp1, input$lc_gec_inp2, input$lc_gec_sub1, input$lc_gec_sub2, "lcgexpr.h5", lcgene, input$lc_gec_siz, input$lc_gec_col1, input$lc_gec_ord1, input$lc_gec_fsz, input$lc_gec_asp, input$lc_gec_txt) )
+})
+
+output$lc_gec_oup1.pdf <- downloadHandler(
+  filename = function() { tolower(paste0("lc", "_", input$lc_gec_drX, "_", input$lc_gec_drY, "_", input$lc_gec_inp1, "_", input$lc_gec_inp2, ".pdf")) },
   content = function(file) {
     ggsave(
-    file, device = "pdf", useDingbats = FALSE, bg = "white",
-    plot = scDRcoexFull(sc1conf, sc1meta, input$sc1_gec_drX, input$sc1_gec_drY, input$sc1_gec_inp1, input$sc1_gec_inp2, input$sc1_gec_sub1, input$sc1_gec_sub2, "sc1gexpr.h5", sc1gene, input$sc1_gec_siz, input$sc1_gec_col1, input$sc1_gec_ord1, input$sc1_gec_fsz, input$sc1_gec_asp, input$sc1_gec_txt)
+    file, device = "pdf", useDingbats = FALSE, bg = "white", onefile = TRUE,
+    plot = scDRcoexFull(lcconf, lcmeta, input$lc_gec_drX, input$lc_gec_drY, input$lc_gec_inp1, input$lc_gec_inp2, input$lc_gec_sub1, input$lc_gec_sub2, "lcgexpr.h5", lcgene, input$lc_gec_siz, input$lc_gec_col1, input$lc_gec_ord1, input$lc_gec_fsz, input$lc_gec_asp, input$lc_gec_txt)
     )
 })
 
-output$sc1_gec_oup1.png <- downloadHandler(
-  filename = function() { paste0("sc1", input$sc1_gec_drX, "_", input$sc1_gec_drY, "_", input$sc1_gec_inp1, "_", input$sc1_gec_inp2, ".png") },
-  content = function(file) { ggsave(
-    file, device = "png", bg = "white", dpi = input$sc1_gec_oup1.res,
-    plot = scDRcoexFull(sc1conf, sc1meta, input$sc1_gec_drX, input$sc1_gec_drY, input$sc1_gec_inp1, input$sc1_gec_inp2, input$sc1_gec_sub1, input$sc1_gec_sub2, "sc1gexpr.h5", sc1gene, input$sc1_gec_siz, input$sc1_gec_col1, input$sc1_gec_ord1, input$sc1_gec_fsz, input$sc1_gec_asp, input$sc1_gec_txt) )
+output$lc_gec_oup1.svg <- downloadHandler(
+  filename = function() { tolower(paste0("lc", "_", input$lc_gec_drX, "_", input$lc_gec_drY, "_", input$lc_gec_inp1, "_", input$lc_gec_inp2, ".svg")) },
+  content = function(file) {
+    ggsave(
+    file, device = "svg", bg = "white",
+    plot = scDRcoexFull(lcconf, lcmeta, input$lc_gec_drX, input$lc_gec_drY, input$lc_gec_inp1, input$lc_gec_inp2, input$lc_gec_sub1, input$lc_gec_sub2, "lcgexpr.h5", lcgene, input$lc_gec_siz, input$lc_gec_col1, input$lc_gec_ord1, input$lc_gec_fsz, input$lc_gec_asp, input$lc_gec_txt)
+    )
 })
 
-output$sc1_gec_.dt <- renderDataTable({
-  ggData = scDRcoexNum(sc1conf, sc1meta, input$sc1_gec_inp1, input$sc1_gec_inp2, input$sc1_gec_sub1, input$sc1_gec_sub2, "sc1gexpr.h5", sc1gene)
+output$lc_gec_.dt <- renderDataTable({
+  ggData = scDRcoexNum(lcconf, lcmeta, input$lc_gec_inp1, input$lc_gec_inp2, input$lc_gec_sub1, input$lc_gec_sub2, "lcgexpr.h5", lcgene)
   datatable(ggData, rownames = FALSE, extensions = "Buttons", options = list(pageLength = -1, dom = "tB", buttons = c("copy", "csv", "excel"))) %>%
             formatRound(columns = c("percent"), digits = 2)
 }) # End of tab gec
@@ -1347,45 +1420,55 @@ output$sc1_gec_.dt <- renderDataTable({
 
 ### Tab vio violinplot / boxplot / lineplot ----
 
-  output$sc1_vio_sub1.ui <- renderUI({
-    sub = strsplit(sc1conf[UI == input$sc1_vio_sub1]$fID, "\\|")[[1]]
-    checkboxGroupInput("sc1_vio_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
+  output$lc_vio_sub1.ui <- renderUI({
+    sub = strsplit(lcconf[UI == input$lc_vio_sub1]$fID, "\\|")[[1]]
+    checkboxGroupInput("lc_vio_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
   })
-  observeEvent(input$sc1_vio_sub1non, {
-    sub = strsplit(sc1conf[UI == input$sc1_vio_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc1_vio_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
+  observeEvent(input$lc_vio_sub1non, {
+    sub = strsplit(lcconf[UI == input$lc_vio_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "lc_vio_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
   })
-  observeEvent(input$sc1_vio_sub1all, {
-    sub = strsplit(sc1conf[UI == input$sc1_vio_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc1_vio_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
+  observeEvent(input$lc_vio_sub1all, {
+    sub = strsplit(lcconf[UI == input$lc_vio_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "lc_vio_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc1_vio_oup <- renderPlot({
-  gh5 <- ifelse(input$sc1_vio_datatype == "normalised","sc1gexpr.h5","sc1gexpr2.h5")
-  scVioBox(sc1conf, sc1meta, input$sc1_vio_inp1, input$sc1_vio_inp2, input$sc1_vio_sub1, input$sc1_vio_sub2, gh5, sc1gene, input$sc1_vio_typ, input$sc1_vio_pts, input$sc1_vio_siz, input$sc1_vio_fsz, input$sc1_vio_barsz)
+output$lc_vio_oup <- renderPlot({
+  gh5 <- ifelse(input$lc_vio_datatype == "normalised","lcgexpr.h5","lcgexpr2.h5")
+  scVioBox(lcconf, lcmeta, input$lc_vio_inp1, input$lc_vio_inp2, input$lc_vio_sub1, input$lc_vio_sub2, gh5, lcgene, input$lc_vio_typ, input$lc_vio_pts, input$lc_vio_siz, input$lc_vio_fsz, input$lc_vio_barsz)
 })
 
-output$sc1_vio_oup.ui <- renderUI({
-  show_progress(imageOutput("sc1_vio_oup", height = pList2[input$sc1_vio_psz]))
+output$lc_vio_oup.ui <- renderUI({
+  show_progress(imageOutput("lc_vio_oup", height = pList2[input$lc_vio_psz]))
 })
 
-output$sc1_vio_oup.pdf <- downloadHandler(
-  filename = function() { paste0("sc1", input$sc1_vio_typ, "_", input$sc1_vio_inp1, "_", input$sc1_vio_inp2, ".pdf") },
+output$lc_vio_oup.png <- downloadHandler(
+  filename = function() { tolower(paste0("lc", "_", input$lc_vio_typ, "_", input$lc_vio_datatype, "_", input$lc_vio_inp1, "_", input$lc_vio_inp2,".png")) },
   content = function(file) {
-    gh5 <- ifelse(input$sc1_vio_datatype == "normalised","sc1gexpr.h5","sc1gexpr2.h5")
+    gh5 <- ifelse(input$lc_vio_datatype == "normalised","lcgexpr.h5","lcgexpr2.h5")
     ggsave(
-    file, device = "pdf", useDingbats = FALSE, bg = "white",
-    plot = scVioBox(sc1conf, sc1meta, input$sc1_vio_inp1, input$sc1_vio_inp2, input$sc1_vio_sub1, input$sc1_vio_sub2, gh5, sc1gene, input$sc1_vio_typ, input$sc1_vio_pts, input$sc1_vio_siz, input$sc1_vio_fsz, input$sc1_vio_barsz)
+    file, device = "png", bg = "white", dpi = input$lc_vio_oup.res,
+    plot = scVioBox(lcconf, lcmeta, input$lc_vio_inp1, input$lc_vio_inp2, input$lc_vio_sub1, input$lc_vio_sub2, gh5, lcgene, input$lc_vio_typ, input$lc_vio_pts, input$lc_vio_siz, input$lc_vio_fsz, input$lc_vio_barsz)
+    )
+}) 
+
+output$lc_vio_oup.pdf <- downloadHandler(
+  filename = function() { tolower(paste0("lc", "_", input$lc_vio_typ, "_", input$lc_vio_datatype, "_", input$lc_vio_inp1, "_", input$lc_vio_inp2, ".pdf")) },
+  content = function(file) {
+    gh5 <- ifelse(input$lc_vio_datatype == "normalised","lcgexpr.h5","lcgexpr2.h5")
+    ggsave(
+    file, device = "pdf", useDingbats = FALSE, bg = "white", onefile = TRUE,
+    plot = scVioBox(lcconf, lcmeta, input$lc_vio_inp1, input$lc_vio_inp2, input$lc_vio_sub1, input$lc_vio_sub2, gh5, lcgene, input$lc_vio_typ, input$lc_vio_pts, input$lc_vio_siz, input$lc_vio_fsz, input$lc_vio_barsz)
     )
 })
 
-output$sc1_vio_oup.png <- downloadHandler(
-  filename = function() { paste0("sc1", input$sc1_vio_typ, "_", input$sc1_vio_inp1, "_", input$sc1_vio_inp2,".png") },
+output$lc_vio_oup.svg <- downloadHandler(
+  filename = function() { tolower(paste0("lc", "_", input$lc_vio_typ, "_", input$lc_vio_datatype, "_", input$lc_vio_inp1, "_", input$lc_vio_inp2, ".svg")) },
   content = function(file) {
-    gh5 <- ifelse(input$sc1_vio_datatype == "normalised","sc1gexpr.h5","sc1gexpr2.h5")
+    gh5 <- ifelse(input$lc_vio_datatype == "normalised","lcgexpr.h5","lcgexpr2.h5")
     ggsave(
-    file, device = "png", bg = "white", dpi = input$sc1_vio_oup.res,
-    plot = scVioBox(sc1conf, sc1meta, input$sc1_vio_inp1, input$sc1_vio_inp2, input$sc1_vio_sub1, input$sc1_vio_sub2, gh5, sc1gene, input$sc1_vio_typ, input$sc1_vio_pts, input$sc1_vio_siz, input$sc1_vio_fsz, input$sc1_vio_barsz)
+    file, device = "svg", bg = "white",
+    plot = scVioBox(lcconf, lcmeta, input$lc_vio_inp1, input$lc_vio_inp2, input$lc_vio_sub1, input$lc_vio_sub2, gh5, lcgene, input$lc_vio_typ, input$lc_vio_pts, input$lc_vio_siz, input$lc_vio_fsz, input$lc_vio_barsz)
     )
 }) # End of tab vio
 
@@ -1394,42 +1477,51 @@ output$sc1_vio_oup.png <- downloadHandler(
 
 ### Tab pro proportion plot ----
 
-  output$sc1_pro_sub1.ui <- renderUI({
-    sub = strsplit(sc1conf[UI == input$sc1_pro_sub1]$fID, "\\|")[[1]]
-    checkboxGroupInput("sc1_pro_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
+  output$lc_pro_sub1.ui <- renderUI({
+    sub = strsplit(lcconf[UI == input$lc_pro_sub1]$fID, "\\|")[[1]]
+    checkboxGroupInput("lc_pro_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
   })
-  observeEvent(input$sc1_pro_sub1non, {
-    sub = strsplit(sc1conf[UI == input$sc1_pro_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc1_pro_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
+  observeEvent(input$lc_pro_sub1non, {
+    sub = strsplit(lcconf[UI == input$lc_pro_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "lc_pro_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
   })
-  observeEvent(input$sc1_pro_sub1all, {
-    sub = strsplit(sc1conf[UI == input$sc1_pro_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc1_pro_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
+  observeEvent(input$lc_pro_sub1all, {
+    sub = strsplit(lcconf[UI == input$lc_pro_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "lc_pro_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc1_pro_oup <- renderPlot({
-  scProp(sc1conf, sc1meta, input$sc1_pro_inp1, input$sc1_pro_inp2, input$sc1_pro_sub1, input$sc1_pro_sub2, input$sc1_pro_typ, input$sc1_pro_flp, input$sc1_pro_fsz)
+output$lc_pro_oup <- renderPlot({
+  scProp(lcconf, lcmeta, input$lc_pro_inp1, input$lc_pro_inp2, input$lc_pro_sub1, input$lc_pro_sub2, input$lc_pro_typ, input$lc_pro_flp, input$lc_pro_fsz)
 })
 
-output$sc1_pro_oup.ui <- renderUI({
-  show_progress(imageOutput("sc1_pro_oup", height = pList2[input$sc1_pro_psz]))
+output$lc_pro_oup.ui <- renderUI({
+  show_progress(imageOutput("lc_pro_oup", height = pList2[input$lc_pro_psz]))
 })
 
-output$sc1_pro_oup.pdf <- downloadHandler(
-  filename = function() { paste0("sc1", input$sc1_pro_typ, "_", input$sc1_pro_inp1, "_", input$sc1_pro_inp2, ".pdf") },
+output$lc_pro_oup.png <- downloadHandler(
+  filename = function() { tolower(paste0("lc", "_", input$lc_pro_typ, "_", input$lc_pro_inp1, "_", input$lc_pro_inp2, ".png")) },
   content = function(file) {
     ggsave(
-    file, device = "pdf", useDingbats = FALSE, bg = "white",
-    plot = scProp(sc1conf, sc1meta, input$sc1_pro_inp1, input$sc1_pro_inp2, input$sc1_pro_sub1, input$sc1_pro_sub2, input$sc1_pro_typ, input$sc1_pro_flp, input$sc1_pro_fsz)
+    file, device = "png", bg = "white", dpi = input$lc_pro_oup.res,
+    plot = scProp(lcconf, lcmeta, input$lc_pro_inp1, input$lc_pro_inp2, input$lc_pro_sub1, input$lc_pro_sub2, input$lc_pro_typ, input$lc_pro_flp, input$lc_pro_fsz)
+    )
+  }) 
+  
+output$lc_pro_oup.pdf <- downloadHandler(
+  filename = function() { tolower(paste0("lc", "_", input$lc_pro_typ, "_", input$lc_pro_inp1, "_", input$lc_pro_inp2, ".pdf")) },
+  content = function(file) {
+    ggsave(
+    file, device = "pdf", useDingbats = FALSE, bg = "white", onefile = TRUE,
+    plot = scProp(lcconf, lcmeta, input$lc_pro_inp1, input$lc_pro_inp2, input$lc_pro_sub1, input$lc_pro_sub2, input$lc_pro_typ, input$lc_pro_flp, input$lc_pro_fsz)
     )
   })
-
-output$sc1_pro_oup.png <- downloadHandler(
-  filename = function() { paste0("sc1", input$sc1_pro_typ, "_", input$sc1_pro_inp1, "_", input$sc1_pro_inp2, ".png") },
+  
+output$lc_pro_oup.svg <- downloadHandler(
+  filename = function() { tolower(paste0("lc", "_", input$lc_pro_typ, "_", input$lc_pro_inp1, "_", input$lc_pro_inp2, ".svg")) },
   content = function(file) {
     ggsave(
-    file, device = "png", bg = "white", dpi = input$sc1_pro_oup.res,
-    plot = scProp(sc1conf, sc1meta, input$sc1_pro_inp1, input$sc1_pro_inp2, input$sc1_pro_sub1, input$sc1_pro_sub2, input$sc1_pro_typ, input$sc1_pro_flp, input$sc1_pro_fsz)
+    file, device = "svg", bg = "white",
+    plot = scProp(lcconf, lcmeta, input$lc_pro_inp1, input$lc_pro_inp2, input$lc_pro_sub1, input$lc_pro_sub2, input$lc_pro_typ, input$lc_pro_flp, input$lc_pro_fsz)
     )
   }) # End of tab pro
 
@@ -1437,54 +1529,58 @@ output$sc1_pro_oup.png <- downloadHandler(
 
 ### Tab hea heatmap / dotplot ----
 
-  output$sc1_hea_sub1.ui <- renderUI({
-    sub = strsplit(sc1conf[UI == input$sc1_hea_sub1]$fID, "\\|")[[1]]
-    checkboxGroupInput("sc1_hea_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
+  output$lc_hea_sub1.ui <- renderUI({
+    sub = strsplit(lcconf[UI == input$lc_hea_sub1]$fID, "\\|")[[1]]
+    checkboxGroupInput("lc_hea_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
   })
-  observeEvent(input$sc1_hea_sub1non, {
-    sub = strsplit(sc1conf[UI == input$sc1_hea_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc1_hea_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
+  observeEvent(input$lc_hea_sub1non, {
+    sub = strsplit(lcconf[UI == input$lc_hea_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "lc_hea_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
   })
-  observeEvent(input$sc1_hea_sub1all, {
-    sub = strsplit(sc1conf[UI == input$sc1_hea_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc1_hea_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
+  observeEvent(input$lc_hea_sub1all, {
+    sub = strsplit(lcconf[UI == input$lc_hea_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "lc_hea_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc1_hea_oupTxt <- renderUI({
-  geneList = scGeneList(input$sc1_hea_inp, sc1gene)
+output$lc_hea_oupTxt <- renderUI({
+  geneList = scGeneList(input$lc_hea_inp, lcgene)
   if(nrow(geneList) > 50){
     HTML("More than 50 input genes! Please reduce the gene list!")
-  } else {
-    if(nrow(geneList[present == FALSE]) > 0){
-      oup = paste0(nrow(geneList[present == FALSE]), " genes not found (", paste0(geneList[present == FALSE]$gene, collapse = ", "), ")")
-      HTML(paste0("<span class='text-danger'>",oup,"</span>"))
-    }
   }
 })
 
-output$sc1_hea_oup <- renderPlot({
-  scBubbHeat(sc1conf, sc1meta, input$sc1_hea_inp, input$sc1_hea_grp, input$sc1_hea_plt, input$sc1_hea_sub1, input$sc1_hea_sub2, "sc1gexpr.h5", sc1gene, input$sc1_hea_scl, input$sc1_hea_row, input$sc1_hea_col, input$sc1_hea_cols, input$sc1_hea_fsz)
+output$lc_hea_oup <- renderPlot({
+  scBubbHeat(lcconf, lcmeta, input$lc_hea_inp, input$lc_hea_grp, input$lc_hea_plt, input$lc_hea_sub1, input$lc_hea_sub2, "lcgexpr.h5", lcgene, input$lc_hea_scl, input$lc_hea_row, input$lc_hea_col, input$lc_hea_cols, input$lc_hea_fsz)
 })
 
-output$sc1_hea_oup.ui <- renderUI({
-  show_progress(imageOutput("sc1_hea_oup", height = pList3[input$sc1_hea_psz]))
+output$lc_hea_oup.ui <- renderUI({
+  show_progress(imageOutput("lc_hea_oup", height = pList3[input$lc_hea_psz]))
 })
 
-output$sc1_hea_oup.pdf <- downloadHandler(
-  filename = function() { paste0("sc1",input$sc1_hea_plt,"_",input$sc1_hea_grp,".pdf") },
+output$lc_hea_oup.png <- downloadHandler(
+  filename = function() { tolower(paste0("lc", "_", input$lc_hea_plt,"_",input$lc_hea_grp,".png")) },
   content = function(file) {
     ggsave(
-    file, device = "pdf", useDingbats = FALSE, bg = "white",
-    plot = scBubbHeat(sc1conf, sc1meta, input$sc1_hea_inp, input$sc1_hea_grp, input$sc1_hea_plt, input$sc1_hea_sub1, input$sc1_hea_sub2, "sc1gexpr.h5", sc1gene, input$sc1_hea_scl, input$sc1_hea_row, input$sc1_hea_col, input$sc1_hea_cols, input$sc1_hea_fsz, save = TRUE)
+    file, device = "png", bg = "white", height = input$lc_hea_oup.height, width = input$lc_hea_oup.width, units = "cm", dpi = input$lc_hea_oup.res, plot = scBubbHeat(lcconf, lcmeta, input$lc_hea_inp, input$lc_hea_grp, input$lc_hea_plt, input$lc_hea_sub1, input$lc_hea_sub2, "lcgexpr.h5", lcgene, input$lc_hea_scl, input$lc_hea_row, input$lc_hea_col, input$lc_hea_cols, input$lc_hea_fsz)
     )
 })
 
-output$sc1_hea_oup.png <- downloadHandler(
-  filename = function() { paste0("sc1",input$sc1_hea_plt,"_",input$sc1_hea_grp,".png") },
+output$lc_hea_oup.pdf <- downloadHandler(
+  filename = function() { tolower(paste0("lc", "_", input$lc_hea_plt,"_",input$lc_hea_grp,".pdf")) },
+  content = function(file) {
+    pdf(file, useDingbats = FALSE, bg = "white", height = input$lc_hea_oup.height/2.54, width = input$lc_hea_oup.width/2.54, onefile = TRUE)
+    showtext::showtext_begin()
+    print(scBubbHeat(lcconf, lcmeta, input$lc_hea_inp, input$lc_hea_grp, input$lc_hea_plt, input$lc_hea_sub1, input$lc_hea_sub2, "lcgexpr.h5", lcgene, input$lc_hea_scl, input$lc_hea_row, input$lc_hea_col, input$lc_hea_cols, input$lc_hea_fsz))
+    showtext::showtext_end()
+    dev.off()
+})
+
+output$lc_hea_oup.svg <- downloadHandler(
+  filename = function() { tolower(paste0("lc", "_", input$lc_hea_plt,"_",input$lc_hea_grp,".svg")) },
   content = function(file) {
     ggsave(
-    file, device = "png", bg = "white", dpi = input$sc1_hea_oup.res,
-    plot = scBubbHeat(sc1conf, sc1meta, input$sc1_hea_inp, input$sc1_hea_grp, input$sc1_hea_plt, input$sc1_hea_sub1, input$sc1_hea_sub2, "sc1gexpr.h5", sc1gene, input$sc1_hea_scl, input$sc1_hea_row, input$sc1_hea_col, input$sc1_hea_cols, input$sc1_hea_fsz, save = TRUE)
+    file, device = "svg", bg = "white", height = input$lc_hea_oup.height, width = input$lc_hea_oup.width, units = "cm", 
+    plot = scBubbHeat(lcconf, lcmeta, input$lc_hea_inp, input$lc_hea_grp, input$lc_hea_plt, input$lc_hea_sub1, input$lc_hea_sub2, "lcgexpr.h5", lcgene, input$lc_hea_scl, input$lc_hea_row, input$lc_hea_col, input$lc_hea_cols, input$lc_hea_fsz)
     )
 }) # End of tab hea      
        
@@ -1492,104 +1588,128 @@ output$sc1_hea_oup.png <- downloadHandler(
 
 ### Tab markers ----
 
-output$sc1_mar_table <- renderDataTable({
-  req(input$sc1_mar_cls)
-  datatable(sc1mar[[input$sc1_mar_cls]], rownames = FALSE, extensions = "Buttons", options = list(dom = "lftiprB", buttons = c("copy", "csv", "excel")))
+output$lc_mar_table <- renderDataTable({
+  req(input$lc_mar_cls)
+  datatable(lcmar[[input$lc_mar_cls]], rownames = FALSE, extensions = "Buttons", options = list(dom = "lftiprB", buttons = c("copy", "csv", "excel")))
 }) # End of tab mar
 optCrt="{ option_create: function(data,escape) {return('<div class=\"create\"><strong>' + '</strong></div>');} }"
-updateSelectizeInput(session, "sc2_civge_inp2", choices = names(sc2gene), server = TRUE,
-                     selected = sc2def$gene1, options = list(
+updateSelectizeInput(session, "ld_civge_inp2", choices = names(ldgene), server = TRUE,
+                     selected = lddef$gene1, options = list(
                        maxOptions = 7, create = TRUE, persist = TRUE, render = I(optCrt)))
-updateSelectizeInput(session, "sc2_gevge_inp1", choices = names(sc2gene), server = TRUE,
-                     selected = sc2def$gene1, options = list(
+updateSelectizeInput(session, "ld_gevge_inp1", choices = names(ldgene), server = TRUE,
+                     selected = lddef$gene1, options = list(
                        maxOptions = 7, create = TRUE, persist = TRUE, render = I(optCrt)))
-updateSelectizeInput(session, "sc2_gevge_inp2", choices = names(sc2gene), server = TRUE,
-                     selected = sc2def$gene2, options = list(
+updateSelectizeInput(session, "ld_gevge_inp2", choices = names(ldgene), server = TRUE,
+                     selected = lddef$gene2, options = list(
                        maxOptions = 7, create = TRUE, persist = TRUE, render = I(optCrt)))
-updateSelectizeInput(session, "sc2_gec_inp1", choices = names(sc2gene), server = TRUE,
-                     selected = sc2def$gene1, options = list(
+updateSelectizeInput(session, "ld_gec_inp1", choices = names(ldgene), server = TRUE,
+                     selected = lddef$gene1, options = list(
                        maxOptions = 7, create = TRUE, persist = TRUE, render = I(optCrt)))
-updateSelectizeInput(session, "sc2_gec_inp2", choices = names(sc2gene), server = TRUE,
-                     selected = sc2def$gene2, options = list(
+updateSelectizeInput(session, "ld_gec_inp2", choices = names(ldgene), server = TRUE,
+                     selected = lddef$gene2, options = list(
                        maxOptions = 7, create = TRUE, persist = TRUE, render = I(optCrt)))
-updateSelectizeInput(session, "sc2_vio_inp2", server = TRUE,
-                     choices = c(sc2conf[is.na(fID)]$UI,names(sc2gene)),
-                     selected = sc2conf[is.na(fID)]$UI[1], options = list(
-                       maxOptions = length(sc2conf[is.na(fID)]$UI) + 3,
+updateSelectizeInput(session, "ld_gem_inp", choices = names(ldgene), server = TRUE,
+                     selected = lddef$genes[1:9], options = list(
+                     create = TRUE, persist = TRUE, render = I(optCrt)))
+updateSelectizeInput(session, "ld_hea_inp", choices = names(ldgene), server = TRUE,
+                     selected = lddef$genes[1:12], options = list(
+                     create = TRUE, persist = TRUE, render = I(optCrt)))
+updateSelectizeInput(session, "ld_vio_inp2", server = TRUE,
+                     choices = c(ldconf[is.na(fID)]$UI,names(ldgene)),
+                     selected = ldconf[is.na(fID)]$UI[1], options = list(
+                       maxOptions = length(ldconf[is.na(fID)]$UI) + 3,
                        create = TRUE, persist = TRUE, render = I(optCrt)))  
 ### Tab civge cell info vs gene exp ----
 
-  output$sc2_civge_sub1.ui <- renderUI({
-    sub = strsplit(sc2conf[UI == input$sc2_civge_sub1]$fID, "\\|")[[1]]
-    checkboxGroupInput("sc2_civge_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
+  output$ld_civge_sub1.ui <- renderUI({
+    sub = strsplit(ldconf[UI == input$ld_civge_sub1]$fID, "\\|")[[1]]
+    checkboxGroupInput("ld_civge_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
   })
-  observeEvent(input$sc2_civge_sub1non, {
-    sub = strsplit(sc2conf[UI == input$sc2_civge_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc2_civge_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
+  observeEvent(input$ld_civge_sub1non, {
+    sub = strsplit(ldconf[UI == input$ld_civge_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "ld_civge_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
   })
-  observeEvent(input$sc2_civge_sub1all, {
-    sub = strsplit(sc2conf[UI == input$sc2_civge_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc2_civge_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
+  observeEvent(input$ld_civge_sub1all, {
+    sub = strsplit(ldconf[UI == input$ld_civge_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "ld_civge_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc2_civge_oup1 <- renderPlot({
-  req(input$sc2_civge_inp1)
-  scDRcell(sc2conf, sc2meta, input$sc2_civge_drX, input$sc2_civge_drY, input$sc2_civge_inp1, input$sc2_civge_sub1, input$sc2_civge_sub2, input$sc2_civge_siz, input$sc2_civge_col1, input$sc2_civge_ord1, input$sc2_civge_fsz, input$sc2_civge_asp, input$sc2_civge_txt, input$sc2_civge_lab1)
+output$ld_civge_oup1 <- renderPlot({
+  req(input$ld_civge_inp1)
+  scDRcell(ldconf, ldmeta, input$ld_civge_drX, input$ld_civge_drY, input$ld_civge_inp1, input$ld_civge_sub1, input$ld_civge_sub2, input$ld_civge_siz, input$ld_civge_col1, input$ld_civge_ord1, input$ld_civge_fsz, input$ld_civge_asp, input$ld_civge_txt, input$ld_civge_lab1)
 })
 
-output$sc2_civge_oup1.ui <- renderUI({
-  show_progress(imageOutput("sc2_civge_oup1", height = pList[input$sc2_civge_psz]))
+output$ld_civge_oup1.ui <- renderUI({
+  show_progress(imageOutput("ld_civge_oup1", height = pList[input$ld_civge_psz]))
 })
 
-output$sc2_civge_oup1.pdf <- downloadHandler(
- filename = function() { paste0("sc2", input$sc2_civge_drX,"_", input$sc2_civge_drY,"_", input$sc2_civge_inp1,".pdf") },
+output$ld_civge_oup1.png <- downloadHandler(
+ filename = function() { tolower(paste0("ld", "_", input$ld_civge_drX, "_", input$ld_civge_drY, "_", input$ld_civge_inp1, ".png")) },
  content = function(file) {
    ggsave(
-   file, device = "pdf", useDingbats = FALSE, bg = "white",
-   plot = scDRcell(sc2conf, sc2meta, input$sc2_civge_drX, input$sc2_civge_drY, input$sc2_civge_inp1,   input$sc2_civge_sub1, input$sc2_civge_sub2, input$sc2_civge_siz, input$sc2_civge_col1, input$sc2_civge_ord1,  input$sc2_civge_fsz, input$sc2_civge_asp, input$sc2_civge_txt, input$sc2_civge_lab1)
+   file, device = "png", dpi = input$ld_civge_oup1.res, bg = "white",
+   plot = scDRcell(ldconf, ldmeta, input$ld_civge_drX, input$ld_civge_drY, input$ld_civge_inp1,   input$ld_civge_sub1, input$ld_civge_sub2, input$ld_civge_siz, input$ld_civge_col1, input$ld_civge_ord1,  input$ld_civge_fsz, input$ld_civge_asp, input$ld_civge_txt, input$ld_civge_lab1)
    )
 })
 
-output$sc2_civge_oup1.png <- downloadHandler(
- filename = function() { paste0("sc2",input$sc2_civge_drX,"_",input$sc2_civge_drY,"_", input$sc2_civge_inp1,".png") },
+output$ld_civge_oup1.pdf <- downloadHandler(
+ filename = function() { tolower(paste0("ld", "_", input$ld_civge_drX,"_", input$ld_civge_drY,"_", input$ld_civge_inp1,".pdf")) },
  content = function(file) {
    ggsave(
-   file, device = "png", dpi = input$sc2_civge_oup1.res, bg = "white",
-   plot = scDRcell(sc2conf, sc2meta, input$sc2_civge_drX, input$sc2_civge_drY, input$sc2_civge_inp1,   input$sc2_civge_sub1, input$sc2_civge_sub2, input$sc2_civge_siz, input$sc2_civge_col1, input$sc2_civge_ord1,  input$sc2_civge_fsz, input$sc2_civge_asp, input$sc2_civge_txt, input$sc2_civge_lab1)
+   file, device = "pdf", useDingbats = FALSE, bg = "white", onefile = TRUE,
+   plot = scDRcell(ldconf, ldmeta, input$ld_civge_drX, input$ld_civge_drY, input$ld_civge_inp1,   input$ld_civge_sub1, input$ld_civge_sub2, input$ld_civge_siz, input$ld_civge_col1, input$ld_civge_ord1,  input$ld_civge_fsz, input$ld_civge_asp, input$ld_civge_txt, input$ld_civge_lab1)
    )
 })
 
-output$sc2_civge_.dt <- renderDataTable({
- req(input$sc2_civge_inp2)
- ggData = scDRnum(sc2conf, sc2meta, input$sc2_civge_inp1, input$sc2_civge_inp2, input$sc2_civge_sub1, input$sc2_civge_sub2, "sc2gexpr.h5", sc2gene, input$sc2_civge_splt)
+output$ld_civge_oup1.svg <- downloadHandler(
+ filename = function() { tolower(paste0("ld", "_", input$ld_civge_drX,"_", input$ld_civge_drY,"_", input$ld_civge_inp1,".svg")) },
+ content = function(file) {
+   ggsave(
+   file, device = "svg", bg = "white",
+   plot = scDRcell(ldconf, ldmeta, input$ld_civge_drX, input$ld_civge_drY, input$ld_civge_inp1,   input$ld_civge_sub1, input$ld_civge_sub2, input$ld_civge_siz, input$ld_civge_col1, input$ld_civge_ord1,  input$ld_civge_fsz, input$ld_civge_asp, input$ld_civge_txt, input$ld_civge_lab1)
+   )
+})
+
+output$ld_civge_.dt <- renderDataTable({
+ req(input$ld_civge_inp2)
+ ggData = scDRnum(ldconf, ldmeta, input$ld_civge_inp1, input$ld_civge_inp2, input$ld_civge_sub1, input$ld_civge_sub2, "ldgexpr.h5", ldgene, input$ld_civge_splt)
  datatable(ggData, rownames = FALSE, extensions = "Buttons", options = list(pageLength = -1, dom = "tB", buttons = c("copy", "csv", "excel"))) %>%
    formatRound(columns = c("pctExpress"), digits = 2)
 })
 
-output$sc2_civge_oup2 <- renderPlot({
- req(input$sc2_civge_inp2)
- scDRgene(sc2conf, sc2meta, input$sc2_civge_drX, input$sc2_civge_drY, input$sc2_civge_inp2, input$sc2_civge_sub1, input$sc2_civge_sub2, "sc2gexpr.h5", sc2gene, input$sc2_civge_siz, input$sc2_civge_col2, input$sc2_civge_ord2, input$sc2_civge_fsz, input$sc2_civge_asp, input$sc2_civge_txt)
+output$ld_civge_oup2 <- renderPlot({
+ req(input$ld_civge_inp2)
+ scDRgene(ldconf, ldmeta, input$ld_civge_drX, input$ld_civge_drY, input$ld_civge_inp2, input$ld_civge_sub1, input$ld_civge_sub2, "ldgexpr.h5", ldgene, input$ld_civge_siz, input$ld_civge_col2, input$ld_civge_ord2, input$ld_civge_fsz, input$ld_civge_asp, input$ld_civge_txt)
 })
 
-output$sc2_civge_oup2.ui <- renderUI({
- show_progress(imageOutput("sc2_civge_oup2", height = pList[input$sc2_civge_psz]))
+output$ld_civge_oup2.ui <- renderUI({
+ show_progress(imageOutput("ld_civge_oup2", height = pList[input$ld_civge_psz]))
 })
 
-output$sc2_civge_oup2.pdf <- downloadHandler(
- filename = function() { paste0("sc2",input$sc2_civge_drX,"_",input$sc2_civge_drY,"_", input$sc2_civge_inp2,".pdf") },
+output$ld_civge_oup2.png <- downloadHandler(
+ filename = function() { tolower(paste0("ld", "_", input$ld_civge_drX,"_",input$ld_civge_drY,"_", input$ld_civge_inp2,".png")) },
  content = function(file) {
    ggsave(
-   file, device = "pdf", useDingbats = FALSE, bg = "white",
-   plot = scDRgene(sc2conf, sc2meta, input$sc2_civge_drX, input$sc2_civge_drY, input$sc2_civge_inp2,  input$sc2_civge_sub1, input$sc2_civge_sub2, "sc2gexpr.h5", sc2gene, input$sc2_civge_siz, input$sc2_civge_col2, input$sc2_civge_ord2, input$sc2_civge_fsz, input$sc2_civge_asp, input$sc2_civge_txt)
+   file, device = "png", dpi = input$ld_civge_oup2.res, bg = "white",
+   plot = scDRgene(ldconf, ldmeta, input$ld_civge_drX, input$ld_civge_drY, input$ld_civge_inp2, input$ld_civge_sub1, input$ld_civge_sub2, "ldgexpr.h5", ldgene, input$ld_civge_siz, input$ld_civge_col2, input$ld_civge_ord2, input$ld_civge_fsz, input$ld_civge_asp, input$ld_civge_txt)
    )
 })
 
-output$sc2_civge_oup2.png <- downloadHandler(
- filename = function() { paste0("sc2",input$sc2_civge_drX,"_",input$sc2_civge_drY,"_", input$sc2_civge_inp2,".png") },
+output$ld_civge_oup2.pdf <- downloadHandler(
+ filename = function() { tolower(paste0("ld", "_", input$ld_civge_drX,"_",input$ld_civge_drY,"_", input$ld_civge_inp2,".pdf")) },
  content = function(file) {
    ggsave(
-   file, device = "png", dpi = input$sc2_civge_oup2.res, bg = "white",
-   plot = scDRgene(sc2conf, sc2meta, input$sc2_civge_drX, input$sc2_civge_drY, input$sc2_civge_inp2, input$sc2_civge_sub1, input$sc2_civge_sub2, "sc2gexpr.h5", sc2gene, input$sc2_civge_siz, input$sc2_civge_col2, input$sc2_civge_ord2, input$sc2_civge_fsz, input$sc2_civge_asp, input$sc2_civge_txt)
+   file, device = "pdf", useDingbats = FALSE, bg = "white", onefile = TRUE,
+   plot = scDRgene(ldconf, ldmeta, input$ld_civge_drX, input$ld_civge_drY, input$ld_civge_inp2,  input$ld_civge_sub1, input$ld_civge_sub2, "ldgexpr.h5", ldgene, input$ld_civge_siz, input$ld_civge_col2, input$ld_civge_ord2, input$ld_civge_fsz, input$ld_civge_asp, input$ld_civge_txt)
+   )
+}) 
+
+output$ld_civge_oup2.svg <- downloadHandler(
+ filename = function() { tolower(paste0("ld", "_", input$ld_civge_drX,"_",input$ld_civge_drY,"_", input$ld_civge_inp2,".svg")) },
+ content = function(file) {
+   ggsave(
+   file, device = "svg", bg = "white",
+   plot = scDRgene(ldconf, ldmeta, input$ld_civge_drX, input$ld_civge_drY, input$ld_civge_inp2,  input$ld_civge_sub1, input$ld_civge_sub2, "ldgexpr.h5", ldgene, input$ld_civge_siz, input$ld_civge_col2, input$ld_civge_ord2, input$ld_civge_fsz, input$ld_civge_asp, input$ld_civge_txt)
    )
 }) # End of tab civge
 
@@ -1597,68 +1717,84 @@ output$sc2_civge_oup2.png <- downloadHandler(
 
 ### Tab civci cell info vs cell info ----
   
-  output$sc2_civci_sub1.ui <- renderUI({
-    sub = strsplit(sc2conf[UI == input$sc2_civci_sub1]$fID, "\\|")[[1]]
-    checkboxGroupInput("sc2_civci_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
+  output$ld_civci_sub1.ui <- renderUI({
+    sub = strsplit(ldconf[UI == input$ld_civci_sub1]$fID, "\\|")[[1]]
+    checkboxGroupInput("ld_civci_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
   })
-  observeEvent(input$sc2_civci_sub1non, {
-    sub = strsplit(sc2conf[UI == input$sc2_civci_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc2_civci_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
+  observeEvent(input$ld_civci_sub1non, {
+    sub = strsplit(ldconf[UI == input$ld_civci_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "ld_civci_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
   })
-  observeEvent(input$sc2_civci_sub1all, {
-    sub = strsplit(sc2conf[UI == input$sc2_civci_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc2_civci_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
+  observeEvent(input$ld_civci_sub1all, {
+    sub = strsplit(ldconf[UI == input$ld_civci_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "ld_civci_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc2_civci_oup1 <- renderPlot({
-  req(input$sc2_civci_inp1)
-  scDRcell(sc2conf, sc2meta, input$sc2_civci_drX, input$sc2_civci_drY, input$sc2_civci_inp1, input$sc2_civci_sub1, input$sc2_civci_sub2, input$sc2_civci_siz, input$sc2_civci_col1, input$sc2_civci_ord1, input$sc2_civci_fsz, input$sc2_civci_asp, input$sc2_civci_txt, input$sc2_civci_lab1)
+output$ld_civci_oup1 <- renderPlot({
+  req(input$ld_civci_inp1)
+  scDRcell(ldconf, ldmeta, input$ld_civci_drX, input$ld_civci_drY, input$ld_civci_inp1, input$ld_civci_sub1, input$ld_civci_sub2, input$ld_civci_siz, input$ld_civci_col1, input$ld_civci_ord1, input$ld_civci_fsz, input$ld_civci_asp, input$ld_civci_txt, input$ld_civci_lab1)
 })
 
-output$sc2_civci_oup1.ui <- renderUI({
-  show_progress(imageOutput("sc2_civci_oup1", height = pList[input$sc2_civci_psz]))
+output$ld_civci_oup1.ui <- renderUI({
+  show_progress(imageOutput("ld_civci_oup1", height = pList[input$ld_civci_psz]))
 })
 
-output$sc2_civci_oup1.pdf <- downloadHandler(
-  filename = function() { paste0("sc2", input$sc2_civci_drX, "_", input$sc2_civci_drY, "_", input$sc2_civci_inp1, ".pdf") },
+output$ld_civci_oup1.png <- downloadHandler(
+  filename = function() { tolower(paste0("ld", "_", input$ld_civci_drX, "_", input$ld_civci_drY, "_", input$ld_civci_inp1, ".png")) },
+  content = function(file) {
+    ggsave(
+    file, device = "png", dpi = input$ld_civci_oup1.res, bg = "white",
+    plot = scDRcell(ldconf, ldmeta, input$ld_civci_drX, input$ld_civci_drY, input$ld_civci_inp1, input$ld_civci_sub1, input$ld_civci_sub2, input$ld_civci_siz, input$ld_civci_col1, input$ld_civci_ord1, input$ld_civci_fsz, input$ld_civci_asp, input$ld_civci_txt, input$ld_civci_lab1)
+    )
+})
+
+output$ld_civci_oup1.pdf <- downloadHandler(
+  filename = function() { tolower(paste0("ld", "_", input$ld_civci_drX, "_", input$ld_civci_drY, "_", input$ld_civci_inp1, ".pdf")) },
   content = function(file) { ggsave(
-    file, device = "pdf", useDingbats = FALSE, bg = "white",
-    plot = scDRcell(sc2conf, sc2meta, input$sc2_civci_drX, input$sc2_civci_drY, input$sc2_civci_inp1, input$sc2_civci_sub1, input$sc2_civci_sub2, input$sc2_civci_siz, input$sc2_civci_col1, input$sc2_civci_ord1, input$sc2_civci_fsz, input$sc2_civci_asp, input$sc2_civci_txt, input$sc2_civci_lab1) )
+    file, device = "pdf", useDingbats = FALSE, bg = "white", onefile = TRUE,
+    plot = scDRcell(ldconf, ldmeta, input$ld_civci_drX, input$ld_civci_drY, input$ld_civci_inp1, input$ld_civci_sub1, input$ld_civci_sub2, input$ld_civci_siz, input$ld_civci_col1, input$ld_civci_ord1, input$ld_civci_fsz, input$ld_civci_asp, input$ld_civci_txt, input$ld_civci_lab1) )
 })
 
-output$sc2_civci_oup1.png <- downloadHandler(
-  filename = function() { paste0("sc2", input$sc2_civci_drX, "_", input$sc2_civci_drY, "_", input$sc2_civci_inp1, ".png") },
+output$ld_civci_oup1.svg <- downloadHandler(
+  filename = function() { tolower(paste0("ld", "_", input$ld_civci_drX, "_", input$ld_civci_drY, "_", input$ld_civci_inp1, ".svg")) },
+  content = function(file) { ggsave(
+    file, device = "svg", bg = "white",
+    plot = scDRcell(ldconf, ldmeta, input$ld_civci_drX, input$ld_civci_drY, input$ld_civci_inp1, input$ld_civci_sub1, input$ld_civci_sub2, input$ld_civci_siz, input$ld_civci_col1, input$ld_civci_ord1, input$ld_civci_fsz, input$ld_civci_asp, input$ld_civci_txt, input$ld_civci_lab1) )
+})
+
+output$ld_civci_oup2 <- renderPlot({
+  req(input$ld_civci_inp2)
+  scDRcell(ldconf, ldmeta, input$ld_civci_drX, input$ld_civci_drY, input$ld_civci_inp2, input$ld_civci_sub1, input$ld_civci_sub2, input$ld_civci_siz, input$ld_civci_col2, input$ld_civci_ord2, input$ld_civci_fsz, input$ld_civci_asp, input$ld_civci_txt, input$ld_civci_lab2)
+})
+
+output$ld_civci_oup2.ui <- renderUI({
+  show_progress(imageOutput("ld_civci_oup2", height = pList[input$ld_civci_psz]))
+})
+
+output$ld_civci_oup2.png <- downloadHandler(
+  filename = function() { tolower(paste0("ld", "_", input$ld_civci_drX,"_",input$ld_civci_drY,"_", input$ld_civci_inp2,".png")) },
   content = function(file) {
     ggsave(
-    file, device = "png", dpi = input$sc2_civci_oup1.res, bg = "white",
-    plot = scDRcell(sc2conf, sc2meta, input$sc2_civci_drX, input$sc2_civci_drY, input$sc2_civci_inp1, input$sc2_civci_sub1, input$sc2_civci_sub2, input$sc2_civci_siz, input$sc2_civci_col1, input$sc2_civci_ord1, input$sc2_civci_fsz, input$sc2_civci_asp, input$sc2_civci_txt, input$sc2_civci_lab1)
+    file, device = "png", bg = "white", dpi = input$ld_civci_oup2.res,
+    plot = scDRcell(ldconf, ldmeta, input$ld_civci_drX, input$ld_civci_drY, input$ld_civci_inp2, input$ld_civci_sub1, input$ld_civci_sub2, input$ld_civci_siz, input$ld_civci_col2, input$ld_civci_ord2, input$ld_civci_fsz, input$ld_civci_asp, input$ld_civci_txt, input$ld_civci_lab2)
+    )
+}) 
+
+output$ld_civci_oup2.pdf <- downloadHandler(
+  filename = function() { tolower(paste0("ld", "_", input$ld_civci_drX,"_",input$ld_civci_drY,"_", input$ld_civci_inp2,".pdf")) },
+  content = function(file) {
+    ggsave(
+    file, device = "pdf", useDingbats = FALSE, bg = "white", onefile = TRUE,
+    plot = scDRcell(ldconf, ldmeta, input$ld_civci_drX, input$ld_civci_drY, input$ld_civci_inp2, input$ld_civci_sub1, input$ld_civci_sub2, input$ld_civci_siz, input$ld_civci_col2, input$ld_civci_ord2, input$ld_civci_fsz, input$ld_civci_asp, input$ld_civci_txt, input$ld_civci_lab2) 
     )
 })
 
-output$sc2_civci_oup2 <- renderPlot({
-  req(input$sc2_civci_inp2)
-  scDRcell(sc2conf, sc2meta, input$sc2_civci_drX, input$sc2_civci_drY, input$sc2_civci_inp2, input$sc2_civci_sub1, input$sc2_civci_sub2, input$sc2_civci_siz, input$sc2_civci_col2, input$sc2_civci_ord2, input$sc2_civci_fsz, input$sc2_civci_asp, input$sc2_civci_txt, input$sc2_civci_lab2)
-})
-
-output$sc2_civci_oup2.ui <- renderUI({
-  show_progress(imageOutput("sc2_civci_oup2", height = pList[input$sc2_civci_psz]))
-})
-
-output$sc2_civci_oup2.pdf <- downloadHandler(
-  filename = function() { paste0("sc2",input$sc2_civci_drX,"_",input$sc2_civci_drY,"_", input$sc2_civci_inp2,".pdf") },
+output$ld_civci_oup2.svg <- downloadHandler(
+  filename = function() { tolower(paste0("ld", "_", input$ld_civci_drX,"_",input$ld_civci_drY,"_", input$ld_civci_inp2,".svg")) },
   content = function(file) {
     ggsave(
-    file, device = "pdf", useDingbats = FALSE, bg = "white",
-    plot = scDRcell(sc2conf, sc2meta, input$sc2_civci_drX, input$sc2_civci_drY, input$sc2_civci_inp2, input$sc2_civci_sub1, input$sc2_civci_sub2, input$sc2_civci_siz, input$sc2_civci_col2, input$sc2_civci_ord2, input$sc2_civci_fsz, input$sc2_civci_asp, input$sc2_civci_txt, input$sc2_civci_lab2) 
-    )
-})
-
-output$sc2_civci_oup2.png <- downloadHandler(
-  filename = function() { paste0("sc2",input$sc2_civci_drX,"_",input$sc2_civci_drY,"_", input$sc2_civci_inp2,".png") },
-  content = function(file) {
-    ggsave(
-    file, device = "png", bg = "white", dpi = input$sc2_civci_oup2.res,
-    plot = scDRcell(sc2conf, sc2meta, input$sc2_civci_drX, input$sc2_civci_drY, input$sc2_civci_inp2, input$sc2_civci_sub1, input$sc2_civci_sub2, input$sc2_civci_siz, input$sc2_civci_col2, input$sc2_civci_ord2, input$sc2_civci_fsz, input$sc2_civci_asp, input$sc2_civci_txt, input$sc2_civci_lab2)
+    file, device = "svg", bg = "white",
+    plot = scDRcell(ldconf, ldmeta, input$ld_civci_drX, input$ld_civci_drY, input$ld_civci_inp2, input$ld_civci_sub1, input$ld_civci_sub2, input$ld_civci_siz, input$ld_civci_col2, input$ld_civci_ord2, input$ld_civci_fsz, input$ld_civci_asp, input$ld_civci_txt, input$ld_civci_lab2) 
     )
 }) # End of tab civci
 
@@ -1666,78 +1802,100 @@ output$sc2_civci_oup2.png <- downloadHandler(
 
 ### Tab gevge gene exp vs gene exp ----
 
-  output$sc2_gevge_sub1.ui <- renderUI({
-    sub = strsplit(sc2conf[UI == input$sc2_gevge_sub1]$fID, "\\|")[[1]]
-    checkboxGroupInput("sc2_gevge_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
+  output$ld_gevge_sub1.ui <- renderUI({
+    sub = strsplit(ldconf[UI == input$ld_gevge_sub1]$fID, "\\|")[[1]]
+    checkboxGroupInput("ld_gevge_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
   })
-  observeEvent(input$sc2_gevge_sub1non, {
-    sub = strsplit(sc2conf[UI == input$sc2_gevge_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc2_gevge_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
+  observeEvent(input$ld_gevge_sub1non, {
+    sub = strsplit(ldconf[UI == input$ld_gevge_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "ld_gevge_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
   })
-  observeEvent(input$sc2_gevge_sub1all, {
-    sub = strsplit(sc2conf[UI == input$sc2_gevge_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc2_gevge_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
+  observeEvent(input$ld_gevge_sub1all, {
+    sub = strsplit(ldconf[UI == input$ld_gevge_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "ld_gevge_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc2_gevge_oup1 <- renderPlot({
-  req(input$sc2_gevge_inp1)
-  scDRgene(sc2conf, sc2meta, input$sc2_gevge_drX, input$sc2_gevge_drY, input$sc2_gevge_inp1, input$sc2_gevge_sub1, input$sc2_gevge_sub2, "sc2gexpr.h5", sc2gene, input$sc2_gevge_siz, input$sc2_gevge_col1, input$sc2_gevge_ord1, input$sc2_gevge_fsz, input$sc2_gevge_asp, input$sc2_gevge_txt)
+output$ld_gevge_oup1 <- renderPlot({
+  req(input$ld_gevge_inp1)
+  scDRgene(ldconf, ldmeta, input$ld_gevge_drX, input$ld_gevge_drY, input$ld_gevge_inp1, input$ld_gevge_sub1, input$ld_gevge_sub2, "ldgexpr.h5", ldgene, input$ld_gevge_siz, input$ld_gevge_col1, input$ld_gevge_ord1, input$ld_gevge_fsz, input$ld_gevge_asp, input$ld_gevge_txt)
 })
 
-output$sc2_gevge_oup1.ui <- renderUI({
-  show_progress(imageOutput("sc2_gevge_oup1", height = pList[input$sc2_gevge_psz]))
+output$ld_gevge_oup1.ui <- renderUI({
+  show_progress(imageOutput("ld_gevge_oup1", height = pList[input$ld_gevge_psz]))
 })
 
-output$sc2_gevge_oup1.pdf <- downloadHandler(
-  filename = function() { paste0("sc2", input$sc2_gevge_drX, "_", input$sc2_gevge_drY, "_", input$sc2_gevge_inp1, ".pdf") },
+output$ld_gevge_oup1.png <- downloadHandler(
+  filename = function() { tolower(paste0("ld", "_", input$ld_gevge_drX, "_", input$ld_gevge_drY, "_", input$ld_gevge_inp1,".png")) },
   content = function(file) {
     ggsave(
-    file, device = "pdf", useDingbats = FALSE, bg = "white",
-    plot = scDRgene(sc2conf, sc2meta, input$sc2_gevge_drX, input$sc2_gevge_drY, input$sc2_gevge_inp1, input$sc2_gevge_sub1, input$sc2_gevge_sub2, "sc2gexpr.h5", sc2gene, input$sc2_gevge_siz, input$sc2_gevge_col1, input$sc2_gevge_ord1, input$sc2_gevge_fsz, input$sc2_gevge_asp, input$sc2_gevge_txt)
+    file, device = "png", bg = "white", dpi = input$ld_gevge_oup1.res,
+    plot = scDRgene(ldconf, ldmeta, input$ld_gevge_drX, input$ld_gevge_drY, input$ld_gevge_inp1, 
+                    input$ld_gevge_sub1, input$ld_gevge_sub2,
+                    "ldgexpr.h5", ldgene,
+                    input$ld_gevge_siz, input$ld_gevge_col1, input$ld_gevge_ord1,
+                    input$ld_gevge_fsz, input$ld_gevge_asp, input$ld_gevge_txt)
     )
 })
 
-output$sc2_gevge_oup1.png <- downloadHandler(
-  filename = function() { paste0("sc2", input$sc2_gevge_drX, "_", input$sc2_gevge_drY, "_", input$sc2_gevge_inp1,".png") },
+output$ld_gevge_oup1.pdf <- downloadHandler(
+  filename = function() { tolower(paste0("ld", "_", input$ld_gevge_drX, "_", input$ld_gevge_drY, "_", input$ld_gevge_inp1, ".pdf")) },
   content = function(file) {
     ggsave(
-    file, device = "png", bg = "white", dpi = input$sc2_gevge_oup1.res,
-    plot = scDRgene(sc2conf, sc2meta, input$sc2_gevge_drX, input$sc2_gevge_drY, input$sc2_gevge_inp1, 
-                    input$sc2_gevge_sub1, input$sc2_gevge_sub2,
-                    "sc2gexpr.h5", sc2gene,
-                    input$sc2_gevge_siz, input$sc2_gevge_col1, input$sc2_gevge_ord1,
-                    input$sc2_gevge_fsz, input$sc2_gevge_asp, input$sc2_gevge_txt)
+    file, device = "pdf", useDingbats = FALSE, bg = "white", onefile = TRUE,
+    plot = scDRgene(ldconf, ldmeta, input$ld_gevge_drX, input$ld_gevge_drY, input$ld_gevge_inp1, input$ld_gevge_sub1, input$ld_gevge_sub2, "ldgexpr.h5", ldgene, input$ld_gevge_siz, input$ld_gevge_col1, input$ld_gevge_ord1, input$ld_gevge_fsz, input$ld_gevge_asp, input$ld_gevge_txt)
     )
 })
 
-output$sc2_gevge_oup2 <- renderPlot({
-  req(input$sc2_gevge_inp2)
-  scDRgene(sc2conf, sc2meta, input$sc2_gevge_drX, input$sc2_gevge_drY, input$sc2_gevge_inp2, input$sc2_gevge_sub1, input$sc2_gevge_sub2, "sc2gexpr.h5", sc2gene, input$sc2_gevge_siz, input$sc2_gevge_col2, input$sc2_gevge_ord2, input$sc2_gevge_fsz, input$sc2_gevge_asp, input$sc2_gevge_txt)
-})
-
-output$sc2_gevge_oup2.ui <- renderUI({
-  show_progress(imageOutput("sc2_gevge_oup2", height = pList[input$sc2_gevge_psz]))
-})
-
-output$sc2_gevge_oup2.pdf <- downloadHandler(
-  filename = function() { paste0("sc2", input$sc2_gevge_drX, "_", input$sc2_gevge_drY, "_", input$sc2_gevge_inp2,".pdf") },
+output$ld_gevge_oup1.svg <- downloadHandler(
+  filename = function() { tolower(paste0("ld", "_", input$ld_gevge_drX, "_", input$ld_gevge_drY, "_", input$ld_gevge_inp1, ".svg")) },
   content = function(file) {
     ggsave(
-    file, device = "pdf", useDingbats = FALSE, bg = "white",
-    plot = scDRgene(sc2conf, sc2meta, input$sc2_gevge_drX, input$sc2_gevge_drY, input$sc2_gevge_inp2, 
-                    input$sc2_gevge_sub1, input$sc2_gevge_sub2,
-                    "sc2gexpr.h5", sc2gene,
-                    input$sc2_gevge_siz, input$sc2_gevge_col2, input$sc2_gevge_ord2,
-                    input$sc2_gevge_fsz, input$sc2_gevge_asp, input$sc2_gevge_txt)
+    file, device = "svg", bg = "white",
+    plot = scDRgene(ldconf, ldmeta, input$ld_gevge_drX, input$ld_gevge_drY, input$ld_gevge_inp1, input$ld_gevge_sub1, input$ld_gevge_sub2, "ldgexpr.h5", ldgene, input$ld_gevge_siz, input$ld_gevge_col1, input$ld_gevge_ord1, input$ld_gevge_fsz, input$ld_gevge_asp, input$ld_gevge_txt)
     )
 })
 
-output$sc2_gevge_oup2.png <- downloadHandler(
-  filename = function() { paste0("sc2", input$sc2_gevge_drX, "_", input$sc2_gevge_drY, "_", input$sc2_gevge_inp2,".png") },
+output$ld_gevge_oup2 <- renderPlot({
+  req(input$ld_gevge_inp2)
+  scDRgene(ldconf, ldmeta, input$ld_gevge_drX, input$ld_gevge_drY, input$ld_gevge_inp2, input$ld_gevge_sub1, input$ld_gevge_sub2, "ldgexpr.h5", ldgene, input$ld_gevge_siz, input$ld_gevge_col2, input$ld_gevge_ord2, input$ld_gevge_fsz, input$ld_gevge_asp, input$ld_gevge_txt)
+})
+
+output$ld_gevge_oup2.ui <- renderUI({
+  show_progress(imageOutput("ld_gevge_oup2", height = pList[input$ld_gevge_psz]))
+})
+
+output$ld_gevge_oup2.png <- downloadHandler(
+  filename = function() { tolower(paste0("ld", "_", input$ld_gevge_drX, "_", input$ld_gevge_drY, "_", input$ld_gevge_inp2,".png")) },
   content = function(file) {
     ggsave(
-    file, device = "png", bg = "white", dpi = input$sc2_gevge_oup2.res,
-    plot = scDRgene(sc2conf, sc2meta, input$sc2_gevge_drX, input$sc2_gevge_drY, input$sc2_gevge_inp2, input$sc2_gevge_sub1, input$sc2_gevge_sub2, "sc2gexpr.h5", sc2gene, input$sc2_gevge_siz, input$sc2_gevge_col2, input$sc2_gevge_ord2, input$sc2_gevge_fsz, input$sc2_gevge_asp, input$sc2_gevge_txt)
+    file, device = "png", bg = "white", dpi = input$ld_gevge_oup2.res,
+    plot = scDRgene(ldconf, ldmeta, input$ld_gevge_drX, input$ld_gevge_drY, input$ld_gevge_inp2, input$ld_gevge_sub1, input$ld_gevge_sub2, "ldgexpr.h5", ldgene, input$ld_gevge_siz, input$ld_gevge_col2, input$ld_gevge_ord2, input$ld_gevge_fsz, input$ld_gevge_asp, input$ld_gevge_txt)
+    )
+}) 
+
+output$ld_gevge_oup2.pdf <- downloadHandler(
+  filename = function() { tolower(paste0("ld", "_", input$ld_gevge_drX, "_", input$ld_gevge_drY, "_", input$ld_gevge_inp2,".pdf")) },
+  content = function(file) {
+    ggsave(
+    file, device = "pdf", useDingbats = FALSE, bg = "white", onefile = TRUE,
+    plot = scDRgene(ldconf, ldmeta, input$ld_gevge_drX, input$ld_gevge_drY, input$ld_gevge_inp2, 
+                    input$ld_gevge_sub1, input$ld_gevge_sub2,
+                    "ldgexpr.h5", ldgene,
+                    input$ld_gevge_siz, input$ld_gevge_col2, input$ld_gevge_ord2,
+                    input$ld_gevge_fsz, input$ld_gevge_asp, input$ld_gevge_txt)
+    )
+})
+
+output$ld_gevge_oup2.svg <- downloadHandler(
+  filename = function() { tolower(paste0("ld", "_", input$ld_gevge_drX, "_", input$ld_gevge_drY, "_", input$ld_gevge_inp2,".svg")) },
+  content = function(file) {
+    ggsave(
+    file, device = "svg", bg = "white",
+    plot = scDRgene(ldconf, ldmeta, input$ld_gevge_drX, input$ld_gevge_drY, input$ld_gevge_inp2, 
+                    input$ld_gevge_sub1, input$ld_gevge_sub2,
+                    "ldgexpr.h5", ldgene,
+                    input$ld_gevge_siz, input$ld_gevge_col2, input$ld_gevge_ord2,
+                    input$ld_gevge_fsz, input$ld_gevge_asp, input$ld_gevge_txt)
     )
 }) # End of tab gevge
 
@@ -1746,88 +1904,107 @@ output$sc2_gevge_oup2.png <- downloadHandler(
 
 ### Tab gem gene expression multi ----
 
-output$sc2_gem_sub1.ui <- renderUI({
-  sub = strsplit(sc2conf[UI == input$sc2_gem_sub1]$fID, "\\|")[[1]]
-  checkboxGroupInput("sc2_gem_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
+output$ld_gem_sub1.ui <- renderUI({
+  sub = strsplit(ldconf[UI == input$ld_gem_sub1]$fID, "\\|")[[1]]
+  checkboxGroupInput("ld_gem_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
 })
-observeEvent(input$sc2_gem_sub1non, {
-  sub = strsplit(sc2conf[UI == input$sc2_gem_sub1]$fID, "\\|")[[1]]
-  updateCheckboxGroupInput(session, inputId = "sc2_gem_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
+observeEvent(input$ld_gem_sub1non, {
+  sub = strsplit(ldconf[UI == input$ld_gem_sub1]$fID, "\\|")[[1]]
+  updateCheckboxGroupInput(session, inputId = "ld_gem_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
 })
-observeEvent(input$sc2_gem_sub1all, {
-  sub = strsplit(sc2conf[UI == input$sc2_gem_sub1]$fID, "\\|")[[1]]
-  updateCheckboxGroupInput(session, inputId = "sc2_gem_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
+observeEvent(input$ld_gem_sub1all, {
+  sub = strsplit(ldconf[UI == input$ld_gem_sub1]$fID, "\\|")[[1]]
+  updateCheckboxGroupInput(session, inputId = "ld_gem_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
 })
 
-output$sc2_gem_oup1 <- renderPlot({
-  req(input$sc2_gem_inp)
+output$ld_gem_oup1 <- renderPlot({
+  req(input$ld_gem_inp)
   
-  scFeature(sc2conf, sc2meta, input$sc2_gem_drX, input$sc2_gem_drY, input$sc2_gem_inp, input$sc2_gem_sub1, input$sc2_gem_sub2, "sc2gexpr.h5", sc2gene, input$sc2_gem_siz, input$sc2_gem_col, input$sc2_gem_ord, input$sc2_gem_fsz, input$sc2_gem_asp, input$sc2_gem_txt, input$sc2_gem_ncol)
+  scFeature(ldconf, ldmeta, input$ld_gem_drX, input$ld_gem_drY, input$ld_gem_inp, input$ld_gem_sub1, input$ld_gem_sub2, "ldgexpr.h5", ldgene, input$ld_gem_siz, input$ld_gem_col, input$ld_gem_ord, input$ld_gem_fsz, input$ld_gem_asp, input$ld_gem_txt, input$ld_gem_ncol)
 })
 
-output$sc2_gem_oup1.ui <- renderUI({
-  show_progress(imageOutput("sc2_gem_oup1", height = pList[input$sc2_gem_psz]))
+output$ld_gem_oup1.ui <- renderUI({
+  show_progress(imageOutput("ld_gem_oup1", height = pList[input$ld_gem_psz]))
 })
 
-output$sc2_gem_oup1.pdf <- downloadHandler(
-  filename = function() { paste0("sc2", input$sc2_gem_drX, "_", input$sc2_gem_drY, "_expression.pdf") },
-  content = function(file) { ggsave(
-    file, device = "pdf", useDingbats = FALSE, height = input$sc2_gem_oup1.height, width = input$sc2_gem_oup1.width, units = "cm", bg = "white",
-    plot = scFeature(sc2conf, sc2meta, input$sc2_gem_drX, input$sc2_gem_drY, input$sc2_gem_inp, input$sc2_gem_sub1, input$sc2_gem_sub2, "sc2gexpr.h5", sc2gene, input$sc2_gem_siz, input$sc2_gem_col, input$sc2_gem_ord, input$sc2_gem_fsz, input$sc2_gem_asp, input$sc2_gem_txt, input$sc2_gem_ncol))
-})
-
-output$sc2_gem_oup1.png <- downloadHandler(
-  filename = function() { paste0("sc2", input$sc2_gem_drX, "_", input$sc2_gem_drY, "_expression.png") },
+output$ld_gem_oup1.png <- downloadHandler(
+  filename = function() { tolower(paste0("ld", "_", input$ld_gem_drX, "_", input$ld_gem_drY, "_expression.png")) },
   content = function(file) {
     ggsave(
-      file, device = "png", height = input$sc2_gem_oup1.height, width = input$sc2_gem_oup1.width, dpi = input$sc2_gem_oup1.res, units = "cm", bg = "white",
-      plot = scFeature(sc2conf, sc2meta, input$sc2_gem_drX, input$sc2_gem_drY, input$sc2_gem_inp, input$sc2_gem_sub1, input$sc2_gem_sub2, "sc2gexpr.h5", sc2gene, input$sc2_gem_siz, input$sc2_gem_col, input$sc2_gem_ord, input$sc2_gem_fsz, input$sc2_gem_asp, input$sc2_gem_txt, input$sc2_gem_ncol)
+      file, device = "png", height = input$ld_gem_oup1.height, width = input$ld_gem_oup1.width, dpi = input$ld_gem_oup1.res, units = "cm", bg = "white",
+      plot = scFeature(ldconf, ldmeta, input$ld_gem_drX, input$ld_gem_drY, input$ld_gem_inp, input$ld_gem_sub1, input$ld_gem_sub2, "ldgexpr.h5", ldgene, input$ld_gem_siz, input$ld_gem_col, input$ld_gem_ord, input$ld_gem_fsz, input$ld_gem_asp, input$ld_gem_txt, input$ld_gem_ncol)
     )
+}) 
+
+output$ld_gem_oup1.pdf <- downloadHandler(
+  filename = function() { tolower(paste0("ld", "_", input$ld_gem_drX, "_", input$ld_gem_drY, "_expression.pdf")) },
+  content = function(file) {
+  pdf(file, useDingbats = FALSE, height = input$ld_gem_oup1.height/2.54, width = input$ld_gem_oup1.width/2.54, bg = "white", onefile = TRUE)
+  showtext::showtext_begin()
+  print(scFeature(ldconf, ldmeta, input$ld_gem_drX, input$ld_gem_drY, input$ld_gem_inp, input$ld_gem_sub1, input$ld_gem_sub2, "ldgexpr.h5", ldgene, input$ld_gem_siz, input$ld_gem_col, input$ld_gem_ord, input$ld_gem_fsz, input$ld_gem_asp, input$ld_gem_txt, input$ld_gem_ncol))
+  showtext::showtext_end()
+  dev.off()
+})
+
+output$ld_gem_oup1.svg <- downloadHandler(
+  filename = function() { tolower(paste0("ld", "_", input$ld_gem_drX, "_", input$ld_gem_drY, "_expression.svg")) },
+  content = function(file) { ggsave(
+    file, device = "svg", height = input$ld_gem_oup1.height, width = input$ld_gem_oup1.width, units = "cm", bg = "white",
+    plot = scFeature(ldconf, ldmeta, input$ld_gem_drX, input$ld_gem_drY, input$ld_gem_inp, input$ld_gem_sub1, input$ld_gem_sub2, "ldgexpr.h5", ldgene, input$ld_gem_siz, input$ld_gem_col, input$ld_gem_ord, input$ld_gem_fsz, input$ld_gem_asp, input$ld_gem_txt, input$ld_gem_ncol))
 }) # End of tab gem
 
 
 
 ### Tab gec gene co-expression ----
 
-  output$sc2_gec_sub1.ui <- renderUI({
-    sub = strsplit(sc2conf[UI == input$sc2_gec_sub1]$fID, "\\|")[[1]]
-    checkboxGroupInput("sc2_gec_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
+  output$ld_gec_sub1.ui <- renderUI({
+    sub = strsplit(ldconf[UI == input$ld_gec_sub1]$fID, "\\|")[[1]]
+    checkboxGroupInput("ld_gec_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
   })
-  observeEvent(input$sc2_gec_sub1non, {
-    sub = strsplit(sc2conf[UI == input$sc2_gec_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc2_gec_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
+  observeEvent(input$ld_gec_sub1non, {
+    sub = strsplit(ldconf[UI == input$ld_gec_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "ld_gec_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
   })
-  observeEvent(input$sc2_gec_sub1all, {
-    sub = strsplit(sc2conf[UI == input$sc2_gec_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc2_gec_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
+  observeEvent(input$ld_gec_sub1all, {
+    sub = strsplit(ldconf[UI == input$ld_gec_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "ld_gec_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc2_gec_oup1 <- renderPlot({
-  scDRcoexFull(sc2conf, sc2meta, input$sc2_gec_drX, input$sc2_gec_drY, input$sc2_gec_inp1, input$sc2_gec_inp2, input$sc2_gec_sub1, input$sc2_gec_sub2, "sc2gexpr.h5", sc2gene, input$sc2_gec_siz, input$sc2_gec_col1, input$sc2_gec_ord1, input$sc2_gec_fsz, input$sc2_gec_asp, input$sc2_gec_txt)
+output$ld_gec_oup1 <- renderPlot({
+  scDRcoexFull(ldconf, ldmeta, input$ld_gec_drX, input$ld_gec_drY, input$ld_gec_inp1, input$ld_gec_inp2, input$ld_gec_sub1, input$ld_gec_sub2, "ldgexpr.h5", ldgene, input$ld_gec_siz, input$ld_gec_col1, input$ld_gec_ord1, input$ld_gec_fsz, input$ld_gec_asp, input$ld_gec_txt)
 })
 
-output$sc2_gec_oup1.ui <- renderUI({
-  show_progress(imageOutput("sc2_gec_oup1", height = pList2[input$sc2_gec_psz]))
+output$ld_gec_oup1.ui <- renderUI({
+  show_progress(imageOutput("ld_gec_oup1", height = pList2[input$ld_gec_psz]))
 })
 
-output$sc2_gec_oup1.pdf <- downloadHandler(
-  filename = function() { paste0("sc2", input$sc2_gec_drX, "_", input$sc2_gec_drY, "_", input$sc2_gec_inp1, "_", input$sc2_gec_inp2, ".pdf") },
+output$ld_gec_oup1.png <- downloadHandler(
+  filename = function() { tolower(paste0("ld", "_", input$ld_gec_drX, "_", input$ld_gec_drY, "_", input$ld_gec_inp1, "_", input$ld_gec_inp2, ".png")) },
+  content = function(file) { ggsave(
+    file, device = "png", bg = "white", dpi = input$ld_gec_oup1.res,
+    plot = scDRcoexFull(ldconf, ldmeta, input$ld_gec_drX, input$ld_gec_drY, input$ld_gec_inp1, input$ld_gec_inp2, input$ld_gec_sub1, input$ld_gec_sub2, "ldgexpr.h5", ldgene, input$ld_gec_siz, input$ld_gec_col1, input$ld_gec_ord1, input$ld_gec_fsz, input$ld_gec_asp, input$ld_gec_txt) )
+})
+
+output$ld_gec_oup1.pdf <- downloadHandler(
+  filename = function() { tolower(paste0("ld", "_", input$ld_gec_drX, "_", input$ld_gec_drY, "_", input$ld_gec_inp1, "_", input$ld_gec_inp2, ".pdf")) },
   content = function(file) {
     ggsave(
-    file, device = "pdf", useDingbats = FALSE, bg = "white",
-    plot = scDRcoexFull(sc2conf, sc2meta, input$sc2_gec_drX, input$sc2_gec_drY, input$sc2_gec_inp1, input$sc2_gec_inp2, input$sc2_gec_sub1, input$sc2_gec_sub2, "sc2gexpr.h5", sc2gene, input$sc2_gec_siz, input$sc2_gec_col1, input$sc2_gec_ord1, input$sc2_gec_fsz, input$sc2_gec_asp, input$sc2_gec_txt)
+    file, device = "pdf", useDingbats = FALSE, bg = "white", onefile = TRUE,
+    plot = scDRcoexFull(ldconf, ldmeta, input$ld_gec_drX, input$ld_gec_drY, input$ld_gec_inp1, input$ld_gec_inp2, input$ld_gec_sub1, input$ld_gec_sub2, "ldgexpr.h5", ldgene, input$ld_gec_siz, input$ld_gec_col1, input$ld_gec_ord1, input$ld_gec_fsz, input$ld_gec_asp, input$ld_gec_txt)
     )
 })
 
-output$sc2_gec_oup1.png <- downloadHandler(
-  filename = function() { paste0("sc2", input$sc2_gec_drX, "_", input$sc2_gec_drY, "_", input$sc2_gec_inp1, "_", input$sc2_gec_inp2, ".png") },
-  content = function(file) { ggsave(
-    file, device = "png", bg = "white", dpi = input$sc2_gec_oup1.res,
-    plot = scDRcoexFull(sc2conf, sc2meta, input$sc2_gec_drX, input$sc2_gec_drY, input$sc2_gec_inp1, input$sc2_gec_inp2, input$sc2_gec_sub1, input$sc2_gec_sub2, "sc2gexpr.h5", sc2gene, input$sc2_gec_siz, input$sc2_gec_col1, input$sc2_gec_ord1, input$sc2_gec_fsz, input$sc2_gec_asp, input$sc2_gec_txt) )
+output$ld_gec_oup1.svg <- downloadHandler(
+  filename = function() { tolower(paste0("ld", "_", input$ld_gec_drX, "_", input$ld_gec_drY, "_", input$ld_gec_inp1, "_", input$ld_gec_inp2, ".svg")) },
+  content = function(file) {
+    ggsave(
+    file, device = "svg", bg = "white",
+    plot = scDRcoexFull(ldconf, ldmeta, input$ld_gec_drX, input$ld_gec_drY, input$ld_gec_inp1, input$ld_gec_inp2, input$ld_gec_sub1, input$ld_gec_sub2, "ldgexpr.h5", ldgene, input$ld_gec_siz, input$ld_gec_col1, input$ld_gec_ord1, input$ld_gec_fsz, input$ld_gec_asp, input$ld_gec_txt)
+    )
 })
 
-output$sc2_gec_.dt <- renderDataTable({
-  ggData = scDRcoexNum(sc2conf, sc2meta, input$sc2_gec_inp1, input$sc2_gec_inp2, input$sc2_gec_sub1, input$sc2_gec_sub2, "sc2gexpr.h5", sc2gene)
+output$ld_gec_.dt <- renderDataTable({
+  ggData = scDRcoexNum(ldconf, ldmeta, input$ld_gec_inp1, input$ld_gec_inp2, input$ld_gec_sub1, input$ld_gec_sub2, "ldgexpr.h5", ldgene)
   datatable(ggData, rownames = FALSE, extensions = "Buttons", options = list(pageLength = -1, dom = "tB", buttons = c("copy", "csv", "excel"))) %>%
             formatRound(columns = c("percent"), digits = 2)
 }) # End of tab gec
@@ -1836,45 +2013,55 @@ output$sc2_gec_.dt <- renderDataTable({
 
 ### Tab vio violinplot / boxplot / lineplot ----
 
-  output$sc2_vio_sub1.ui <- renderUI({
-    sub = strsplit(sc2conf[UI == input$sc2_vio_sub1]$fID, "\\|")[[1]]
-    checkboxGroupInput("sc2_vio_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
+  output$ld_vio_sub1.ui <- renderUI({
+    sub = strsplit(ldconf[UI == input$ld_vio_sub1]$fID, "\\|")[[1]]
+    checkboxGroupInput("ld_vio_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
   })
-  observeEvent(input$sc2_vio_sub1non, {
-    sub = strsplit(sc2conf[UI == input$sc2_vio_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc2_vio_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
+  observeEvent(input$ld_vio_sub1non, {
+    sub = strsplit(ldconf[UI == input$ld_vio_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "ld_vio_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
   })
-  observeEvent(input$sc2_vio_sub1all, {
-    sub = strsplit(sc2conf[UI == input$sc2_vio_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc2_vio_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
+  observeEvent(input$ld_vio_sub1all, {
+    sub = strsplit(ldconf[UI == input$ld_vio_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "ld_vio_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc2_vio_oup <- renderPlot({
-  gh5 <- ifelse(input$sc2_vio_datatype == "normalised","sc2gexpr.h5","sc2gexpr2.h5")
-  scVioBox(sc2conf, sc2meta, input$sc2_vio_inp1, input$sc2_vio_inp2, input$sc2_vio_sub1, input$sc2_vio_sub2, gh5, sc2gene, input$sc2_vio_typ, input$sc2_vio_pts, input$sc2_vio_siz, input$sc2_vio_fsz, input$sc2_vio_barsz)
+output$ld_vio_oup <- renderPlot({
+  gh5 <- ifelse(input$ld_vio_datatype == "normalised","ldgexpr.h5","ldgexpr2.h5")
+  scVioBox(ldconf, ldmeta, input$ld_vio_inp1, input$ld_vio_inp2, input$ld_vio_sub1, input$ld_vio_sub2, gh5, ldgene, input$ld_vio_typ, input$ld_vio_pts, input$ld_vio_siz, input$ld_vio_fsz, input$ld_vio_barsz)
 })
 
-output$sc2_vio_oup.ui <- renderUI({
-  show_progress(imageOutput("sc2_vio_oup", height = pList2[input$sc2_vio_psz]))
+output$ld_vio_oup.ui <- renderUI({
+  show_progress(imageOutput("ld_vio_oup", height = pList2[input$ld_vio_psz]))
 })
 
-output$sc2_vio_oup.pdf <- downloadHandler(
-  filename = function() { paste0("sc2", input$sc2_vio_typ, "_", input$sc2_vio_inp1, "_", input$sc2_vio_inp2, ".pdf") },
+output$ld_vio_oup.png <- downloadHandler(
+  filename = function() { tolower(paste0("ld", "_", input$ld_vio_typ, "_", input$ld_vio_datatype, "_", input$ld_vio_inp1, "_", input$ld_vio_inp2,".png")) },
   content = function(file) {
-    gh5 <- ifelse(input$sc2_vio_datatype == "normalised","sc2gexpr.h5","sc2gexpr2.h5")
+    gh5 <- ifelse(input$ld_vio_datatype == "normalised","ldgexpr.h5","ldgexpr2.h5")
     ggsave(
-    file, device = "pdf", useDingbats = FALSE, bg = "white",
-    plot = scVioBox(sc2conf, sc2meta, input$sc2_vio_inp1, input$sc2_vio_inp2, input$sc2_vio_sub1, input$sc2_vio_sub2, gh5, sc2gene, input$sc2_vio_typ, input$sc2_vio_pts, input$sc2_vio_siz, input$sc2_vio_fsz, input$sc2_vio_barsz)
+    file, device = "png", bg = "white", dpi = input$ld_vio_oup.res,
+    plot = scVioBox(ldconf, ldmeta, input$ld_vio_inp1, input$ld_vio_inp2, input$ld_vio_sub1, input$ld_vio_sub2, gh5, ldgene, input$ld_vio_typ, input$ld_vio_pts, input$ld_vio_siz, input$ld_vio_fsz, input$ld_vio_barsz)
+    )
+}) 
+
+output$ld_vio_oup.pdf <- downloadHandler(
+  filename = function() { tolower(paste0("ld", "_", input$ld_vio_typ, "_", input$ld_vio_datatype, "_", input$ld_vio_inp1, "_", input$ld_vio_inp2, ".pdf")) },
+  content = function(file) {
+    gh5 <- ifelse(input$ld_vio_datatype == "normalised","ldgexpr.h5","ldgexpr2.h5")
+    ggsave(
+    file, device = "pdf", useDingbats = FALSE, bg = "white", onefile = TRUE,
+    plot = scVioBox(ldconf, ldmeta, input$ld_vio_inp1, input$ld_vio_inp2, input$ld_vio_sub1, input$ld_vio_sub2, gh5, ldgene, input$ld_vio_typ, input$ld_vio_pts, input$ld_vio_siz, input$ld_vio_fsz, input$ld_vio_barsz)
     )
 })
 
-output$sc2_vio_oup.png <- downloadHandler(
-  filename = function() { paste0("sc2", input$sc2_vio_typ, "_", input$sc2_vio_inp1, "_", input$sc2_vio_inp2,".png") },
+output$ld_vio_oup.svg <- downloadHandler(
+  filename = function() { tolower(paste0("ld", "_", input$ld_vio_typ, "_", input$ld_vio_datatype, "_", input$ld_vio_inp1, "_", input$ld_vio_inp2, ".svg")) },
   content = function(file) {
-    gh5 <- ifelse(input$sc2_vio_datatype == "normalised","sc2gexpr.h5","sc2gexpr2.h5")
+    gh5 <- ifelse(input$ld_vio_datatype == "normalised","ldgexpr.h5","ldgexpr2.h5")
     ggsave(
-    file, device = "png", bg = "white", dpi = input$sc2_vio_oup.res,
-    plot = scVioBox(sc2conf, sc2meta, input$sc2_vio_inp1, input$sc2_vio_inp2, input$sc2_vio_sub1, input$sc2_vio_sub2, gh5, sc2gene, input$sc2_vio_typ, input$sc2_vio_pts, input$sc2_vio_siz, input$sc2_vio_fsz, input$sc2_vio_barsz)
+    file, device = "svg", bg = "white",
+    plot = scVioBox(ldconf, ldmeta, input$ld_vio_inp1, input$ld_vio_inp2, input$ld_vio_sub1, input$ld_vio_sub2, gh5, ldgene, input$ld_vio_typ, input$ld_vio_pts, input$ld_vio_siz, input$ld_vio_fsz, input$ld_vio_barsz)
     )
 }) # End of tab vio
 
@@ -1883,42 +2070,51 @@ output$sc2_vio_oup.png <- downloadHandler(
 
 ### Tab pro proportion plot ----
 
-  output$sc2_pro_sub1.ui <- renderUI({
-    sub = strsplit(sc2conf[UI == input$sc2_pro_sub1]$fID, "\\|")[[1]]
-    checkboxGroupInput("sc2_pro_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
+  output$ld_pro_sub1.ui <- renderUI({
+    sub = strsplit(ldconf[UI == input$ld_pro_sub1]$fID, "\\|")[[1]]
+    checkboxGroupInput("ld_pro_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
   })
-  observeEvent(input$sc2_pro_sub1non, {
-    sub = strsplit(sc2conf[UI == input$sc2_pro_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc2_pro_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
+  observeEvent(input$ld_pro_sub1non, {
+    sub = strsplit(ldconf[UI == input$ld_pro_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "ld_pro_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
   })
-  observeEvent(input$sc2_pro_sub1all, {
-    sub = strsplit(sc2conf[UI == input$sc2_pro_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc2_pro_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
+  observeEvent(input$ld_pro_sub1all, {
+    sub = strsplit(ldconf[UI == input$ld_pro_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "ld_pro_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc2_pro_oup <- renderPlot({
-  scProp(sc2conf, sc2meta, input$sc2_pro_inp1, input$sc2_pro_inp2, input$sc2_pro_sub1, input$sc2_pro_sub2, input$sc2_pro_typ, input$sc2_pro_flp, input$sc2_pro_fsz)
+output$ld_pro_oup <- renderPlot({
+  scProp(ldconf, ldmeta, input$ld_pro_inp1, input$ld_pro_inp2, input$ld_pro_sub1, input$ld_pro_sub2, input$ld_pro_typ, input$ld_pro_flp, input$ld_pro_fsz)
 })
 
-output$sc2_pro_oup.ui <- renderUI({
-  show_progress(imageOutput("sc2_pro_oup", height = pList2[input$sc2_pro_psz]))
+output$ld_pro_oup.ui <- renderUI({
+  show_progress(imageOutput("ld_pro_oup", height = pList2[input$ld_pro_psz]))
 })
 
-output$sc2_pro_oup.pdf <- downloadHandler(
-  filename = function() { paste0("sc2", input$sc2_pro_typ, "_", input$sc2_pro_inp1, "_", input$sc2_pro_inp2, ".pdf") },
+output$ld_pro_oup.png <- downloadHandler(
+  filename = function() { tolower(paste0("ld", "_", input$ld_pro_typ, "_", input$ld_pro_inp1, "_", input$ld_pro_inp2, ".png")) },
   content = function(file) {
     ggsave(
-    file, device = "pdf", useDingbats = FALSE, bg = "white",
-    plot = scProp(sc2conf, sc2meta, input$sc2_pro_inp1, input$sc2_pro_inp2, input$sc2_pro_sub1, input$sc2_pro_sub2, input$sc2_pro_typ, input$sc2_pro_flp, input$sc2_pro_fsz)
+    file, device = "png", bg = "white", dpi = input$ld_pro_oup.res,
+    plot = scProp(ldconf, ldmeta, input$ld_pro_inp1, input$ld_pro_inp2, input$ld_pro_sub1, input$ld_pro_sub2, input$ld_pro_typ, input$ld_pro_flp, input$ld_pro_fsz)
+    )
+  }) 
+  
+output$ld_pro_oup.pdf <- downloadHandler(
+  filename = function() { tolower(paste0("ld", "_", input$ld_pro_typ, "_", input$ld_pro_inp1, "_", input$ld_pro_inp2, ".pdf")) },
+  content = function(file) {
+    ggsave(
+    file, device = "pdf", useDingbats = FALSE, bg = "white", onefile = TRUE,
+    plot = scProp(ldconf, ldmeta, input$ld_pro_inp1, input$ld_pro_inp2, input$ld_pro_sub1, input$ld_pro_sub2, input$ld_pro_typ, input$ld_pro_flp, input$ld_pro_fsz)
     )
   })
-
-output$sc2_pro_oup.png <- downloadHandler(
-  filename = function() { paste0("sc2", input$sc2_pro_typ, "_", input$sc2_pro_inp1, "_", input$sc2_pro_inp2, ".png") },
+  
+output$ld_pro_oup.svg <- downloadHandler(
+  filename = function() { tolower(paste0("ld", "_", input$ld_pro_typ, "_", input$ld_pro_inp1, "_", input$ld_pro_inp2, ".svg")) },
   content = function(file) {
     ggsave(
-    file, device = "png", bg = "white", dpi = input$sc2_pro_oup.res,
-    plot = scProp(sc2conf, sc2meta, input$sc2_pro_inp1, input$sc2_pro_inp2, input$sc2_pro_sub1, input$sc2_pro_sub2, input$sc2_pro_typ, input$sc2_pro_flp, input$sc2_pro_fsz)
+    file, device = "svg", bg = "white",
+    plot = scProp(ldconf, ldmeta, input$ld_pro_inp1, input$ld_pro_inp2, input$ld_pro_sub1, input$ld_pro_sub2, input$ld_pro_typ, input$ld_pro_flp, input$ld_pro_fsz)
     )
   }) # End of tab pro
 
@@ -1926,54 +2122,58 @@ output$sc2_pro_oup.png <- downloadHandler(
 
 ### Tab hea heatmap / dotplot ----
 
-  output$sc2_hea_sub1.ui <- renderUI({
-    sub = strsplit(sc2conf[UI == input$sc2_hea_sub1]$fID, "\\|")[[1]]
-    checkboxGroupInput("sc2_hea_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
+  output$ld_hea_sub1.ui <- renderUI({
+    sub = strsplit(ldconf[UI == input$ld_hea_sub1]$fID, "\\|")[[1]]
+    checkboxGroupInput("ld_hea_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
   })
-  observeEvent(input$sc2_hea_sub1non, {
-    sub = strsplit(sc2conf[UI == input$sc2_hea_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc2_hea_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
+  observeEvent(input$ld_hea_sub1non, {
+    sub = strsplit(ldconf[UI == input$ld_hea_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "ld_hea_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
   })
-  observeEvent(input$sc2_hea_sub1all, {
-    sub = strsplit(sc2conf[UI == input$sc2_hea_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc2_hea_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
+  observeEvent(input$ld_hea_sub1all, {
+    sub = strsplit(ldconf[UI == input$ld_hea_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "ld_hea_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc2_hea_oupTxt <- renderUI({
-  geneList = scGeneList(input$sc2_hea_inp, sc2gene)
+output$ld_hea_oupTxt <- renderUI({
+  geneList = scGeneList(input$ld_hea_inp, ldgene)
   if(nrow(geneList) > 50){
     HTML("More than 50 input genes! Please reduce the gene list!")
-  } else {
-    if(nrow(geneList[present == FALSE]) > 0){
-      oup = paste0(nrow(geneList[present == FALSE]), " genes not found (", paste0(geneList[present == FALSE]$gene, collapse = ", "), ")")
-      HTML(paste0("<span class='text-danger'>",oup,"</span>"))
-    }
   }
 })
 
-output$sc2_hea_oup <- renderPlot({
-  scBubbHeat(sc2conf, sc2meta, input$sc2_hea_inp, input$sc2_hea_grp, input$sc2_hea_plt, input$sc2_hea_sub1, input$sc2_hea_sub2, "sc2gexpr.h5", sc2gene, input$sc2_hea_scl, input$sc2_hea_row, input$sc2_hea_col, input$sc2_hea_cols, input$sc2_hea_fsz)
+output$ld_hea_oup <- renderPlot({
+  scBubbHeat(ldconf, ldmeta, input$ld_hea_inp, input$ld_hea_grp, input$ld_hea_plt, input$ld_hea_sub1, input$ld_hea_sub2, "ldgexpr.h5", ldgene, input$ld_hea_scl, input$ld_hea_row, input$ld_hea_col, input$ld_hea_cols, input$ld_hea_fsz)
 })
 
-output$sc2_hea_oup.ui <- renderUI({
-  show_progress(imageOutput("sc2_hea_oup", height = pList3[input$sc2_hea_psz]))
+output$ld_hea_oup.ui <- renderUI({
+  show_progress(imageOutput("ld_hea_oup", height = pList3[input$ld_hea_psz]))
 })
 
-output$sc2_hea_oup.pdf <- downloadHandler(
-  filename = function() { paste0("sc2",input$sc2_hea_plt,"_",input$sc2_hea_grp,".pdf") },
+output$ld_hea_oup.png <- downloadHandler(
+  filename = function() { tolower(paste0("ld", "_", input$ld_hea_plt,"_",input$ld_hea_grp,".png")) },
   content = function(file) {
     ggsave(
-    file, device = "pdf", useDingbats = FALSE, bg = "white",
-    plot = scBubbHeat(sc2conf, sc2meta, input$sc2_hea_inp, input$sc2_hea_grp, input$sc2_hea_plt, input$sc2_hea_sub1, input$sc2_hea_sub2, "sc2gexpr.h5", sc2gene, input$sc2_hea_scl, input$sc2_hea_row, input$sc2_hea_col, input$sc2_hea_cols, input$sc2_hea_fsz, save = TRUE)
+    file, device = "png", bg = "white", height = input$ld_hea_oup.height, width = input$ld_hea_oup.width, units = "cm", dpi = input$ld_hea_oup.res, plot = scBubbHeat(ldconf, ldmeta, input$ld_hea_inp, input$ld_hea_grp, input$ld_hea_plt, input$ld_hea_sub1, input$ld_hea_sub2, "ldgexpr.h5", ldgene, input$ld_hea_scl, input$ld_hea_row, input$ld_hea_col, input$ld_hea_cols, input$ld_hea_fsz)
     )
 })
 
-output$sc2_hea_oup.png <- downloadHandler(
-  filename = function() { paste0("sc2",input$sc2_hea_plt,"_",input$sc2_hea_grp,".png") },
+output$ld_hea_oup.pdf <- downloadHandler(
+  filename = function() { tolower(paste0("ld", "_", input$ld_hea_plt,"_",input$ld_hea_grp,".pdf")) },
+  content = function(file) {
+    pdf(file, useDingbats = FALSE, bg = "white", height = input$ld_hea_oup.height/2.54, width = input$ld_hea_oup.width/2.54, onefile = TRUE)
+    showtext::showtext_begin()
+    print(scBubbHeat(ldconf, ldmeta, input$ld_hea_inp, input$ld_hea_grp, input$ld_hea_plt, input$ld_hea_sub1, input$ld_hea_sub2, "ldgexpr.h5", ldgene, input$ld_hea_scl, input$ld_hea_row, input$ld_hea_col, input$ld_hea_cols, input$ld_hea_fsz))
+    showtext::showtext_end()
+    dev.off()
+})
+
+output$ld_hea_oup.svg <- downloadHandler(
+  filename = function() { tolower(paste0("ld", "_", input$ld_hea_plt,"_",input$ld_hea_grp,".svg")) },
   content = function(file) {
     ggsave(
-    file, device = "png", bg = "white", dpi = input$sc2_hea_oup.res,
-    plot = scBubbHeat(sc2conf, sc2meta, input$sc2_hea_inp, input$sc2_hea_grp, input$sc2_hea_plt, input$sc2_hea_sub1, input$sc2_hea_sub2, "sc2gexpr.h5", sc2gene, input$sc2_hea_scl, input$sc2_hea_row, input$sc2_hea_col, input$sc2_hea_cols, input$sc2_hea_fsz, save = TRUE)
+    file, device = "svg", bg = "white", height = input$ld_hea_oup.height, width = input$ld_hea_oup.width, units = "cm", 
+    plot = scBubbHeat(ldconf, ldmeta, input$ld_hea_inp, input$ld_hea_grp, input$ld_hea_plt, input$ld_hea_sub1, input$ld_hea_sub2, "ldgexpr.h5", ldgene, input$ld_hea_scl, input$ld_hea_row, input$ld_hea_col, input$ld_hea_cols, input$ld_hea_fsz)
     )
 }) # End of tab hea      
        
@@ -1981,104 +2181,128 @@ output$sc2_hea_oup.png <- downloadHandler(
 
 ### Tab markers ----
 
-output$sc2_mar_table <- renderDataTable({
-  req(input$sc2_mar_cls)
-  datatable(sc2mar[[input$sc2_mar_cls]], rownames = FALSE, extensions = "Buttons", options = list(dom = "lftiprB", buttons = c("copy", "csv", "excel")))
+output$ld_mar_table <- renderDataTable({
+  req(input$ld_mar_cls)
+  datatable(ldmar[[input$ld_mar_cls]], rownames = FALSE, extensions = "Buttons", options = list(dom = "lftiprB", buttons = c("copy", "csv", "excel")))
 }) # End of tab mar
 optCrt="{ option_create: function(data,escape) {return('<div class=\"create\"><strong>' + '</strong></div>');} }"
-updateSelectizeInput(session, "sc3_civge_inp2", choices = names(sc3gene), server = TRUE,
-                     selected = sc3def$gene1, options = list(
+updateSelectizeInput(session, "lh_civge_inp2", choices = names(lhgene), server = TRUE,
+                     selected = lhdef$gene1, options = list(
                        maxOptions = 7, create = TRUE, persist = TRUE, render = I(optCrt)))
-updateSelectizeInput(session, "sc3_gevge_inp1", choices = names(sc3gene), server = TRUE,
-                     selected = sc3def$gene1, options = list(
+updateSelectizeInput(session, "lh_gevge_inp1", choices = names(lhgene), server = TRUE,
+                     selected = lhdef$gene1, options = list(
                        maxOptions = 7, create = TRUE, persist = TRUE, render = I(optCrt)))
-updateSelectizeInput(session, "sc3_gevge_inp2", choices = names(sc3gene), server = TRUE,
-                     selected = sc3def$gene2, options = list(
+updateSelectizeInput(session, "lh_gevge_inp2", choices = names(lhgene), server = TRUE,
+                     selected = lhdef$gene2, options = list(
                        maxOptions = 7, create = TRUE, persist = TRUE, render = I(optCrt)))
-updateSelectizeInput(session, "sc3_gec_inp1", choices = names(sc3gene), server = TRUE,
-                     selected = sc3def$gene1, options = list(
+updateSelectizeInput(session, "lh_gec_inp1", choices = names(lhgene), server = TRUE,
+                     selected = lhdef$gene1, options = list(
                        maxOptions = 7, create = TRUE, persist = TRUE, render = I(optCrt)))
-updateSelectizeInput(session, "sc3_gec_inp2", choices = names(sc3gene), server = TRUE,
-                     selected = sc3def$gene2, options = list(
+updateSelectizeInput(session, "lh_gec_inp2", choices = names(lhgene), server = TRUE,
+                     selected = lhdef$gene2, options = list(
                        maxOptions = 7, create = TRUE, persist = TRUE, render = I(optCrt)))
-updateSelectizeInput(session, "sc3_vio_inp2", server = TRUE,
-                     choices = c(sc3conf[is.na(fID)]$UI,names(sc3gene)),
-                     selected = sc3conf[is.na(fID)]$UI[1], options = list(
-                       maxOptions = length(sc3conf[is.na(fID)]$UI) + 3,
+updateSelectizeInput(session, "lh_gem_inp", choices = names(lhgene), server = TRUE,
+                     selected = lhdef$genes[1:9], options = list(
+                     create = TRUE, persist = TRUE, render = I(optCrt)))
+updateSelectizeInput(session, "lh_hea_inp", choices = names(lhgene), server = TRUE,
+                     selected = lhdef$genes[1:12], options = list(
+                     create = TRUE, persist = TRUE, render = I(optCrt)))
+updateSelectizeInput(session, "lh_vio_inp2", server = TRUE,
+                     choices = c(lhconf[is.na(fID)]$UI,names(lhgene)),
+                     selected = lhconf[is.na(fID)]$UI[1], options = list(
+                       maxOptions = length(lhconf[is.na(fID)]$UI) + 3,
                        create = TRUE, persist = TRUE, render = I(optCrt)))  
 ### Tab civge cell info vs gene exp ----
 
-  output$sc3_civge_sub1.ui <- renderUI({
-    sub = strsplit(sc3conf[UI == input$sc3_civge_sub1]$fID, "\\|")[[1]]
-    checkboxGroupInput("sc3_civge_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
+  output$lh_civge_sub1.ui <- renderUI({
+    sub = strsplit(lhconf[UI == input$lh_civge_sub1]$fID, "\\|")[[1]]
+    checkboxGroupInput("lh_civge_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
   })
-  observeEvent(input$sc3_civge_sub1non, {
-    sub = strsplit(sc3conf[UI == input$sc3_civge_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc3_civge_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
+  observeEvent(input$lh_civge_sub1non, {
+    sub = strsplit(lhconf[UI == input$lh_civge_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "lh_civge_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
   })
-  observeEvent(input$sc3_civge_sub1all, {
-    sub = strsplit(sc3conf[UI == input$sc3_civge_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc3_civge_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
+  observeEvent(input$lh_civge_sub1all, {
+    sub = strsplit(lhconf[UI == input$lh_civge_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "lh_civge_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc3_civge_oup1 <- renderPlot({
-  req(input$sc3_civge_inp1)
-  scDRcell(sc3conf, sc3meta, input$sc3_civge_drX, input$sc3_civge_drY, input$sc3_civge_inp1, input$sc3_civge_sub1, input$sc3_civge_sub2, input$sc3_civge_siz, input$sc3_civge_col1, input$sc3_civge_ord1, input$sc3_civge_fsz, input$sc3_civge_asp, input$sc3_civge_txt, input$sc3_civge_lab1)
+output$lh_civge_oup1 <- renderPlot({
+  req(input$lh_civge_inp1)
+  scDRcell(lhconf, lhmeta, input$lh_civge_drX, input$lh_civge_drY, input$lh_civge_inp1, input$lh_civge_sub1, input$lh_civge_sub2, input$lh_civge_siz, input$lh_civge_col1, input$lh_civge_ord1, input$lh_civge_fsz, input$lh_civge_asp, input$lh_civge_txt, input$lh_civge_lab1)
 })
 
-output$sc3_civge_oup1.ui <- renderUI({
-  show_progress(imageOutput("sc3_civge_oup1", height = pList[input$sc3_civge_psz]))
+output$lh_civge_oup1.ui <- renderUI({
+  show_progress(imageOutput("lh_civge_oup1", height = pList[input$lh_civge_psz]))
 })
 
-output$sc3_civge_oup1.pdf <- downloadHandler(
- filename = function() { paste0("sc3", input$sc3_civge_drX,"_", input$sc3_civge_drY,"_", input$sc3_civge_inp1,".pdf") },
+output$lh_civge_oup1.png <- downloadHandler(
+ filename = function() { tolower(paste0("lh", "_", input$lh_civge_drX, "_", input$lh_civge_drY, "_", input$lh_civge_inp1, ".png")) },
  content = function(file) {
    ggsave(
-   file, device = "pdf", useDingbats = FALSE, bg = "white",
-   plot = scDRcell(sc3conf, sc3meta, input$sc3_civge_drX, input$sc3_civge_drY, input$sc3_civge_inp1,   input$sc3_civge_sub1, input$sc3_civge_sub2, input$sc3_civge_siz, input$sc3_civge_col1, input$sc3_civge_ord1,  input$sc3_civge_fsz, input$sc3_civge_asp, input$sc3_civge_txt, input$sc3_civge_lab1)
+   file, device = "png", dpi = input$lh_civge_oup1.res, bg = "white",
+   plot = scDRcell(lhconf, lhmeta, input$lh_civge_drX, input$lh_civge_drY, input$lh_civge_inp1,   input$lh_civge_sub1, input$lh_civge_sub2, input$lh_civge_siz, input$lh_civge_col1, input$lh_civge_ord1,  input$lh_civge_fsz, input$lh_civge_asp, input$lh_civge_txt, input$lh_civge_lab1)
    )
 })
 
-output$sc3_civge_oup1.png <- downloadHandler(
- filename = function() { paste0("sc3",input$sc3_civge_drX,"_",input$sc3_civge_drY,"_", input$sc3_civge_inp1,".png") },
+output$lh_civge_oup1.pdf <- downloadHandler(
+ filename = function() { tolower(paste0("lh", "_", input$lh_civge_drX,"_", input$lh_civge_drY,"_", input$lh_civge_inp1,".pdf")) },
  content = function(file) {
    ggsave(
-   file, device = "png", dpi = input$sc3_civge_oup1.res, bg = "white",
-   plot = scDRcell(sc3conf, sc3meta, input$sc3_civge_drX, input$sc3_civge_drY, input$sc3_civge_inp1,   input$sc3_civge_sub1, input$sc3_civge_sub2, input$sc3_civge_siz, input$sc3_civge_col1, input$sc3_civge_ord1,  input$sc3_civge_fsz, input$sc3_civge_asp, input$sc3_civge_txt, input$sc3_civge_lab1)
+   file, device = "pdf", useDingbats = FALSE, bg = "white", onefile = TRUE,
+   plot = scDRcell(lhconf, lhmeta, input$lh_civge_drX, input$lh_civge_drY, input$lh_civge_inp1,   input$lh_civge_sub1, input$lh_civge_sub2, input$lh_civge_siz, input$lh_civge_col1, input$lh_civge_ord1,  input$lh_civge_fsz, input$lh_civge_asp, input$lh_civge_txt, input$lh_civge_lab1)
    )
 })
 
-output$sc3_civge_.dt <- renderDataTable({
- req(input$sc3_civge_inp2)
- ggData = scDRnum(sc3conf, sc3meta, input$sc3_civge_inp1, input$sc3_civge_inp2, input$sc3_civge_sub1, input$sc3_civge_sub2, "sc3gexpr.h5", sc3gene, input$sc3_civge_splt)
+output$lh_civge_oup1.svg <- downloadHandler(
+ filename = function() { tolower(paste0("lh", "_", input$lh_civge_drX,"_", input$lh_civge_drY,"_", input$lh_civge_inp1,".svg")) },
+ content = function(file) {
+   ggsave(
+   file, device = "svg", bg = "white",
+   plot = scDRcell(lhconf, lhmeta, input$lh_civge_drX, input$lh_civge_drY, input$lh_civge_inp1,   input$lh_civge_sub1, input$lh_civge_sub2, input$lh_civge_siz, input$lh_civge_col1, input$lh_civge_ord1,  input$lh_civge_fsz, input$lh_civge_asp, input$lh_civge_txt, input$lh_civge_lab1)
+   )
+})
+
+output$lh_civge_.dt <- renderDataTable({
+ req(input$lh_civge_inp2)
+ ggData = scDRnum(lhconf, lhmeta, input$lh_civge_inp1, input$lh_civge_inp2, input$lh_civge_sub1, input$lh_civge_sub2, "lhgexpr.h5", lhgene, input$lh_civge_splt)
  datatable(ggData, rownames = FALSE, extensions = "Buttons", options = list(pageLength = -1, dom = "tB", buttons = c("copy", "csv", "excel"))) %>%
    formatRound(columns = c("pctExpress"), digits = 2)
 })
 
-output$sc3_civge_oup2 <- renderPlot({
- req(input$sc3_civge_inp2)
- scDRgene(sc3conf, sc3meta, input$sc3_civge_drX, input$sc3_civge_drY, input$sc3_civge_inp2, input$sc3_civge_sub1, input$sc3_civge_sub2, "sc3gexpr.h5", sc3gene, input$sc3_civge_siz, input$sc3_civge_col2, input$sc3_civge_ord2, input$sc3_civge_fsz, input$sc3_civge_asp, input$sc3_civge_txt)
+output$lh_civge_oup2 <- renderPlot({
+ req(input$lh_civge_inp2)
+ scDRgene(lhconf, lhmeta, input$lh_civge_drX, input$lh_civge_drY, input$lh_civge_inp2, input$lh_civge_sub1, input$lh_civge_sub2, "lhgexpr.h5", lhgene, input$lh_civge_siz, input$lh_civge_col2, input$lh_civge_ord2, input$lh_civge_fsz, input$lh_civge_asp, input$lh_civge_txt)
 })
 
-output$sc3_civge_oup2.ui <- renderUI({
- show_progress(imageOutput("sc3_civge_oup2", height = pList[input$sc3_civge_psz]))
+output$lh_civge_oup2.ui <- renderUI({
+ show_progress(imageOutput("lh_civge_oup2", height = pList[input$lh_civge_psz]))
 })
 
-output$sc3_civge_oup2.pdf <- downloadHandler(
- filename = function() { paste0("sc3",input$sc3_civge_drX,"_",input$sc3_civge_drY,"_", input$sc3_civge_inp2,".pdf") },
+output$lh_civge_oup2.png <- downloadHandler(
+ filename = function() { tolower(paste0("lh", "_", input$lh_civge_drX,"_",input$lh_civge_drY,"_", input$lh_civge_inp2,".png")) },
  content = function(file) {
    ggsave(
-   file, device = "pdf", useDingbats = FALSE, bg = "white",
-   plot = scDRgene(sc3conf, sc3meta, input$sc3_civge_drX, input$sc3_civge_drY, input$sc3_civge_inp2,  input$sc3_civge_sub1, input$sc3_civge_sub2, "sc3gexpr.h5", sc3gene, input$sc3_civge_siz, input$sc3_civge_col2, input$sc3_civge_ord2, input$sc3_civge_fsz, input$sc3_civge_asp, input$sc3_civge_txt)
+   file, device = "png", dpi = input$lh_civge_oup2.res, bg = "white",
+   plot = scDRgene(lhconf, lhmeta, input$lh_civge_drX, input$lh_civge_drY, input$lh_civge_inp2, input$lh_civge_sub1, input$lh_civge_sub2, "lhgexpr.h5", lhgene, input$lh_civge_siz, input$lh_civge_col2, input$lh_civge_ord2, input$lh_civge_fsz, input$lh_civge_asp, input$lh_civge_txt)
    )
 })
 
-output$sc3_civge_oup2.png <- downloadHandler(
- filename = function() { paste0("sc3",input$sc3_civge_drX,"_",input$sc3_civge_drY,"_", input$sc3_civge_inp2,".png") },
+output$lh_civge_oup2.pdf <- downloadHandler(
+ filename = function() { tolower(paste0("lh", "_", input$lh_civge_drX,"_",input$lh_civge_drY,"_", input$lh_civge_inp2,".pdf")) },
  content = function(file) {
    ggsave(
-   file, device = "png", dpi = input$sc3_civge_oup2.res, bg = "white",
-   plot = scDRgene(sc3conf, sc3meta, input$sc3_civge_drX, input$sc3_civge_drY, input$sc3_civge_inp2, input$sc3_civge_sub1, input$sc3_civge_sub2, "sc3gexpr.h5", sc3gene, input$sc3_civge_siz, input$sc3_civge_col2, input$sc3_civge_ord2, input$sc3_civge_fsz, input$sc3_civge_asp, input$sc3_civge_txt)
+   file, device = "pdf", useDingbats = FALSE, bg = "white", onefile = TRUE,
+   plot = scDRgene(lhconf, lhmeta, input$lh_civge_drX, input$lh_civge_drY, input$lh_civge_inp2,  input$lh_civge_sub1, input$lh_civge_sub2, "lhgexpr.h5", lhgene, input$lh_civge_siz, input$lh_civge_col2, input$lh_civge_ord2, input$lh_civge_fsz, input$lh_civge_asp, input$lh_civge_txt)
+   )
+}) 
+
+output$lh_civge_oup2.svg <- downloadHandler(
+ filename = function() { tolower(paste0("lh", "_", input$lh_civge_drX,"_",input$lh_civge_drY,"_", input$lh_civge_inp2,".svg")) },
+ content = function(file) {
+   ggsave(
+   file, device = "svg", bg = "white",
+   plot = scDRgene(lhconf, lhmeta, input$lh_civge_drX, input$lh_civge_drY, input$lh_civge_inp2,  input$lh_civge_sub1, input$lh_civge_sub2, "lhgexpr.h5", lhgene, input$lh_civge_siz, input$lh_civge_col2, input$lh_civge_ord2, input$lh_civge_fsz, input$lh_civge_asp, input$lh_civge_txt)
    )
 }) # End of tab civge
 
@@ -2086,68 +2310,84 @@ output$sc3_civge_oup2.png <- downloadHandler(
 
 ### Tab civci cell info vs cell info ----
   
-  output$sc3_civci_sub1.ui <- renderUI({
-    sub = strsplit(sc3conf[UI == input$sc3_civci_sub1]$fID, "\\|")[[1]]
-    checkboxGroupInput("sc3_civci_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
+  output$lh_civci_sub1.ui <- renderUI({
+    sub = strsplit(lhconf[UI == input$lh_civci_sub1]$fID, "\\|")[[1]]
+    checkboxGroupInput("lh_civci_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
   })
-  observeEvent(input$sc3_civci_sub1non, {
-    sub = strsplit(sc3conf[UI == input$sc3_civci_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc3_civci_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
+  observeEvent(input$lh_civci_sub1non, {
+    sub = strsplit(lhconf[UI == input$lh_civci_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "lh_civci_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
   })
-  observeEvent(input$sc3_civci_sub1all, {
-    sub = strsplit(sc3conf[UI == input$sc3_civci_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc3_civci_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
+  observeEvent(input$lh_civci_sub1all, {
+    sub = strsplit(lhconf[UI == input$lh_civci_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "lh_civci_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc3_civci_oup1 <- renderPlot({
-  req(input$sc3_civci_inp1)
-  scDRcell(sc3conf, sc3meta, input$sc3_civci_drX, input$sc3_civci_drY, input$sc3_civci_inp1, input$sc3_civci_sub1, input$sc3_civci_sub2, input$sc3_civci_siz, input$sc3_civci_col1, input$sc3_civci_ord1, input$sc3_civci_fsz, input$sc3_civci_asp, input$sc3_civci_txt, input$sc3_civci_lab1)
+output$lh_civci_oup1 <- renderPlot({
+  req(input$lh_civci_inp1)
+  scDRcell(lhconf, lhmeta, input$lh_civci_drX, input$lh_civci_drY, input$lh_civci_inp1, input$lh_civci_sub1, input$lh_civci_sub2, input$lh_civci_siz, input$lh_civci_col1, input$lh_civci_ord1, input$lh_civci_fsz, input$lh_civci_asp, input$lh_civci_txt, input$lh_civci_lab1)
 })
 
-output$sc3_civci_oup1.ui <- renderUI({
-  show_progress(imageOutput("sc3_civci_oup1", height = pList[input$sc3_civci_psz]))
+output$lh_civci_oup1.ui <- renderUI({
+  show_progress(imageOutput("lh_civci_oup1", height = pList[input$lh_civci_psz]))
 })
 
-output$sc3_civci_oup1.pdf <- downloadHandler(
-  filename = function() { paste0("sc3", input$sc3_civci_drX, "_", input$sc3_civci_drY, "_", input$sc3_civci_inp1, ".pdf") },
+output$lh_civci_oup1.png <- downloadHandler(
+  filename = function() { tolower(paste0("lh", "_", input$lh_civci_drX, "_", input$lh_civci_drY, "_", input$lh_civci_inp1, ".png")) },
+  content = function(file) {
+    ggsave(
+    file, device = "png", dpi = input$lh_civci_oup1.res, bg = "white",
+    plot = scDRcell(lhconf, lhmeta, input$lh_civci_drX, input$lh_civci_drY, input$lh_civci_inp1, input$lh_civci_sub1, input$lh_civci_sub2, input$lh_civci_siz, input$lh_civci_col1, input$lh_civci_ord1, input$lh_civci_fsz, input$lh_civci_asp, input$lh_civci_txt, input$lh_civci_lab1)
+    )
+})
+
+output$lh_civci_oup1.pdf <- downloadHandler(
+  filename = function() { tolower(paste0("lh", "_", input$lh_civci_drX, "_", input$lh_civci_drY, "_", input$lh_civci_inp1, ".pdf")) },
   content = function(file) { ggsave(
-    file, device = "pdf", useDingbats = FALSE, bg = "white",
-    plot = scDRcell(sc3conf, sc3meta, input$sc3_civci_drX, input$sc3_civci_drY, input$sc3_civci_inp1, input$sc3_civci_sub1, input$sc3_civci_sub2, input$sc3_civci_siz, input$sc3_civci_col1, input$sc3_civci_ord1, input$sc3_civci_fsz, input$sc3_civci_asp, input$sc3_civci_txt, input$sc3_civci_lab1) )
+    file, device = "pdf", useDingbats = FALSE, bg = "white", onefile = TRUE,
+    plot = scDRcell(lhconf, lhmeta, input$lh_civci_drX, input$lh_civci_drY, input$lh_civci_inp1, input$lh_civci_sub1, input$lh_civci_sub2, input$lh_civci_siz, input$lh_civci_col1, input$lh_civci_ord1, input$lh_civci_fsz, input$lh_civci_asp, input$lh_civci_txt, input$lh_civci_lab1) )
 })
 
-output$sc3_civci_oup1.png <- downloadHandler(
-  filename = function() { paste0("sc3", input$sc3_civci_drX, "_", input$sc3_civci_drY, "_", input$sc3_civci_inp1, ".png") },
+output$lh_civci_oup1.svg <- downloadHandler(
+  filename = function() { tolower(paste0("lh", "_", input$lh_civci_drX, "_", input$lh_civci_drY, "_", input$lh_civci_inp1, ".svg")) },
+  content = function(file) { ggsave(
+    file, device = "svg", bg = "white",
+    plot = scDRcell(lhconf, lhmeta, input$lh_civci_drX, input$lh_civci_drY, input$lh_civci_inp1, input$lh_civci_sub1, input$lh_civci_sub2, input$lh_civci_siz, input$lh_civci_col1, input$lh_civci_ord1, input$lh_civci_fsz, input$lh_civci_asp, input$lh_civci_txt, input$lh_civci_lab1) )
+})
+
+output$lh_civci_oup2 <- renderPlot({
+  req(input$lh_civci_inp2)
+  scDRcell(lhconf, lhmeta, input$lh_civci_drX, input$lh_civci_drY, input$lh_civci_inp2, input$lh_civci_sub1, input$lh_civci_sub2, input$lh_civci_siz, input$lh_civci_col2, input$lh_civci_ord2, input$lh_civci_fsz, input$lh_civci_asp, input$lh_civci_txt, input$lh_civci_lab2)
+})
+
+output$lh_civci_oup2.ui <- renderUI({
+  show_progress(imageOutput("lh_civci_oup2", height = pList[input$lh_civci_psz]))
+})
+
+output$lh_civci_oup2.png <- downloadHandler(
+  filename = function() { tolower(paste0("lh", "_", input$lh_civci_drX,"_",input$lh_civci_drY,"_", input$lh_civci_inp2,".png")) },
   content = function(file) {
     ggsave(
-    file, device = "png", dpi = input$sc3_civci_oup1.res, bg = "white",
-    plot = scDRcell(sc3conf, sc3meta, input$sc3_civci_drX, input$sc3_civci_drY, input$sc3_civci_inp1, input$sc3_civci_sub1, input$sc3_civci_sub2, input$sc3_civci_siz, input$sc3_civci_col1, input$sc3_civci_ord1, input$sc3_civci_fsz, input$sc3_civci_asp, input$sc3_civci_txt, input$sc3_civci_lab1)
+    file, device = "png", bg = "white", dpi = input$lh_civci_oup2.res,
+    plot = scDRcell(lhconf, lhmeta, input$lh_civci_drX, input$lh_civci_drY, input$lh_civci_inp2, input$lh_civci_sub1, input$lh_civci_sub2, input$lh_civci_siz, input$lh_civci_col2, input$lh_civci_ord2, input$lh_civci_fsz, input$lh_civci_asp, input$lh_civci_txt, input$lh_civci_lab2)
+    )
+}) 
+
+output$lh_civci_oup2.pdf <- downloadHandler(
+  filename = function() { tolower(paste0("lh", "_", input$lh_civci_drX,"_",input$lh_civci_drY,"_", input$lh_civci_inp2,".pdf")) },
+  content = function(file) {
+    ggsave(
+    file, device = "pdf", useDingbats = FALSE, bg = "white", onefile = TRUE,
+    plot = scDRcell(lhconf, lhmeta, input$lh_civci_drX, input$lh_civci_drY, input$lh_civci_inp2, input$lh_civci_sub1, input$lh_civci_sub2, input$lh_civci_siz, input$lh_civci_col2, input$lh_civci_ord2, input$lh_civci_fsz, input$lh_civci_asp, input$lh_civci_txt, input$lh_civci_lab2) 
     )
 })
 
-output$sc3_civci_oup2 <- renderPlot({
-  req(input$sc3_civci_inp2)
-  scDRcell(sc3conf, sc3meta, input$sc3_civci_drX, input$sc3_civci_drY, input$sc3_civci_inp2, input$sc3_civci_sub1, input$sc3_civci_sub2, input$sc3_civci_siz, input$sc3_civci_col2, input$sc3_civci_ord2, input$sc3_civci_fsz, input$sc3_civci_asp, input$sc3_civci_txt, input$sc3_civci_lab2)
-})
-
-output$sc3_civci_oup2.ui <- renderUI({
-  show_progress(imageOutput("sc3_civci_oup2", height = pList[input$sc3_civci_psz]))
-})
-
-output$sc3_civci_oup2.pdf <- downloadHandler(
-  filename = function() { paste0("sc3",input$sc3_civci_drX,"_",input$sc3_civci_drY,"_", input$sc3_civci_inp2,".pdf") },
+output$lh_civci_oup2.svg <- downloadHandler(
+  filename = function() { tolower(paste0("lh", "_", input$lh_civci_drX,"_",input$lh_civci_drY,"_", input$lh_civci_inp2,".svg")) },
   content = function(file) {
     ggsave(
-    file, device = "pdf", useDingbats = FALSE, bg = "white",
-    plot = scDRcell(sc3conf, sc3meta, input$sc3_civci_drX, input$sc3_civci_drY, input$sc3_civci_inp2, input$sc3_civci_sub1, input$sc3_civci_sub2, input$sc3_civci_siz, input$sc3_civci_col2, input$sc3_civci_ord2, input$sc3_civci_fsz, input$sc3_civci_asp, input$sc3_civci_txt, input$sc3_civci_lab2) 
-    )
-})
-
-output$sc3_civci_oup2.png <- downloadHandler(
-  filename = function() { paste0("sc3",input$sc3_civci_drX,"_",input$sc3_civci_drY,"_", input$sc3_civci_inp2,".png") },
-  content = function(file) {
-    ggsave(
-    file, device = "png", bg = "white", dpi = input$sc3_civci_oup2.res,
-    plot = scDRcell(sc3conf, sc3meta, input$sc3_civci_drX, input$sc3_civci_drY, input$sc3_civci_inp2, input$sc3_civci_sub1, input$sc3_civci_sub2, input$sc3_civci_siz, input$sc3_civci_col2, input$sc3_civci_ord2, input$sc3_civci_fsz, input$sc3_civci_asp, input$sc3_civci_txt, input$sc3_civci_lab2)
+    file, device = "svg", bg = "white",
+    plot = scDRcell(lhconf, lhmeta, input$lh_civci_drX, input$lh_civci_drY, input$lh_civci_inp2, input$lh_civci_sub1, input$lh_civci_sub2, input$lh_civci_siz, input$lh_civci_col2, input$lh_civci_ord2, input$lh_civci_fsz, input$lh_civci_asp, input$lh_civci_txt, input$lh_civci_lab2) 
     )
 }) # End of tab civci
 
@@ -2155,78 +2395,100 @@ output$sc3_civci_oup2.png <- downloadHandler(
 
 ### Tab gevge gene exp vs gene exp ----
 
-  output$sc3_gevge_sub1.ui <- renderUI({
-    sub = strsplit(sc3conf[UI == input$sc3_gevge_sub1]$fID, "\\|")[[1]]
-    checkboxGroupInput("sc3_gevge_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
+  output$lh_gevge_sub1.ui <- renderUI({
+    sub = strsplit(lhconf[UI == input$lh_gevge_sub1]$fID, "\\|")[[1]]
+    checkboxGroupInput("lh_gevge_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
   })
-  observeEvent(input$sc3_gevge_sub1non, {
-    sub = strsplit(sc3conf[UI == input$sc3_gevge_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc3_gevge_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
+  observeEvent(input$lh_gevge_sub1non, {
+    sub = strsplit(lhconf[UI == input$lh_gevge_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "lh_gevge_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
   })
-  observeEvent(input$sc3_gevge_sub1all, {
-    sub = strsplit(sc3conf[UI == input$sc3_gevge_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc3_gevge_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
+  observeEvent(input$lh_gevge_sub1all, {
+    sub = strsplit(lhconf[UI == input$lh_gevge_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "lh_gevge_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc3_gevge_oup1 <- renderPlot({
-  req(input$sc3_gevge_inp1)
-  scDRgene(sc3conf, sc3meta, input$sc3_gevge_drX, input$sc3_gevge_drY, input$sc3_gevge_inp1, input$sc3_gevge_sub1, input$sc3_gevge_sub2, "sc3gexpr.h5", sc3gene, input$sc3_gevge_siz, input$sc3_gevge_col1, input$sc3_gevge_ord1, input$sc3_gevge_fsz, input$sc3_gevge_asp, input$sc3_gevge_txt)
+output$lh_gevge_oup1 <- renderPlot({
+  req(input$lh_gevge_inp1)
+  scDRgene(lhconf, lhmeta, input$lh_gevge_drX, input$lh_gevge_drY, input$lh_gevge_inp1, input$lh_gevge_sub1, input$lh_gevge_sub2, "lhgexpr.h5", lhgene, input$lh_gevge_siz, input$lh_gevge_col1, input$lh_gevge_ord1, input$lh_gevge_fsz, input$lh_gevge_asp, input$lh_gevge_txt)
 })
 
-output$sc3_gevge_oup1.ui <- renderUI({
-  show_progress(imageOutput("sc3_gevge_oup1", height = pList[input$sc3_gevge_psz]))
+output$lh_gevge_oup1.ui <- renderUI({
+  show_progress(imageOutput("lh_gevge_oup1", height = pList[input$lh_gevge_psz]))
 })
 
-output$sc3_gevge_oup1.pdf <- downloadHandler(
-  filename = function() { paste0("sc3", input$sc3_gevge_drX, "_", input$sc3_gevge_drY, "_", input$sc3_gevge_inp1, ".pdf") },
+output$lh_gevge_oup1.png <- downloadHandler(
+  filename = function() { tolower(paste0("lh", "_", input$lh_gevge_drX, "_", input$lh_gevge_drY, "_", input$lh_gevge_inp1,".png")) },
   content = function(file) {
     ggsave(
-    file, device = "pdf", useDingbats = FALSE, bg = "white",
-    plot = scDRgene(sc3conf, sc3meta, input$sc3_gevge_drX, input$sc3_gevge_drY, input$sc3_gevge_inp1, input$sc3_gevge_sub1, input$sc3_gevge_sub2, "sc3gexpr.h5", sc3gene, input$sc3_gevge_siz, input$sc3_gevge_col1, input$sc3_gevge_ord1, input$sc3_gevge_fsz, input$sc3_gevge_asp, input$sc3_gevge_txt)
+    file, device = "png", bg = "white", dpi = input$lh_gevge_oup1.res,
+    plot = scDRgene(lhconf, lhmeta, input$lh_gevge_drX, input$lh_gevge_drY, input$lh_gevge_inp1, 
+                    input$lh_gevge_sub1, input$lh_gevge_sub2,
+                    "lhgexpr.h5", lhgene,
+                    input$lh_gevge_siz, input$lh_gevge_col1, input$lh_gevge_ord1,
+                    input$lh_gevge_fsz, input$lh_gevge_asp, input$lh_gevge_txt)
     )
 })
 
-output$sc3_gevge_oup1.png <- downloadHandler(
-  filename = function() { paste0("sc3", input$sc3_gevge_drX, "_", input$sc3_gevge_drY, "_", input$sc3_gevge_inp1,".png") },
+output$lh_gevge_oup1.pdf <- downloadHandler(
+  filename = function() { tolower(paste0("lh", "_", input$lh_gevge_drX, "_", input$lh_gevge_drY, "_", input$lh_gevge_inp1, ".pdf")) },
   content = function(file) {
     ggsave(
-    file, device = "png", bg = "white", dpi = input$sc3_gevge_oup1.res,
-    plot = scDRgene(sc3conf, sc3meta, input$sc3_gevge_drX, input$sc3_gevge_drY, input$sc3_gevge_inp1, 
-                    input$sc3_gevge_sub1, input$sc3_gevge_sub2,
-                    "sc3gexpr.h5", sc3gene,
-                    input$sc3_gevge_siz, input$sc3_gevge_col1, input$sc3_gevge_ord1,
-                    input$sc3_gevge_fsz, input$sc3_gevge_asp, input$sc3_gevge_txt)
+    file, device = "pdf", useDingbats = FALSE, bg = "white", onefile = TRUE,
+    plot = scDRgene(lhconf, lhmeta, input$lh_gevge_drX, input$lh_gevge_drY, input$lh_gevge_inp1, input$lh_gevge_sub1, input$lh_gevge_sub2, "lhgexpr.h5", lhgene, input$lh_gevge_siz, input$lh_gevge_col1, input$lh_gevge_ord1, input$lh_gevge_fsz, input$lh_gevge_asp, input$lh_gevge_txt)
     )
 })
 
-output$sc3_gevge_oup2 <- renderPlot({
-  req(input$sc3_gevge_inp2)
-  scDRgene(sc3conf, sc3meta, input$sc3_gevge_drX, input$sc3_gevge_drY, input$sc3_gevge_inp2, input$sc3_gevge_sub1, input$sc3_gevge_sub2, "sc3gexpr.h5", sc3gene, input$sc3_gevge_siz, input$sc3_gevge_col2, input$sc3_gevge_ord2, input$sc3_gevge_fsz, input$sc3_gevge_asp, input$sc3_gevge_txt)
-})
-
-output$sc3_gevge_oup2.ui <- renderUI({
-  show_progress(imageOutput("sc3_gevge_oup2", height = pList[input$sc3_gevge_psz]))
-})
-
-output$sc3_gevge_oup2.pdf <- downloadHandler(
-  filename = function() { paste0("sc3", input$sc3_gevge_drX, "_", input$sc3_gevge_drY, "_", input$sc3_gevge_inp2,".pdf") },
+output$lh_gevge_oup1.svg <- downloadHandler(
+  filename = function() { tolower(paste0("lh", "_", input$lh_gevge_drX, "_", input$lh_gevge_drY, "_", input$lh_gevge_inp1, ".svg")) },
   content = function(file) {
     ggsave(
-    file, device = "pdf", useDingbats = FALSE, bg = "white",
-    plot = scDRgene(sc3conf, sc3meta, input$sc3_gevge_drX, input$sc3_gevge_drY, input$sc3_gevge_inp2, 
-                    input$sc3_gevge_sub1, input$sc3_gevge_sub2,
-                    "sc3gexpr.h5", sc3gene,
-                    input$sc3_gevge_siz, input$sc3_gevge_col2, input$sc3_gevge_ord2,
-                    input$sc3_gevge_fsz, input$sc3_gevge_asp, input$sc3_gevge_txt)
+    file, device = "svg", bg = "white",
+    plot = scDRgene(lhconf, lhmeta, input$lh_gevge_drX, input$lh_gevge_drY, input$lh_gevge_inp1, input$lh_gevge_sub1, input$lh_gevge_sub2, "lhgexpr.h5", lhgene, input$lh_gevge_siz, input$lh_gevge_col1, input$lh_gevge_ord1, input$lh_gevge_fsz, input$lh_gevge_asp, input$lh_gevge_txt)
     )
 })
 
-output$sc3_gevge_oup2.png <- downloadHandler(
-  filename = function() { paste0("sc3", input$sc3_gevge_drX, "_", input$sc3_gevge_drY, "_", input$sc3_gevge_inp2,".png") },
+output$lh_gevge_oup2 <- renderPlot({
+  req(input$lh_gevge_inp2)
+  scDRgene(lhconf, lhmeta, input$lh_gevge_drX, input$lh_gevge_drY, input$lh_gevge_inp2, input$lh_gevge_sub1, input$lh_gevge_sub2, "lhgexpr.h5", lhgene, input$lh_gevge_siz, input$lh_gevge_col2, input$lh_gevge_ord2, input$lh_gevge_fsz, input$lh_gevge_asp, input$lh_gevge_txt)
+})
+
+output$lh_gevge_oup2.ui <- renderUI({
+  show_progress(imageOutput("lh_gevge_oup2", height = pList[input$lh_gevge_psz]))
+})
+
+output$lh_gevge_oup2.png <- downloadHandler(
+  filename = function() { tolower(paste0("lh", "_", input$lh_gevge_drX, "_", input$lh_gevge_drY, "_", input$lh_gevge_inp2,".png")) },
   content = function(file) {
     ggsave(
-    file, device = "png", bg = "white", dpi = input$sc3_gevge_oup2.res,
-    plot = scDRgene(sc3conf, sc3meta, input$sc3_gevge_drX, input$sc3_gevge_drY, input$sc3_gevge_inp2, input$sc3_gevge_sub1, input$sc3_gevge_sub2, "sc3gexpr.h5", sc3gene, input$sc3_gevge_siz, input$sc3_gevge_col2, input$sc3_gevge_ord2, input$sc3_gevge_fsz, input$sc3_gevge_asp, input$sc3_gevge_txt)
+    file, device = "png", bg = "white", dpi = input$lh_gevge_oup2.res,
+    plot = scDRgene(lhconf, lhmeta, input$lh_gevge_drX, input$lh_gevge_drY, input$lh_gevge_inp2, input$lh_gevge_sub1, input$lh_gevge_sub2, "lhgexpr.h5", lhgene, input$lh_gevge_siz, input$lh_gevge_col2, input$lh_gevge_ord2, input$lh_gevge_fsz, input$lh_gevge_asp, input$lh_gevge_txt)
+    )
+}) 
+
+output$lh_gevge_oup2.pdf <- downloadHandler(
+  filename = function() { tolower(paste0("lh", "_", input$lh_gevge_drX, "_", input$lh_gevge_drY, "_", input$lh_gevge_inp2,".pdf")) },
+  content = function(file) {
+    ggsave(
+    file, device = "pdf", useDingbats = FALSE, bg = "white", onefile = TRUE,
+    plot = scDRgene(lhconf, lhmeta, input$lh_gevge_drX, input$lh_gevge_drY, input$lh_gevge_inp2, 
+                    input$lh_gevge_sub1, input$lh_gevge_sub2,
+                    "lhgexpr.h5", lhgene,
+                    input$lh_gevge_siz, input$lh_gevge_col2, input$lh_gevge_ord2,
+                    input$lh_gevge_fsz, input$lh_gevge_asp, input$lh_gevge_txt)
+    )
+})
+
+output$lh_gevge_oup2.svg <- downloadHandler(
+  filename = function() { tolower(paste0("lh", "_", input$lh_gevge_drX, "_", input$lh_gevge_drY, "_", input$lh_gevge_inp2,".svg")) },
+  content = function(file) {
+    ggsave(
+    file, device = "svg", bg = "white",
+    plot = scDRgene(lhconf, lhmeta, input$lh_gevge_drX, input$lh_gevge_drY, input$lh_gevge_inp2, 
+                    input$lh_gevge_sub1, input$lh_gevge_sub2,
+                    "lhgexpr.h5", lhgene,
+                    input$lh_gevge_siz, input$lh_gevge_col2, input$lh_gevge_ord2,
+                    input$lh_gevge_fsz, input$lh_gevge_asp, input$lh_gevge_txt)
     )
 }) # End of tab gevge
 
@@ -2235,88 +2497,107 @@ output$sc3_gevge_oup2.png <- downloadHandler(
 
 ### Tab gem gene expression multi ----
 
-output$sc3_gem_sub1.ui <- renderUI({
-  sub = strsplit(sc3conf[UI == input$sc3_gem_sub1]$fID, "\\|")[[1]]
-  checkboxGroupInput("sc3_gem_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
+output$lh_gem_sub1.ui <- renderUI({
+  sub = strsplit(lhconf[UI == input$lh_gem_sub1]$fID, "\\|")[[1]]
+  checkboxGroupInput("lh_gem_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
 })
-observeEvent(input$sc3_gem_sub1non, {
-  sub = strsplit(sc3conf[UI == input$sc3_gem_sub1]$fID, "\\|")[[1]]
-  updateCheckboxGroupInput(session, inputId = "sc3_gem_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
+observeEvent(input$lh_gem_sub1non, {
+  sub = strsplit(lhconf[UI == input$lh_gem_sub1]$fID, "\\|")[[1]]
+  updateCheckboxGroupInput(session, inputId = "lh_gem_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
 })
-observeEvent(input$sc3_gem_sub1all, {
-  sub = strsplit(sc3conf[UI == input$sc3_gem_sub1]$fID, "\\|")[[1]]
-  updateCheckboxGroupInput(session, inputId = "sc3_gem_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
+observeEvent(input$lh_gem_sub1all, {
+  sub = strsplit(lhconf[UI == input$lh_gem_sub1]$fID, "\\|")[[1]]
+  updateCheckboxGroupInput(session, inputId = "lh_gem_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
 })
 
-output$sc3_gem_oup1 <- renderPlot({
-  req(input$sc3_gem_inp)
+output$lh_gem_oup1 <- renderPlot({
+  req(input$lh_gem_inp)
   
-  scFeature(sc3conf, sc3meta, input$sc3_gem_drX, input$sc3_gem_drY, input$sc3_gem_inp, input$sc3_gem_sub1, input$sc3_gem_sub2, "sc3gexpr.h5", sc3gene, input$sc3_gem_siz, input$sc3_gem_col, input$sc3_gem_ord, input$sc3_gem_fsz, input$sc3_gem_asp, input$sc3_gem_txt, input$sc3_gem_ncol)
+  scFeature(lhconf, lhmeta, input$lh_gem_drX, input$lh_gem_drY, input$lh_gem_inp, input$lh_gem_sub1, input$lh_gem_sub2, "lhgexpr.h5", lhgene, input$lh_gem_siz, input$lh_gem_col, input$lh_gem_ord, input$lh_gem_fsz, input$lh_gem_asp, input$lh_gem_txt, input$lh_gem_ncol)
 })
 
-output$sc3_gem_oup1.ui <- renderUI({
-  show_progress(imageOutput("sc3_gem_oup1", height = pList[input$sc3_gem_psz]))
+output$lh_gem_oup1.ui <- renderUI({
+  show_progress(imageOutput("lh_gem_oup1", height = pList[input$lh_gem_psz]))
 })
 
-output$sc3_gem_oup1.pdf <- downloadHandler(
-  filename = function() { paste0("sc3", input$sc3_gem_drX, "_", input$sc3_gem_drY, "_expression.pdf") },
-  content = function(file) { ggsave(
-    file, device = "pdf", useDingbats = FALSE, height = input$sc3_gem_oup1.height, width = input$sc3_gem_oup1.width, units = "cm", bg = "white",
-    plot = scFeature(sc3conf, sc3meta, input$sc3_gem_drX, input$sc3_gem_drY, input$sc3_gem_inp, input$sc3_gem_sub1, input$sc3_gem_sub2, "sc3gexpr.h5", sc3gene, input$sc3_gem_siz, input$sc3_gem_col, input$sc3_gem_ord, input$sc3_gem_fsz, input$sc3_gem_asp, input$sc3_gem_txt, input$sc3_gem_ncol))
-})
-
-output$sc3_gem_oup1.png <- downloadHandler(
-  filename = function() { paste0("sc3", input$sc3_gem_drX, "_", input$sc3_gem_drY, "_expression.png") },
+output$lh_gem_oup1.png <- downloadHandler(
+  filename = function() { tolower(paste0("lh", "_", input$lh_gem_drX, "_", input$lh_gem_drY, "_expression.png")) },
   content = function(file) {
     ggsave(
-      file, device = "png", height = input$sc3_gem_oup1.height, width = input$sc3_gem_oup1.width, dpi = input$sc3_gem_oup1.res, units = "cm", bg = "white",
-      plot = scFeature(sc3conf, sc3meta, input$sc3_gem_drX, input$sc3_gem_drY, input$sc3_gem_inp, input$sc3_gem_sub1, input$sc3_gem_sub2, "sc3gexpr.h5", sc3gene, input$sc3_gem_siz, input$sc3_gem_col, input$sc3_gem_ord, input$sc3_gem_fsz, input$sc3_gem_asp, input$sc3_gem_txt, input$sc3_gem_ncol)
+      file, device = "png", height = input$lh_gem_oup1.height, width = input$lh_gem_oup1.width, dpi = input$lh_gem_oup1.res, units = "cm", bg = "white",
+      plot = scFeature(lhconf, lhmeta, input$lh_gem_drX, input$lh_gem_drY, input$lh_gem_inp, input$lh_gem_sub1, input$lh_gem_sub2, "lhgexpr.h5", lhgene, input$lh_gem_siz, input$lh_gem_col, input$lh_gem_ord, input$lh_gem_fsz, input$lh_gem_asp, input$lh_gem_txt, input$lh_gem_ncol)
     )
+}) 
+
+output$lh_gem_oup1.pdf <- downloadHandler(
+  filename = function() { tolower(paste0("lh", "_", input$lh_gem_drX, "_", input$lh_gem_drY, "_expression.pdf")) },
+  content = function(file) {
+  pdf(file, useDingbats = FALSE, height = input$lh_gem_oup1.height/2.54, width = input$lh_gem_oup1.width/2.54, bg = "white", onefile = TRUE)
+  showtext::showtext_begin()
+  print(scFeature(lhconf, lhmeta, input$lh_gem_drX, input$lh_gem_drY, input$lh_gem_inp, input$lh_gem_sub1, input$lh_gem_sub2, "lhgexpr.h5", lhgene, input$lh_gem_siz, input$lh_gem_col, input$lh_gem_ord, input$lh_gem_fsz, input$lh_gem_asp, input$lh_gem_txt, input$lh_gem_ncol))
+  showtext::showtext_end()
+  dev.off()
+})
+
+output$lh_gem_oup1.svg <- downloadHandler(
+  filename = function() { tolower(paste0("lh", "_", input$lh_gem_drX, "_", input$lh_gem_drY, "_expression.svg")) },
+  content = function(file) { ggsave(
+    file, device = "svg", height = input$lh_gem_oup1.height, width = input$lh_gem_oup1.width, units = "cm", bg = "white",
+    plot = scFeature(lhconf, lhmeta, input$lh_gem_drX, input$lh_gem_drY, input$lh_gem_inp, input$lh_gem_sub1, input$lh_gem_sub2, "lhgexpr.h5", lhgene, input$lh_gem_siz, input$lh_gem_col, input$lh_gem_ord, input$lh_gem_fsz, input$lh_gem_asp, input$lh_gem_txt, input$lh_gem_ncol))
 }) # End of tab gem
 
 
 
 ### Tab gec gene co-expression ----
 
-  output$sc3_gec_sub1.ui <- renderUI({
-    sub = strsplit(sc3conf[UI == input$sc3_gec_sub1]$fID, "\\|")[[1]]
-    checkboxGroupInput("sc3_gec_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
+  output$lh_gec_sub1.ui <- renderUI({
+    sub = strsplit(lhconf[UI == input$lh_gec_sub1]$fID, "\\|")[[1]]
+    checkboxGroupInput("lh_gec_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
   })
-  observeEvent(input$sc3_gec_sub1non, {
-    sub = strsplit(sc3conf[UI == input$sc3_gec_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc3_gec_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
+  observeEvent(input$lh_gec_sub1non, {
+    sub = strsplit(lhconf[UI == input$lh_gec_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "lh_gec_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
   })
-  observeEvent(input$sc3_gec_sub1all, {
-    sub = strsplit(sc3conf[UI == input$sc3_gec_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc3_gec_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
+  observeEvent(input$lh_gec_sub1all, {
+    sub = strsplit(lhconf[UI == input$lh_gec_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "lh_gec_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc3_gec_oup1 <- renderPlot({
-  scDRcoexFull(sc3conf, sc3meta, input$sc3_gec_drX, input$sc3_gec_drY, input$sc3_gec_inp1, input$sc3_gec_inp2, input$sc3_gec_sub1, input$sc3_gec_sub2, "sc3gexpr.h5", sc3gene, input$sc3_gec_siz, input$sc3_gec_col1, input$sc3_gec_ord1, input$sc3_gec_fsz, input$sc3_gec_asp, input$sc3_gec_txt)
+output$lh_gec_oup1 <- renderPlot({
+  scDRcoexFull(lhconf, lhmeta, input$lh_gec_drX, input$lh_gec_drY, input$lh_gec_inp1, input$lh_gec_inp2, input$lh_gec_sub1, input$lh_gec_sub2, "lhgexpr.h5", lhgene, input$lh_gec_siz, input$lh_gec_col1, input$lh_gec_ord1, input$lh_gec_fsz, input$lh_gec_asp, input$lh_gec_txt)
 })
 
-output$sc3_gec_oup1.ui <- renderUI({
-  show_progress(imageOutput("sc3_gec_oup1", height = pList2[input$sc3_gec_psz]))
+output$lh_gec_oup1.ui <- renderUI({
+  show_progress(imageOutput("lh_gec_oup1", height = pList2[input$lh_gec_psz]))
 })
 
-output$sc3_gec_oup1.pdf <- downloadHandler(
-  filename = function() { paste0("sc3", input$sc3_gec_drX, "_", input$sc3_gec_drY, "_", input$sc3_gec_inp1, "_", input$sc3_gec_inp2, ".pdf") },
+output$lh_gec_oup1.png <- downloadHandler(
+  filename = function() { tolower(paste0("lh", "_", input$lh_gec_drX, "_", input$lh_gec_drY, "_", input$lh_gec_inp1, "_", input$lh_gec_inp2, ".png")) },
+  content = function(file) { ggsave(
+    file, device = "png", bg = "white", dpi = input$lh_gec_oup1.res,
+    plot = scDRcoexFull(lhconf, lhmeta, input$lh_gec_drX, input$lh_gec_drY, input$lh_gec_inp1, input$lh_gec_inp2, input$lh_gec_sub1, input$lh_gec_sub2, "lhgexpr.h5", lhgene, input$lh_gec_siz, input$lh_gec_col1, input$lh_gec_ord1, input$lh_gec_fsz, input$lh_gec_asp, input$lh_gec_txt) )
+})
+
+output$lh_gec_oup1.pdf <- downloadHandler(
+  filename = function() { tolower(paste0("lh", "_", input$lh_gec_drX, "_", input$lh_gec_drY, "_", input$lh_gec_inp1, "_", input$lh_gec_inp2, ".pdf")) },
   content = function(file) {
     ggsave(
-    file, device = "pdf", useDingbats = FALSE, bg = "white",
-    plot = scDRcoexFull(sc3conf, sc3meta, input$sc3_gec_drX, input$sc3_gec_drY, input$sc3_gec_inp1, input$sc3_gec_inp2, input$sc3_gec_sub1, input$sc3_gec_sub2, "sc3gexpr.h5", sc3gene, input$sc3_gec_siz, input$sc3_gec_col1, input$sc3_gec_ord1, input$sc3_gec_fsz, input$sc3_gec_asp, input$sc3_gec_txt)
+    file, device = "pdf", useDingbats = FALSE, bg = "white", onefile = TRUE,
+    plot = scDRcoexFull(lhconf, lhmeta, input$lh_gec_drX, input$lh_gec_drY, input$lh_gec_inp1, input$lh_gec_inp2, input$lh_gec_sub1, input$lh_gec_sub2, "lhgexpr.h5", lhgene, input$lh_gec_siz, input$lh_gec_col1, input$lh_gec_ord1, input$lh_gec_fsz, input$lh_gec_asp, input$lh_gec_txt)
     )
 })
 
-output$sc3_gec_oup1.png <- downloadHandler(
-  filename = function() { paste0("sc3", input$sc3_gec_drX, "_", input$sc3_gec_drY, "_", input$sc3_gec_inp1, "_", input$sc3_gec_inp2, ".png") },
-  content = function(file) { ggsave(
-    file, device = "png", bg = "white", dpi = input$sc3_gec_oup1.res,
-    plot = scDRcoexFull(sc3conf, sc3meta, input$sc3_gec_drX, input$sc3_gec_drY, input$sc3_gec_inp1, input$sc3_gec_inp2, input$sc3_gec_sub1, input$sc3_gec_sub2, "sc3gexpr.h5", sc3gene, input$sc3_gec_siz, input$sc3_gec_col1, input$sc3_gec_ord1, input$sc3_gec_fsz, input$sc3_gec_asp, input$sc3_gec_txt) )
+output$lh_gec_oup1.svg <- downloadHandler(
+  filename = function() { tolower(paste0("lh", "_", input$lh_gec_drX, "_", input$lh_gec_drY, "_", input$lh_gec_inp1, "_", input$lh_gec_inp2, ".svg")) },
+  content = function(file) {
+    ggsave(
+    file, device = "svg", bg = "white",
+    plot = scDRcoexFull(lhconf, lhmeta, input$lh_gec_drX, input$lh_gec_drY, input$lh_gec_inp1, input$lh_gec_inp2, input$lh_gec_sub1, input$lh_gec_sub2, "lhgexpr.h5", lhgene, input$lh_gec_siz, input$lh_gec_col1, input$lh_gec_ord1, input$lh_gec_fsz, input$lh_gec_asp, input$lh_gec_txt)
+    )
 })
 
-output$sc3_gec_.dt <- renderDataTable({
-  ggData = scDRcoexNum(sc3conf, sc3meta, input$sc3_gec_inp1, input$sc3_gec_inp2, input$sc3_gec_sub1, input$sc3_gec_sub2, "sc3gexpr.h5", sc3gene)
+output$lh_gec_.dt <- renderDataTable({
+  ggData = scDRcoexNum(lhconf, lhmeta, input$lh_gec_inp1, input$lh_gec_inp2, input$lh_gec_sub1, input$lh_gec_sub2, "lhgexpr.h5", lhgene)
   datatable(ggData, rownames = FALSE, extensions = "Buttons", options = list(pageLength = -1, dom = "tB", buttons = c("copy", "csv", "excel"))) %>%
             formatRound(columns = c("percent"), digits = 2)
 }) # End of tab gec
@@ -2325,45 +2606,55 @@ output$sc3_gec_.dt <- renderDataTable({
 
 ### Tab vio violinplot / boxplot / lineplot ----
 
-  output$sc3_vio_sub1.ui <- renderUI({
-    sub = strsplit(sc3conf[UI == input$sc3_vio_sub1]$fID, "\\|")[[1]]
-    checkboxGroupInput("sc3_vio_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
+  output$lh_vio_sub1.ui <- renderUI({
+    sub = strsplit(lhconf[UI == input$lh_vio_sub1]$fID, "\\|")[[1]]
+    checkboxGroupInput("lh_vio_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
   })
-  observeEvent(input$sc3_vio_sub1non, {
-    sub = strsplit(sc3conf[UI == input$sc3_vio_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc3_vio_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
+  observeEvent(input$lh_vio_sub1non, {
+    sub = strsplit(lhconf[UI == input$lh_vio_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "lh_vio_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
   })
-  observeEvent(input$sc3_vio_sub1all, {
-    sub = strsplit(sc3conf[UI == input$sc3_vio_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc3_vio_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
+  observeEvent(input$lh_vio_sub1all, {
+    sub = strsplit(lhconf[UI == input$lh_vio_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "lh_vio_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc3_vio_oup <- renderPlot({
-  gh5 <- ifelse(input$sc3_vio_datatype == "normalised","sc3gexpr.h5","sc3gexpr2.h5")
-  scVioBox(sc3conf, sc3meta, input$sc3_vio_inp1, input$sc3_vio_inp2, input$sc3_vio_sub1, input$sc3_vio_sub2, gh5, sc3gene, input$sc3_vio_typ, input$sc3_vio_pts, input$sc3_vio_siz, input$sc3_vio_fsz, input$sc3_vio_barsz)
+output$lh_vio_oup <- renderPlot({
+  gh5 <- ifelse(input$lh_vio_datatype == "normalised","lhgexpr.h5","lhgexpr2.h5")
+  scVioBox(lhconf, lhmeta, input$lh_vio_inp1, input$lh_vio_inp2, input$lh_vio_sub1, input$lh_vio_sub2, gh5, lhgene, input$lh_vio_typ, input$lh_vio_pts, input$lh_vio_siz, input$lh_vio_fsz, input$lh_vio_barsz)
 })
 
-output$sc3_vio_oup.ui <- renderUI({
-  show_progress(imageOutput("sc3_vio_oup", height = pList2[input$sc3_vio_psz]))
+output$lh_vio_oup.ui <- renderUI({
+  show_progress(imageOutput("lh_vio_oup", height = pList2[input$lh_vio_psz]))
 })
 
-output$sc3_vio_oup.pdf <- downloadHandler(
-  filename = function() { paste0("sc3", input$sc3_vio_typ, "_", input$sc3_vio_inp1, "_", input$sc3_vio_inp2, ".pdf") },
+output$lh_vio_oup.png <- downloadHandler(
+  filename = function() { tolower(paste0("lh", "_", input$lh_vio_typ, "_", input$lh_vio_datatype, "_", input$lh_vio_inp1, "_", input$lh_vio_inp2,".png")) },
   content = function(file) {
-    gh5 <- ifelse(input$sc3_vio_datatype == "normalised","sc3gexpr.h5","sc3gexpr2.h5")
+    gh5 <- ifelse(input$lh_vio_datatype == "normalised","lhgexpr.h5","lhgexpr2.h5")
     ggsave(
-    file, device = "pdf", useDingbats = FALSE, bg = "white",
-    plot = scVioBox(sc3conf, sc3meta, input$sc3_vio_inp1, input$sc3_vio_inp2, input$sc3_vio_sub1, input$sc3_vio_sub2, gh5, sc3gene, input$sc3_vio_typ, input$sc3_vio_pts, input$sc3_vio_siz, input$sc3_vio_fsz, input$sc3_vio_barsz)
+    file, device = "png", bg = "white", dpi = input$lh_vio_oup.res,
+    plot = scVioBox(lhconf, lhmeta, input$lh_vio_inp1, input$lh_vio_inp2, input$lh_vio_sub1, input$lh_vio_sub2, gh5, lhgene, input$lh_vio_typ, input$lh_vio_pts, input$lh_vio_siz, input$lh_vio_fsz, input$lh_vio_barsz)
+    )
+}) 
+
+output$lh_vio_oup.pdf <- downloadHandler(
+  filename = function() { tolower(paste0("lh", "_", input$lh_vio_typ, "_", input$lh_vio_datatype, "_", input$lh_vio_inp1, "_", input$lh_vio_inp2, ".pdf")) },
+  content = function(file) {
+    gh5 <- ifelse(input$lh_vio_datatype == "normalised","lhgexpr.h5","lhgexpr2.h5")
+    ggsave(
+    file, device = "pdf", useDingbats = FALSE, bg = "white", onefile = TRUE,
+    plot = scVioBox(lhconf, lhmeta, input$lh_vio_inp1, input$lh_vio_inp2, input$lh_vio_sub1, input$lh_vio_sub2, gh5, lhgene, input$lh_vio_typ, input$lh_vio_pts, input$lh_vio_siz, input$lh_vio_fsz, input$lh_vio_barsz)
     )
 })
 
-output$sc3_vio_oup.png <- downloadHandler(
-  filename = function() { paste0("sc3", input$sc3_vio_typ, "_", input$sc3_vio_inp1, "_", input$sc3_vio_inp2,".png") },
+output$lh_vio_oup.svg <- downloadHandler(
+  filename = function() { tolower(paste0("lh", "_", input$lh_vio_typ, "_", input$lh_vio_datatype, "_", input$lh_vio_inp1, "_", input$lh_vio_inp2, ".svg")) },
   content = function(file) {
-    gh5 <- ifelse(input$sc3_vio_datatype == "normalised","sc3gexpr.h5","sc3gexpr2.h5")
+    gh5 <- ifelse(input$lh_vio_datatype == "normalised","lhgexpr.h5","lhgexpr2.h5")
     ggsave(
-    file, device = "png", bg = "white", dpi = input$sc3_vio_oup.res,
-    plot = scVioBox(sc3conf, sc3meta, input$sc3_vio_inp1, input$sc3_vio_inp2, input$sc3_vio_sub1, input$sc3_vio_sub2, gh5, sc3gene, input$sc3_vio_typ, input$sc3_vio_pts, input$sc3_vio_siz, input$sc3_vio_fsz, input$sc3_vio_barsz)
+    file, device = "svg", bg = "white",
+    plot = scVioBox(lhconf, lhmeta, input$lh_vio_inp1, input$lh_vio_inp2, input$lh_vio_sub1, input$lh_vio_sub2, gh5, lhgene, input$lh_vio_typ, input$lh_vio_pts, input$lh_vio_siz, input$lh_vio_fsz, input$lh_vio_barsz)
     )
 }) # End of tab vio
 
@@ -2372,42 +2663,51 @@ output$sc3_vio_oup.png <- downloadHandler(
 
 ### Tab pro proportion plot ----
 
-  output$sc3_pro_sub1.ui <- renderUI({
-    sub = strsplit(sc3conf[UI == input$sc3_pro_sub1]$fID, "\\|")[[1]]
-    checkboxGroupInput("sc3_pro_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
+  output$lh_pro_sub1.ui <- renderUI({
+    sub = strsplit(lhconf[UI == input$lh_pro_sub1]$fID, "\\|")[[1]]
+    checkboxGroupInput("lh_pro_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
   })
-  observeEvent(input$sc3_pro_sub1non, {
-    sub = strsplit(sc3conf[UI == input$sc3_pro_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc3_pro_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
+  observeEvent(input$lh_pro_sub1non, {
+    sub = strsplit(lhconf[UI == input$lh_pro_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "lh_pro_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
   })
-  observeEvent(input$sc3_pro_sub1all, {
-    sub = strsplit(sc3conf[UI == input$sc3_pro_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc3_pro_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
+  observeEvent(input$lh_pro_sub1all, {
+    sub = strsplit(lhconf[UI == input$lh_pro_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "lh_pro_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc3_pro_oup <- renderPlot({
-  scProp(sc3conf, sc3meta, input$sc3_pro_inp1, input$sc3_pro_inp2, input$sc3_pro_sub1, input$sc3_pro_sub2, input$sc3_pro_typ, input$sc3_pro_flp, input$sc3_pro_fsz)
+output$lh_pro_oup <- renderPlot({
+  scProp(lhconf, lhmeta, input$lh_pro_inp1, input$lh_pro_inp2, input$lh_pro_sub1, input$lh_pro_sub2, input$lh_pro_typ, input$lh_pro_flp, input$lh_pro_fsz)
 })
 
-output$sc3_pro_oup.ui <- renderUI({
-  show_progress(imageOutput("sc3_pro_oup", height = pList2[input$sc3_pro_psz]))
+output$lh_pro_oup.ui <- renderUI({
+  show_progress(imageOutput("lh_pro_oup", height = pList2[input$lh_pro_psz]))
 })
 
-output$sc3_pro_oup.pdf <- downloadHandler(
-  filename = function() { paste0("sc3", input$sc3_pro_typ, "_", input$sc3_pro_inp1, "_", input$sc3_pro_inp2, ".pdf") },
+output$lh_pro_oup.png <- downloadHandler(
+  filename = function() { tolower(paste0("lh", "_", input$lh_pro_typ, "_", input$lh_pro_inp1, "_", input$lh_pro_inp2, ".png")) },
   content = function(file) {
     ggsave(
-    file, device = "pdf", useDingbats = FALSE, bg = "white",
-    plot = scProp(sc3conf, sc3meta, input$sc3_pro_inp1, input$sc3_pro_inp2, input$sc3_pro_sub1, input$sc3_pro_sub2, input$sc3_pro_typ, input$sc3_pro_flp, input$sc3_pro_fsz)
+    file, device = "png", bg = "white", dpi = input$lh_pro_oup.res,
+    plot = scProp(lhconf, lhmeta, input$lh_pro_inp1, input$lh_pro_inp2, input$lh_pro_sub1, input$lh_pro_sub2, input$lh_pro_typ, input$lh_pro_flp, input$lh_pro_fsz)
+    )
+  }) 
+  
+output$lh_pro_oup.pdf <- downloadHandler(
+  filename = function() { tolower(paste0("lh", "_", input$lh_pro_typ, "_", input$lh_pro_inp1, "_", input$lh_pro_inp2, ".pdf")) },
+  content = function(file) {
+    ggsave(
+    file, device = "pdf", useDingbats = FALSE, bg = "white", onefile = TRUE,
+    plot = scProp(lhconf, lhmeta, input$lh_pro_inp1, input$lh_pro_inp2, input$lh_pro_sub1, input$lh_pro_sub2, input$lh_pro_typ, input$lh_pro_flp, input$lh_pro_fsz)
     )
   })
-
-output$sc3_pro_oup.png <- downloadHandler(
-  filename = function() { paste0("sc3", input$sc3_pro_typ, "_", input$sc3_pro_inp1, "_", input$sc3_pro_inp2, ".png") },
+  
+output$lh_pro_oup.svg <- downloadHandler(
+  filename = function() { tolower(paste0("lh", "_", input$lh_pro_typ, "_", input$lh_pro_inp1, "_", input$lh_pro_inp2, ".svg")) },
   content = function(file) {
     ggsave(
-    file, device = "png", bg = "white", dpi = input$sc3_pro_oup.res,
-    plot = scProp(sc3conf, sc3meta, input$sc3_pro_inp1, input$sc3_pro_inp2, input$sc3_pro_sub1, input$sc3_pro_sub2, input$sc3_pro_typ, input$sc3_pro_flp, input$sc3_pro_fsz)
+    file, device = "svg", bg = "white",
+    plot = scProp(lhconf, lhmeta, input$lh_pro_inp1, input$lh_pro_inp2, input$lh_pro_sub1, input$lh_pro_sub2, input$lh_pro_typ, input$lh_pro_flp, input$lh_pro_fsz)
     )
   }) # End of tab pro
 
@@ -2415,54 +2715,58 @@ output$sc3_pro_oup.png <- downloadHandler(
 
 ### Tab hea heatmap / dotplot ----
 
-  output$sc3_hea_sub1.ui <- renderUI({
-    sub = strsplit(sc3conf[UI == input$sc3_hea_sub1]$fID, "\\|")[[1]]
-    checkboxGroupInput("sc3_hea_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
+  output$lh_hea_sub1.ui <- renderUI({
+    sub = strsplit(lhconf[UI == input$lh_hea_sub1]$fID, "\\|")[[1]]
+    checkboxGroupInput("lh_hea_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
   })
-  observeEvent(input$sc3_hea_sub1non, {
-    sub = strsplit(sc3conf[UI == input$sc3_hea_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc3_hea_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
+  observeEvent(input$lh_hea_sub1non, {
+    sub = strsplit(lhconf[UI == input$lh_hea_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "lh_hea_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
   })
-  observeEvent(input$sc3_hea_sub1all, {
-    sub = strsplit(sc3conf[UI == input$sc3_hea_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc3_hea_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
+  observeEvent(input$lh_hea_sub1all, {
+    sub = strsplit(lhconf[UI == input$lh_hea_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "lh_hea_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc3_hea_oupTxt <- renderUI({
-  geneList = scGeneList(input$sc3_hea_inp, sc3gene)
+output$lh_hea_oupTxt <- renderUI({
+  geneList = scGeneList(input$lh_hea_inp, lhgene)
   if(nrow(geneList) > 50){
     HTML("More than 50 input genes! Please reduce the gene list!")
-  } else {
-    if(nrow(geneList[present == FALSE]) > 0){
-      oup = paste0(nrow(geneList[present == FALSE]), " genes not found (", paste0(geneList[present == FALSE]$gene, collapse = ", "), ")")
-      HTML(paste0("<span class='text-danger'>",oup,"</span>"))
-    }
   }
 })
 
-output$sc3_hea_oup <- renderPlot({
-  scBubbHeat(sc3conf, sc3meta, input$sc3_hea_inp, input$sc3_hea_grp, input$sc3_hea_plt, input$sc3_hea_sub1, input$sc3_hea_sub2, "sc3gexpr.h5", sc3gene, input$sc3_hea_scl, input$sc3_hea_row, input$sc3_hea_col, input$sc3_hea_cols, input$sc3_hea_fsz)
+output$lh_hea_oup <- renderPlot({
+  scBubbHeat(lhconf, lhmeta, input$lh_hea_inp, input$lh_hea_grp, input$lh_hea_plt, input$lh_hea_sub1, input$lh_hea_sub2, "lhgexpr.h5", lhgene, input$lh_hea_scl, input$lh_hea_row, input$lh_hea_col, input$lh_hea_cols, input$lh_hea_fsz)
 })
 
-output$sc3_hea_oup.ui <- renderUI({
-  show_progress(imageOutput("sc3_hea_oup", height = pList3[input$sc3_hea_psz]))
+output$lh_hea_oup.ui <- renderUI({
+  show_progress(imageOutput("lh_hea_oup", height = pList3[input$lh_hea_psz]))
 })
 
-output$sc3_hea_oup.pdf <- downloadHandler(
-  filename = function() { paste0("sc3",input$sc3_hea_plt,"_",input$sc3_hea_grp,".pdf") },
+output$lh_hea_oup.png <- downloadHandler(
+  filename = function() { tolower(paste0("lh", "_", input$lh_hea_plt,"_",input$lh_hea_grp,".png")) },
   content = function(file) {
     ggsave(
-    file, device = "pdf", useDingbats = FALSE, bg = "white",
-    plot = scBubbHeat(sc3conf, sc3meta, input$sc3_hea_inp, input$sc3_hea_grp, input$sc3_hea_plt, input$sc3_hea_sub1, input$sc3_hea_sub2, "sc3gexpr.h5", sc3gene, input$sc3_hea_scl, input$sc3_hea_row, input$sc3_hea_col, input$sc3_hea_cols, input$sc3_hea_fsz, save = TRUE)
+    file, device = "png", bg = "white", height = input$lh_hea_oup.height, width = input$lh_hea_oup.width, units = "cm", dpi = input$lh_hea_oup.res, plot = scBubbHeat(lhconf, lhmeta, input$lh_hea_inp, input$lh_hea_grp, input$lh_hea_plt, input$lh_hea_sub1, input$lh_hea_sub2, "lhgexpr.h5", lhgene, input$lh_hea_scl, input$lh_hea_row, input$lh_hea_col, input$lh_hea_cols, input$lh_hea_fsz)
     )
 })
 
-output$sc3_hea_oup.png <- downloadHandler(
-  filename = function() { paste0("sc3",input$sc3_hea_plt,"_",input$sc3_hea_grp,".png") },
+output$lh_hea_oup.pdf <- downloadHandler(
+  filename = function() { tolower(paste0("lh", "_", input$lh_hea_plt,"_",input$lh_hea_grp,".pdf")) },
+  content = function(file) {
+    pdf(file, useDingbats = FALSE, bg = "white", height = input$lh_hea_oup.height/2.54, width = input$lh_hea_oup.width/2.54, onefile = TRUE)
+    showtext::showtext_begin()
+    print(scBubbHeat(lhconf, lhmeta, input$lh_hea_inp, input$lh_hea_grp, input$lh_hea_plt, input$lh_hea_sub1, input$lh_hea_sub2, "lhgexpr.h5", lhgene, input$lh_hea_scl, input$lh_hea_row, input$lh_hea_col, input$lh_hea_cols, input$lh_hea_fsz))
+    showtext::showtext_end()
+    dev.off()
+})
+
+output$lh_hea_oup.svg <- downloadHandler(
+  filename = function() { tolower(paste0("lh", "_", input$lh_hea_plt,"_",input$lh_hea_grp,".svg")) },
   content = function(file) {
     ggsave(
-    file, device = "png", bg = "white", dpi = input$sc3_hea_oup.res,
-    plot = scBubbHeat(sc3conf, sc3meta, input$sc3_hea_inp, input$sc3_hea_grp, input$sc3_hea_plt, input$sc3_hea_sub1, input$sc3_hea_sub2, "sc3gexpr.h5", sc3gene, input$sc3_hea_scl, input$sc3_hea_row, input$sc3_hea_col, input$sc3_hea_cols, input$sc3_hea_fsz, save = TRUE)
+    file, device = "svg", bg = "white", height = input$lh_hea_oup.height, width = input$lh_hea_oup.width, units = "cm", 
+    plot = scBubbHeat(lhconf, lhmeta, input$lh_hea_inp, input$lh_hea_grp, input$lh_hea_plt, input$lh_hea_sub1, input$lh_hea_sub2, "lhgexpr.h5", lhgene, input$lh_hea_scl, input$lh_hea_row, input$lh_hea_col, input$lh_hea_cols, input$lh_hea_fsz)
     )
 }) # End of tab hea      
        
@@ -2470,104 +2774,128 @@ output$sc3_hea_oup.png <- downloadHandler(
 
 ### Tab markers ----
 
-output$sc3_mar_table <- renderDataTable({
-  req(input$sc3_mar_cls)
-  datatable(sc3mar[[input$sc3_mar_cls]], rownames = FALSE, extensions = "Buttons", options = list(dom = "lftiprB", buttons = c("copy", "csv", "excel")))
+output$lh_mar_table <- renderDataTable({
+  req(input$lh_mar_cls)
+  datatable(lhmar[[input$lh_mar_cls]], rownames = FALSE, extensions = "Buttons", options = list(dom = "lftiprB", buttons = c("copy", "csv", "excel")))
 }) # End of tab mar
 optCrt="{ option_create: function(data,escape) {return('<div class=\"create\"><strong>' + '</strong></div>');} }"
-updateSelectizeInput(session, "sc4_civge_inp2", choices = names(sc4gene), server = TRUE,
-                     selected = sc4def$gene1, options = list(
+updateSelectizeInput(session, "vh_civge_inp2", choices = names(vhgene), server = TRUE,
+                     selected = vhdef$gene1, options = list(
                        maxOptions = 7, create = TRUE, persist = TRUE, render = I(optCrt)))
-updateSelectizeInput(session, "sc4_gevge_inp1", choices = names(sc4gene), server = TRUE,
-                     selected = sc4def$gene1, options = list(
+updateSelectizeInput(session, "vh_gevge_inp1", choices = names(vhgene), server = TRUE,
+                     selected = vhdef$gene1, options = list(
                        maxOptions = 7, create = TRUE, persist = TRUE, render = I(optCrt)))
-updateSelectizeInput(session, "sc4_gevge_inp2", choices = names(sc4gene), server = TRUE,
-                     selected = sc4def$gene2, options = list(
+updateSelectizeInput(session, "vh_gevge_inp2", choices = names(vhgene), server = TRUE,
+                     selected = vhdef$gene2, options = list(
                        maxOptions = 7, create = TRUE, persist = TRUE, render = I(optCrt)))
-updateSelectizeInput(session, "sc4_gec_inp1", choices = names(sc4gene), server = TRUE,
-                     selected = sc4def$gene1, options = list(
+updateSelectizeInput(session, "vh_gec_inp1", choices = names(vhgene), server = TRUE,
+                     selected = vhdef$gene1, options = list(
                        maxOptions = 7, create = TRUE, persist = TRUE, render = I(optCrt)))
-updateSelectizeInput(session, "sc4_gec_inp2", choices = names(sc4gene), server = TRUE,
-                     selected = sc4def$gene2, options = list(
+updateSelectizeInput(session, "vh_gec_inp2", choices = names(vhgene), server = TRUE,
+                     selected = vhdef$gene2, options = list(
                        maxOptions = 7, create = TRUE, persist = TRUE, render = I(optCrt)))
-updateSelectizeInput(session, "sc4_vio_inp2", server = TRUE,
-                     choices = c(sc4conf[is.na(fID)]$UI,names(sc4gene)),
-                     selected = sc4conf[is.na(fID)]$UI[1], options = list(
-                       maxOptions = length(sc4conf[is.na(fID)]$UI) + 3,
+updateSelectizeInput(session, "vh_gem_inp", choices = names(vhgene), server = TRUE,
+                     selected = vhdef$genes[1:9], options = list(
+                     create = TRUE, persist = TRUE, render = I(optCrt)))
+updateSelectizeInput(session, "vh_hea_inp", choices = names(vhgene), server = TRUE,
+                     selected = vhdef$genes[1:12], options = list(
+                     create = TRUE, persist = TRUE, render = I(optCrt)))
+updateSelectizeInput(session, "vh_vio_inp2", server = TRUE,
+                     choices = c(vhconf[is.na(fID)]$UI,names(vhgene)),
+                     selected = vhconf[is.na(fID)]$UI[1], options = list(
+                       maxOptions = length(vhconf[is.na(fID)]$UI) + 3,
                        create = TRUE, persist = TRUE, render = I(optCrt)))  
 ### Tab civge cell info vs gene exp ----
 
-  output$sc4_civge_sub1.ui <- renderUI({
-    sub = strsplit(sc4conf[UI == input$sc4_civge_sub1]$fID, "\\|")[[1]]
-    checkboxGroupInput("sc4_civge_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
+  output$vh_civge_sub1.ui <- renderUI({
+    sub = strsplit(vhconf[UI == input$vh_civge_sub1]$fID, "\\|")[[1]]
+    checkboxGroupInput("vh_civge_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
   })
-  observeEvent(input$sc4_civge_sub1non, {
-    sub = strsplit(sc4conf[UI == input$sc4_civge_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc4_civge_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
+  observeEvent(input$vh_civge_sub1non, {
+    sub = strsplit(vhconf[UI == input$vh_civge_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "vh_civge_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
   })
-  observeEvent(input$sc4_civge_sub1all, {
-    sub = strsplit(sc4conf[UI == input$sc4_civge_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc4_civge_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
+  observeEvent(input$vh_civge_sub1all, {
+    sub = strsplit(vhconf[UI == input$vh_civge_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "vh_civge_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc4_civge_oup1 <- renderPlot({
-  req(input$sc4_civge_inp1)
-  scDRcell(sc4conf, sc4meta, input$sc4_civge_drX, input$sc4_civge_drY, input$sc4_civge_inp1, input$sc4_civge_sub1, input$sc4_civge_sub2, input$sc4_civge_siz, input$sc4_civge_col1, input$sc4_civge_ord1, input$sc4_civge_fsz, input$sc4_civge_asp, input$sc4_civge_txt, input$sc4_civge_lab1)
+output$vh_civge_oup1 <- renderPlot({
+  req(input$vh_civge_inp1)
+  scDRcell(vhconf, vhmeta, input$vh_civge_drX, input$vh_civge_drY, input$vh_civge_inp1, input$vh_civge_sub1, input$vh_civge_sub2, input$vh_civge_siz, input$vh_civge_col1, input$vh_civge_ord1, input$vh_civge_fsz, input$vh_civge_asp, input$vh_civge_txt, input$vh_civge_lab1)
 })
 
-output$sc4_civge_oup1.ui <- renderUI({
-  show_progress(imageOutput("sc4_civge_oup1", height = pList[input$sc4_civge_psz]))
+output$vh_civge_oup1.ui <- renderUI({
+  show_progress(imageOutput("vh_civge_oup1", height = pList[input$vh_civge_psz]))
 })
 
-output$sc4_civge_oup1.pdf <- downloadHandler(
- filename = function() { paste0("sc4", input$sc4_civge_drX,"_", input$sc4_civge_drY,"_", input$sc4_civge_inp1,".pdf") },
+output$vh_civge_oup1.png <- downloadHandler(
+ filename = function() { tolower(paste0("vh", "_", input$vh_civge_drX, "_", input$vh_civge_drY, "_", input$vh_civge_inp1, ".png")) },
  content = function(file) {
    ggsave(
-   file, device = "pdf", useDingbats = FALSE, bg = "white",
-   plot = scDRcell(sc4conf, sc4meta, input$sc4_civge_drX, input$sc4_civge_drY, input$sc4_civge_inp1,   input$sc4_civge_sub1, input$sc4_civge_sub2, input$sc4_civge_siz, input$sc4_civge_col1, input$sc4_civge_ord1,  input$sc4_civge_fsz, input$sc4_civge_asp, input$sc4_civge_txt, input$sc4_civge_lab1)
+   file, device = "png", dpi = input$vh_civge_oup1.res, bg = "white",
+   plot = scDRcell(vhconf, vhmeta, input$vh_civge_drX, input$vh_civge_drY, input$vh_civge_inp1,   input$vh_civge_sub1, input$vh_civge_sub2, input$vh_civge_siz, input$vh_civge_col1, input$vh_civge_ord1,  input$vh_civge_fsz, input$vh_civge_asp, input$vh_civge_txt, input$vh_civge_lab1)
    )
 })
 
-output$sc4_civge_oup1.png <- downloadHandler(
- filename = function() { paste0("sc4",input$sc4_civge_drX,"_",input$sc4_civge_drY,"_", input$sc4_civge_inp1,".png") },
+output$vh_civge_oup1.pdf <- downloadHandler(
+ filename = function() { tolower(paste0("vh", "_", input$vh_civge_drX,"_", input$vh_civge_drY,"_", input$vh_civge_inp1,".pdf")) },
  content = function(file) {
    ggsave(
-   file, device = "png", dpi = input$sc4_civge_oup1.res, bg = "white",
-   plot = scDRcell(sc4conf, sc4meta, input$sc4_civge_drX, input$sc4_civge_drY, input$sc4_civge_inp1,   input$sc4_civge_sub1, input$sc4_civge_sub2, input$sc4_civge_siz, input$sc4_civge_col1, input$sc4_civge_ord1,  input$sc4_civge_fsz, input$sc4_civge_asp, input$sc4_civge_txt, input$sc4_civge_lab1)
+   file, device = "pdf", useDingbats = FALSE, bg = "white", onefile = TRUE,
+   plot = scDRcell(vhconf, vhmeta, input$vh_civge_drX, input$vh_civge_drY, input$vh_civge_inp1,   input$vh_civge_sub1, input$vh_civge_sub2, input$vh_civge_siz, input$vh_civge_col1, input$vh_civge_ord1,  input$vh_civge_fsz, input$vh_civge_asp, input$vh_civge_txt, input$vh_civge_lab1)
    )
 })
 
-output$sc4_civge_.dt <- renderDataTable({
- req(input$sc4_civge_inp2)
- ggData = scDRnum(sc4conf, sc4meta, input$sc4_civge_inp1, input$sc4_civge_inp2, input$sc4_civge_sub1, input$sc4_civge_sub2, "sc4gexpr.h5", sc4gene, input$sc4_civge_splt)
+output$vh_civge_oup1.svg <- downloadHandler(
+ filename = function() { tolower(paste0("vh", "_", input$vh_civge_drX,"_", input$vh_civge_drY,"_", input$vh_civge_inp1,".svg")) },
+ content = function(file) {
+   ggsave(
+   file, device = "svg", bg = "white",
+   plot = scDRcell(vhconf, vhmeta, input$vh_civge_drX, input$vh_civge_drY, input$vh_civge_inp1,   input$vh_civge_sub1, input$vh_civge_sub2, input$vh_civge_siz, input$vh_civge_col1, input$vh_civge_ord1,  input$vh_civge_fsz, input$vh_civge_asp, input$vh_civge_txt, input$vh_civge_lab1)
+   )
+})
+
+output$vh_civge_.dt <- renderDataTable({
+ req(input$vh_civge_inp2)
+ ggData = scDRnum(vhconf, vhmeta, input$vh_civge_inp1, input$vh_civge_inp2, input$vh_civge_sub1, input$vh_civge_sub2, "vhgexpr.h5", vhgene, input$vh_civge_splt)
  datatable(ggData, rownames = FALSE, extensions = "Buttons", options = list(pageLength = -1, dom = "tB", buttons = c("copy", "csv", "excel"))) %>%
    formatRound(columns = c("pctExpress"), digits = 2)
 })
 
-output$sc4_civge_oup2 <- renderPlot({
- req(input$sc4_civge_inp2)
- scDRgene(sc4conf, sc4meta, input$sc4_civge_drX, input$sc4_civge_drY, input$sc4_civge_inp2, input$sc4_civge_sub1, input$sc4_civge_sub2, "sc4gexpr.h5", sc4gene, input$sc4_civge_siz, input$sc4_civge_col2, input$sc4_civge_ord2, input$sc4_civge_fsz, input$sc4_civge_asp, input$sc4_civge_txt)
+output$vh_civge_oup2 <- renderPlot({
+ req(input$vh_civge_inp2)
+ scDRgene(vhconf, vhmeta, input$vh_civge_drX, input$vh_civge_drY, input$vh_civge_inp2, input$vh_civge_sub1, input$vh_civge_sub2, "vhgexpr.h5", vhgene, input$vh_civge_siz, input$vh_civge_col2, input$vh_civge_ord2, input$vh_civge_fsz, input$vh_civge_asp, input$vh_civge_txt)
 })
 
-output$sc4_civge_oup2.ui <- renderUI({
- show_progress(imageOutput("sc4_civge_oup2", height = pList[input$sc4_civge_psz]))
+output$vh_civge_oup2.ui <- renderUI({
+ show_progress(imageOutput("vh_civge_oup2", height = pList[input$vh_civge_psz]))
 })
 
-output$sc4_civge_oup2.pdf <- downloadHandler(
- filename = function() { paste0("sc4",input$sc4_civge_drX,"_",input$sc4_civge_drY,"_", input$sc4_civge_inp2,".pdf") },
+output$vh_civge_oup2.png <- downloadHandler(
+ filename = function() { tolower(paste0("vh", "_", input$vh_civge_drX,"_",input$vh_civge_drY,"_", input$vh_civge_inp2,".png")) },
  content = function(file) {
    ggsave(
-   file, device = "pdf", useDingbats = FALSE, bg = "white",
-   plot = scDRgene(sc4conf, sc4meta, input$sc4_civge_drX, input$sc4_civge_drY, input$sc4_civge_inp2,  input$sc4_civge_sub1, input$sc4_civge_sub2, "sc4gexpr.h5", sc4gene, input$sc4_civge_siz, input$sc4_civge_col2, input$sc4_civge_ord2, input$sc4_civge_fsz, input$sc4_civge_asp, input$sc4_civge_txt)
+   file, device = "png", dpi = input$vh_civge_oup2.res, bg = "white",
+   plot = scDRgene(vhconf, vhmeta, input$vh_civge_drX, input$vh_civge_drY, input$vh_civge_inp2, input$vh_civge_sub1, input$vh_civge_sub2, "vhgexpr.h5", vhgene, input$vh_civge_siz, input$vh_civge_col2, input$vh_civge_ord2, input$vh_civge_fsz, input$vh_civge_asp, input$vh_civge_txt)
    )
 })
 
-output$sc4_civge_oup2.png <- downloadHandler(
- filename = function() { paste0("sc4",input$sc4_civge_drX,"_",input$sc4_civge_drY,"_", input$sc4_civge_inp2,".png") },
+output$vh_civge_oup2.pdf <- downloadHandler(
+ filename = function() { tolower(paste0("vh", "_", input$vh_civge_drX,"_",input$vh_civge_drY,"_", input$vh_civge_inp2,".pdf")) },
  content = function(file) {
    ggsave(
-   file, device = "png", dpi = input$sc4_civge_oup2.res, bg = "white",
-   plot = scDRgene(sc4conf, sc4meta, input$sc4_civge_drX, input$sc4_civge_drY, input$sc4_civge_inp2, input$sc4_civge_sub1, input$sc4_civge_sub2, "sc4gexpr.h5", sc4gene, input$sc4_civge_siz, input$sc4_civge_col2, input$sc4_civge_ord2, input$sc4_civge_fsz, input$sc4_civge_asp, input$sc4_civge_txt)
+   file, device = "pdf", useDingbats = FALSE, bg = "white", onefile = TRUE,
+   plot = scDRgene(vhconf, vhmeta, input$vh_civge_drX, input$vh_civge_drY, input$vh_civge_inp2,  input$vh_civge_sub1, input$vh_civge_sub2, "vhgexpr.h5", vhgene, input$vh_civge_siz, input$vh_civge_col2, input$vh_civge_ord2, input$vh_civge_fsz, input$vh_civge_asp, input$vh_civge_txt)
+   )
+}) 
+
+output$vh_civge_oup2.svg <- downloadHandler(
+ filename = function() { tolower(paste0("vh", "_", input$vh_civge_drX,"_",input$vh_civge_drY,"_", input$vh_civge_inp2,".svg")) },
+ content = function(file) {
+   ggsave(
+   file, device = "svg", bg = "white",
+   plot = scDRgene(vhconf, vhmeta, input$vh_civge_drX, input$vh_civge_drY, input$vh_civge_inp2,  input$vh_civge_sub1, input$vh_civge_sub2, "vhgexpr.h5", vhgene, input$vh_civge_siz, input$vh_civge_col2, input$vh_civge_ord2, input$vh_civge_fsz, input$vh_civge_asp, input$vh_civge_txt)
    )
 }) # End of tab civge
 
@@ -2575,68 +2903,84 @@ output$sc4_civge_oup2.png <- downloadHandler(
 
 ### Tab civci cell info vs cell info ----
   
-  output$sc4_civci_sub1.ui <- renderUI({
-    sub = strsplit(sc4conf[UI == input$sc4_civci_sub1]$fID, "\\|")[[1]]
-    checkboxGroupInput("sc4_civci_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
+  output$vh_civci_sub1.ui <- renderUI({
+    sub = strsplit(vhconf[UI == input$vh_civci_sub1]$fID, "\\|")[[1]]
+    checkboxGroupInput("vh_civci_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
   })
-  observeEvent(input$sc4_civci_sub1non, {
-    sub = strsplit(sc4conf[UI == input$sc4_civci_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc4_civci_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
+  observeEvent(input$vh_civci_sub1non, {
+    sub = strsplit(vhconf[UI == input$vh_civci_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "vh_civci_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
   })
-  observeEvent(input$sc4_civci_sub1all, {
-    sub = strsplit(sc4conf[UI == input$sc4_civci_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc4_civci_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
+  observeEvent(input$vh_civci_sub1all, {
+    sub = strsplit(vhconf[UI == input$vh_civci_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "vh_civci_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc4_civci_oup1 <- renderPlot({
-  req(input$sc4_civci_inp1)
-  scDRcell(sc4conf, sc4meta, input$sc4_civci_drX, input$sc4_civci_drY, input$sc4_civci_inp1, input$sc4_civci_sub1, input$sc4_civci_sub2, input$sc4_civci_siz, input$sc4_civci_col1, input$sc4_civci_ord1, input$sc4_civci_fsz, input$sc4_civci_asp, input$sc4_civci_txt, input$sc4_civci_lab1)
+output$vh_civci_oup1 <- renderPlot({
+  req(input$vh_civci_inp1)
+  scDRcell(vhconf, vhmeta, input$vh_civci_drX, input$vh_civci_drY, input$vh_civci_inp1, input$vh_civci_sub1, input$vh_civci_sub2, input$vh_civci_siz, input$vh_civci_col1, input$vh_civci_ord1, input$vh_civci_fsz, input$vh_civci_asp, input$vh_civci_txt, input$vh_civci_lab1)
 })
 
-output$sc4_civci_oup1.ui <- renderUI({
-  show_progress(imageOutput("sc4_civci_oup1", height = pList[input$sc4_civci_psz]))
+output$vh_civci_oup1.ui <- renderUI({
+  show_progress(imageOutput("vh_civci_oup1", height = pList[input$vh_civci_psz]))
 })
 
-output$sc4_civci_oup1.pdf <- downloadHandler(
-  filename = function() { paste0("sc4", input$sc4_civci_drX, "_", input$sc4_civci_drY, "_", input$sc4_civci_inp1, ".pdf") },
+output$vh_civci_oup1.png <- downloadHandler(
+  filename = function() { tolower(paste0("vh", "_", input$vh_civci_drX, "_", input$vh_civci_drY, "_", input$vh_civci_inp1, ".png")) },
+  content = function(file) {
+    ggsave(
+    file, device = "png", dpi = input$vh_civci_oup1.res, bg = "white",
+    plot = scDRcell(vhconf, vhmeta, input$vh_civci_drX, input$vh_civci_drY, input$vh_civci_inp1, input$vh_civci_sub1, input$vh_civci_sub2, input$vh_civci_siz, input$vh_civci_col1, input$vh_civci_ord1, input$vh_civci_fsz, input$vh_civci_asp, input$vh_civci_txt, input$vh_civci_lab1)
+    )
+})
+
+output$vh_civci_oup1.pdf <- downloadHandler(
+  filename = function() { tolower(paste0("vh", "_", input$vh_civci_drX, "_", input$vh_civci_drY, "_", input$vh_civci_inp1, ".pdf")) },
   content = function(file) { ggsave(
-    file, device = "pdf", useDingbats = FALSE, bg = "white",
-    plot = scDRcell(sc4conf, sc4meta, input$sc4_civci_drX, input$sc4_civci_drY, input$sc4_civci_inp1, input$sc4_civci_sub1, input$sc4_civci_sub2, input$sc4_civci_siz, input$sc4_civci_col1, input$sc4_civci_ord1, input$sc4_civci_fsz, input$sc4_civci_asp, input$sc4_civci_txt, input$sc4_civci_lab1) )
+    file, device = "pdf", useDingbats = FALSE, bg = "white", onefile = TRUE,
+    plot = scDRcell(vhconf, vhmeta, input$vh_civci_drX, input$vh_civci_drY, input$vh_civci_inp1, input$vh_civci_sub1, input$vh_civci_sub2, input$vh_civci_siz, input$vh_civci_col1, input$vh_civci_ord1, input$vh_civci_fsz, input$vh_civci_asp, input$vh_civci_txt, input$vh_civci_lab1) )
 })
 
-output$sc4_civci_oup1.png <- downloadHandler(
-  filename = function() { paste0("sc4", input$sc4_civci_drX, "_", input$sc4_civci_drY, "_", input$sc4_civci_inp1, ".png") },
+output$vh_civci_oup1.svg <- downloadHandler(
+  filename = function() { tolower(paste0("vh", "_", input$vh_civci_drX, "_", input$vh_civci_drY, "_", input$vh_civci_inp1, ".svg")) },
+  content = function(file) { ggsave(
+    file, device = "svg", bg = "white",
+    plot = scDRcell(vhconf, vhmeta, input$vh_civci_drX, input$vh_civci_drY, input$vh_civci_inp1, input$vh_civci_sub1, input$vh_civci_sub2, input$vh_civci_siz, input$vh_civci_col1, input$vh_civci_ord1, input$vh_civci_fsz, input$vh_civci_asp, input$vh_civci_txt, input$vh_civci_lab1) )
+})
+
+output$vh_civci_oup2 <- renderPlot({
+  req(input$vh_civci_inp2)
+  scDRcell(vhconf, vhmeta, input$vh_civci_drX, input$vh_civci_drY, input$vh_civci_inp2, input$vh_civci_sub1, input$vh_civci_sub2, input$vh_civci_siz, input$vh_civci_col2, input$vh_civci_ord2, input$vh_civci_fsz, input$vh_civci_asp, input$vh_civci_txt, input$vh_civci_lab2)
+})
+
+output$vh_civci_oup2.ui <- renderUI({
+  show_progress(imageOutput("vh_civci_oup2", height = pList[input$vh_civci_psz]))
+})
+
+output$vh_civci_oup2.png <- downloadHandler(
+  filename = function() { tolower(paste0("vh", "_", input$vh_civci_drX,"_",input$vh_civci_drY,"_", input$vh_civci_inp2,".png")) },
   content = function(file) {
     ggsave(
-    file, device = "png", dpi = input$sc4_civci_oup1.res, bg = "white",
-    plot = scDRcell(sc4conf, sc4meta, input$sc4_civci_drX, input$sc4_civci_drY, input$sc4_civci_inp1, input$sc4_civci_sub1, input$sc4_civci_sub2, input$sc4_civci_siz, input$sc4_civci_col1, input$sc4_civci_ord1, input$sc4_civci_fsz, input$sc4_civci_asp, input$sc4_civci_txt, input$sc4_civci_lab1)
+    file, device = "png", bg = "white", dpi = input$vh_civci_oup2.res,
+    plot = scDRcell(vhconf, vhmeta, input$vh_civci_drX, input$vh_civci_drY, input$vh_civci_inp2, input$vh_civci_sub1, input$vh_civci_sub2, input$vh_civci_siz, input$vh_civci_col2, input$vh_civci_ord2, input$vh_civci_fsz, input$vh_civci_asp, input$vh_civci_txt, input$vh_civci_lab2)
+    )
+}) 
+
+output$vh_civci_oup2.pdf <- downloadHandler(
+  filename = function() { tolower(paste0("vh", "_", input$vh_civci_drX,"_",input$vh_civci_drY,"_", input$vh_civci_inp2,".pdf")) },
+  content = function(file) {
+    ggsave(
+    file, device = "pdf", useDingbats = FALSE, bg = "white", onefile = TRUE,
+    plot = scDRcell(vhconf, vhmeta, input$vh_civci_drX, input$vh_civci_drY, input$vh_civci_inp2, input$vh_civci_sub1, input$vh_civci_sub2, input$vh_civci_siz, input$vh_civci_col2, input$vh_civci_ord2, input$vh_civci_fsz, input$vh_civci_asp, input$vh_civci_txt, input$vh_civci_lab2) 
     )
 })
 
-output$sc4_civci_oup2 <- renderPlot({
-  req(input$sc4_civci_inp2)
-  scDRcell(sc4conf, sc4meta, input$sc4_civci_drX, input$sc4_civci_drY, input$sc4_civci_inp2, input$sc4_civci_sub1, input$sc4_civci_sub2, input$sc4_civci_siz, input$sc4_civci_col2, input$sc4_civci_ord2, input$sc4_civci_fsz, input$sc4_civci_asp, input$sc4_civci_txt, input$sc4_civci_lab2)
-})
-
-output$sc4_civci_oup2.ui <- renderUI({
-  show_progress(imageOutput("sc4_civci_oup2", height = pList[input$sc4_civci_psz]))
-})
-
-output$sc4_civci_oup2.pdf <- downloadHandler(
-  filename = function() { paste0("sc4",input$sc4_civci_drX,"_",input$sc4_civci_drY,"_", input$sc4_civci_inp2,".pdf") },
+output$vh_civci_oup2.svg <- downloadHandler(
+  filename = function() { tolower(paste0("vh", "_", input$vh_civci_drX,"_",input$vh_civci_drY,"_", input$vh_civci_inp2,".svg")) },
   content = function(file) {
     ggsave(
-    file, device = "pdf", useDingbats = FALSE, bg = "white",
-    plot = scDRcell(sc4conf, sc4meta, input$sc4_civci_drX, input$sc4_civci_drY, input$sc4_civci_inp2, input$sc4_civci_sub1, input$sc4_civci_sub2, input$sc4_civci_siz, input$sc4_civci_col2, input$sc4_civci_ord2, input$sc4_civci_fsz, input$sc4_civci_asp, input$sc4_civci_txt, input$sc4_civci_lab2) 
-    )
-})
-
-output$sc4_civci_oup2.png <- downloadHandler(
-  filename = function() { paste0("sc4",input$sc4_civci_drX,"_",input$sc4_civci_drY,"_", input$sc4_civci_inp2,".png") },
-  content = function(file) {
-    ggsave(
-    file, device = "png", bg = "white", dpi = input$sc4_civci_oup2.res,
-    plot = scDRcell(sc4conf, sc4meta, input$sc4_civci_drX, input$sc4_civci_drY, input$sc4_civci_inp2, input$sc4_civci_sub1, input$sc4_civci_sub2, input$sc4_civci_siz, input$sc4_civci_col2, input$sc4_civci_ord2, input$sc4_civci_fsz, input$sc4_civci_asp, input$sc4_civci_txt, input$sc4_civci_lab2)
+    file, device = "svg", bg = "white",
+    plot = scDRcell(vhconf, vhmeta, input$vh_civci_drX, input$vh_civci_drY, input$vh_civci_inp2, input$vh_civci_sub1, input$vh_civci_sub2, input$vh_civci_siz, input$vh_civci_col2, input$vh_civci_ord2, input$vh_civci_fsz, input$vh_civci_asp, input$vh_civci_txt, input$vh_civci_lab2) 
     )
 }) # End of tab civci
 
@@ -2644,78 +2988,100 @@ output$sc4_civci_oup2.png <- downloadHandler(
 
 ### Tab gevge gene exp vs gene exp ----
 
-  output$sc4_gevge_sub1.ui <- renderUI({
-    sub = strsplit(sc4conf[UI == input$sc4_gevge_sub1]$fID, "\\|")[[1]]
-    checkboxGroupInput("sc4_gevge_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
+  output$vh_gevge_sub1.ui <- renderUI({
+    sub = strsplit(vhconf[UI == input$vh_gevge_sub1]$fID, "\\|")[[1]]
+    checkboxGroupInput("vh_gevge_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
   })
-  observeEvent(input$sc4_gevge_sub1non, {
-    sub = strsplit(sc4conf[UI == input$sc4_gevge_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc4_gevge_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
+  observeEvent(input$vh_gevge_sub1non, {
+    sub = strsplit(vhconf[UI == input$vh_gevge_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "vh_gevge_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
   })
-  observeEvent(input$sc4_gevge_sub1all, {
-    sub = strsplit(sc4conf[UI == input$sc4_gevge_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc4_gevge_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
+  observeEvent(input$vh_gevge_sub1all, {
+    sub = strsplit(vhconf[UI == input$vh_gevge_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "vh_gevge_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc4_gevge_oup1 <- renderPlot({
-  req(input$sc4_gevge_inp1)
-  scDRgene(sc4conf, sc4meta, input$sc4_gevge_drX, input$sc4_gevge_drY, input$sc4_gevge_inp1, input$sc4_gevge_sub1, input$sc4_gevge_sub2, "sc4gexpr.h5", sc4gene, input$sc4_gevge_siz, input$sc4_gevge_col1, input$sc4_gevge_ord1, input$sc4_gevge_fsz, input$sc4_gevge_asp, input$sc4_gevge_txt)
+output$vh_gevge_oup1 <- renderPlot({
+  req(input$vh_gevge_inp1)
+  scDRgene(vhconf, vhmeta, input$vh_gevge_drX, input$vh_gevge_drY, input$vh_gevge_inp1, input$vh_gevge_sub1, input$vh_gevge_sub2, "vhgexpr.h5", vhgene, input$vh_gevge_siz, input$vh_gevge_col1, input$vh_gevge_ord1, input$vh_gevge_fsz, input$vh_gevge_asp, input$vh_gevge_txt)
 })
 
-output$sc4_gevge_oup1.ui <- renderUI({
-  show_progress(imageOutput("sc4_gevge_oup1", height = pList[input$sc4_gevge_psz]))
+output$vh_gevge_oup1.ui <- renderUI({
+  show_progress(imageOutput("vh_gevge_oup1", height = pList[input$vh_gevge_psz]))
 })
 
-output$sc4_gevge_oup1.pdf <- downloadHandler(
-  filename = function() { paste0("sc4", input$sc4_gevge_drX, "_", input$sc4_gevge_drY, "_", input$sc4_gevge_inp1, ".pdf") },
+output$vh_gevge_oup1.png <- downloadHandler(
+  filename = function() { tolower(paste0("vh", "_", input$vh_gevge_drX, "_", input$vh_gevge_drY, "_", input$vh_gevge_inp1,".png")) },
   content = function(file) {
     ggsave(
-    file, device = "pdf", useDingbats = FALSE, bg = "white",
-    plot = scDRgene(sc4conf, sc4meta, input$sc4_gevge_drX, input$sc4_gevge_drY, input$sc4_gevge_inp1, input$sc4_gevge_sub1, input$sc4_gevge_sub2, "sc4gexpr.h5", sc4gene, input$sc4_gevge_siz, input$sc4_gevge_col1, input$sc4_gevge_ord1, input$sc4_gevge_fsz, input$sc4_gevge_asp, input$sc4_gevge_txt)
+    file, device = "png", bg = "white", dpi = input$vh_gevge_oup1.res,
+    plot = scDRgene(vhconf, vhmeta, input$vh_gevge_drX, input$vh_gevge_drY, input$vh_gevge_inp1, 
+                    input$vh_gevge_sub1, input$vh_gevge_sub2,
+                    "vhgexpr.h5", vhgene,
+                    input$vh_gevge_siz, input$vh_gevge_col1, input$vh_gevge_ord1,
+                    input$vh_gevge_fsz, input$vh_gevge_asp, input$vh_gevge_txt)
     )
 })
 
-output$sc4_gevge_oup1.png <- downloadHandler(
-  filename = function() { paste0("sc4", input$sc4_gevge_drX, "_", input$sc4_gevge_drY, "_", input$sc4_gevge_inp1,".png") },
+output$vh_gevge_oup1.pdf <- downloadHandler(
+  filename = function() { tolower(paste0("vh", "_", input$vh_gevge_drX, "_", input$vh_gevge_drY, "_", input$vh_gevge_inp1, ".pdf")) },
   content = function(file) {
     ggsave(
-    file, device = "png", bg = "white", dpi = input$sc4_gevge_oup1.res,
-    plot = scDRgene(sc4conf, sc4meta, input$sc4_gevge_drX, input$sc4_gevge_drY, input$sc4_gevge_inp1, 
-                    input$sc4_gevge_sub1, input$sc4_gevge_sub2,
-                    "sc4gexpr.h5", sc4gene,
-                    input$sc4_gevge_siz, input$sc4_gevge_col1, input$sc4_gevge_ord1,
-                    input$sc4_gevge_fsz, input$sc4_gevge_asp, input$sc4_gevge_txt)
+    file, device = "pdf", useDingbats = FALSE, bg = "white", onefile = TRUE,
+    plot = scDRgene(vhconf, vhmeta, input$vh_gevge_drX, input$vh_gevge_drY, input$vh_gevge_inp1, input$vh_gevge_sub1, input$vh_gevge_sub2, "vhgexpr.h5", vhgene, input$vh_gevge_siz, input$vh_gevge_col1, input$vh_gevge_ord1, input$vh_gevge_fsz, input$vh_gevge_asp, input$vh_gevge_txt)
     )
 })
 
-output$sc4_gevge_oup2 <- renderPlot({
-  req(input$sc4_gevge_inp2)
-  scDRgene(sc4conf, sc4meta, input$sc4_gevge_drX, input$sc4_gevge_drY, input$sc4_gevge_inp2, input$sc4_gevge_sub1, input$sc4_gevge_sub2, "sc4gexpr.h5", sc4gene, input$sc4_gevge_siz, input$sc4_gevge_col2, input$sc4_gevge_ord2, input$sc4_gevge_fsz, input$sc4_gevge_asp, input$sc4_gevge_txt)
-})
-
-output$sc4_gevge_oup2.ui <- renderUI({
-  show_progress(imageOutput("sc4_gevge_oup2", height = pList[input$sc4_gevge_psz]))
-})
-
-output$sc4_gevge_oup2.pdf <- downloadHandler(
-  filename = function() { paste0("sc4", input$sc4_gevge_drX, "_", input$sc4_gevge_drY, "_", input$sc4_gevge_inp2,".pdf") },
+output$vh_gevge_oup1.svg <- downloadHandler(
+  filename = function() { tolower(paste0("vh", "_", input$vh_gevge_drX, "_", input$vh_gevge_drY, "_", input$vh_gevge_inp1, ".svg")) },
   content = function(file) {
     ggsave(
-    file, device = "pdf", useDingbats = FALSE, bg = "white",
-    plot = scDRgene(sc4conf, sc4meta, input$sc4_gevge_drX, input$sc4_gevge_drY, input$sc4_gevge_inp2, 
-                    input$sc4_gevge_sub1, input$sc4_gevge_sub2,
-                    "sc4gexpr.h5", sc4gene,
-                    input$sc4_gevge_siz, input$sc4_gevge_col2, input$sc4_gevge_ord2,
-                    input$sc4_gevge_fsz, input$sc4_gevge_asp, input$sc4_gevge_txt)
+    file, device = "svg", bg = "white",
+    plot = scDRgene(vhconf, vhmeta, input$vh_gevge_drX, input$vh_gevge_drY, input$vh_gevge_inp1, input$vh_gevge_sub1, input$vh_gevge_sub2, "vhgexpr.h5", vhgene, input$vh_gevge_siz, input$vh_gevge_col1, input$vh_gevge_ord1, input$vh_gevge_fsz, input$vh_gevge_asp, input$vh_gevge_txt)
     )
 })
 
-output$sc4_gevge_oup2.png <- downloadHandler(
-  filename = function() { paste0("sc4", input$sc4_gevge_drX, "_", input$sc4_gevge_drY, "_", input$sc4_gevge_inp2,".png") },
+output$vh_gevge_oup2 <- renderPlot({
+  req(input$vh_gevge_inp2)
+  scDRgene(vhconf, vhmeta, input$vh_gevge_drX, input$vh_gevge_drY, input$vh_gevge_inp2, input$vh_gevge_sub1, input$vh_gevge_sub2, "vhgexpr.h5", vhgene, input$vh_gevge_siz, input$vh_gevge_col2, input$vh_gevge_ord2, input$vh_gevge_fsz, input$vh_gevge_asp, input$vh_gevge_txt)
+})
+
+output$vh_gevge_oup2.ui <- renderUI({
+  show_progress(imageOutput("vh_gevge_oup2", height = pList[input$vh_gevge_psz]))
+})
+
+output$vh_gevge_oup2.png <- downloadHandler(
+  filename = function() { tolower(paste0("vh", "_", input$vh_gevge_drX, "_", input$vh_gevge_drY, "_", input$vh_gevge_inp2,".png")) },
   content = function(file) {
     ggsave(
-    file, device = "png", bg = "white", dpi = input$sc4_gevge_oup2.res,
-    plot = scDRgene(sc4conf, sc4meta, input$sc4_gevge_drX, input$sc4_gevge_drY, input$sc4_gevge_inp2, input$sc4_gevge_sub1, input$sc4_gevge_sub2, "sc4gexpr.h5", sc4gene, input$sc4_gevge_siz, input$sc4_gevge_col2, input$sc4_gevge_ord2, input$sc4_gevge_fsz, input$sc4_gevge_asp, input$sc4_gevge_txt)
+    file, device = "png", bg = "white", dpi = input$vh_gevge_oup2.res,
+    plot = scDRgene(vhconf, vhmeta, input$vh_gevge_drX, input$vh_gevge_drY, input$vh_gevge_inp2, input$vh_gevge_sub1, input$vh_gevge_sub2, "vhgexpr.h5", vhgene, input$vh_gevge_siz, input$vh_gevge_col2, input$vh_gevge_ord2, input$vh_gevge_fsz, input$vh_gevge_asp, input$vh_gevge_txt)
+    )
+}) 
+
+output$vh_gevge_oup2.pdf <- downloadHandler(
+  filename = function() { tolower(paste0("vh", "_", input$vh_gevge_drX, "_", input$vh_gevge_drY, "_", input$vh_gevge_inp2,".pdf")) },
+  content = function(file) {
+    ggsave(
+    file, device = "pdf", useDingbats = FALSE, bg = "white", onefile = TRUE,
+    plot = scDRgene(vhconf, vhmeta, input$vh_gevge_drX, input$vh_gevge_drY, input$vh_gevge_inp2, 
+                    input$vh_gevge_sub1, input$vh_gevge_sub2,
+                    "vhgexpr.h5", vhgene,
+                    input$vh_gevge_siz, input$vh_gevge_col2, input$vh_gevge_ord2,
+                    input$vh_gevge_fsz, input$vh_gevge_asp, input$vh_gevge_txt)
+    )
+})
+
+output$vh_gevge_oup2.svg <- downloadHandler(
+  filename = function() { tolower(paste0("vh", "_", input$vh_gevge_drX, "_", input$vh_gevge_drY, "_", input$vh_gevge_inp2,".svg")) },
+  content = function(file) {
+    ggsave(
+    file, device = "svg", bg = "white",
+    plot = scDRgene(vhconf, vhmeta, input$vh_gevge_drX, input$vh_gevge_drY, input$vh_gevge_inp2, 
+                    input$vh_gevge_sub1, input$vh_gevge_sub2,
+                    "vhgexpr.h5", vhgene,
+                    input$vh_gevge_siz, input$vh_gevge_col2, input$vh_gevge_ord2,
+                    input$vh_gevge_fsz, input$vh_gevge_asp, input$vh_gevge_txt)
     )
 }) # End of tab gevge
 
@@ -2724,88 +3090,107 @@ output$sc4_gevge_oup2.png <- downloadHandler(
 
 ### Tab gem gene expression multi ----
 
-output$sc4_gem_sub1.ui <- renderUI({
-  sub = strsplit(sc4conf[UI == input$sc4_gem_sub1]$fID, "\\|")[[1]]
-  checkboxGroupInput("sc4_gem_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
+output$vh_gem_sub1.ui <- renderUI({
+  sub = strsplit(vhconf[UI == input$vh_gem_sub1]$fID, "\\|")[[1]]
+  checkboxGroupInput("vh_gem_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
 })
-observeEvent(input$sc4_gem_sub1non, {
-  sub = strsplit(sc4conf[UI == input$sc4_gem_sub1]$fID, "\\|")[[1]]
-  updateCheckboxGroupInput(session, inputId = "sc4_gem_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
+observeEvent(input$vh_gem_sub1non, {
+  sub = strsplit(vhconf[UI == input$vh_gem_sub1]$fID, "\\|")[[1]]
+  updateCheckboxGroupInput(session, inputId = "vh_gem_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
 })
-observeEvent(input$sc4_gem_sub1all, {
-  sub = strsplit(sc4conf[UI == input$sc4_gem_sub1]$fID, "\\|")[[1]]
-  updateCheckboxGroupInput(session, inputId = "sc4_gem_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
+observeEvent(input$vh_gem_sub1all, {
+  sub = strsplit(vhconf[UI == input$vh_gem_sub1]$fID, "\\|")[[1]]
+  updateCheckboxGroupInput(session, inputId = "vh_gem_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
 })
 
-output$sc4_gem_oup1 <- renderPlot({
-  req(input$sc4_gem_inp)
+output$vh_gem_oup1 <- renderPlot({
+  req(input$vh_gem_inp)
   
-  scFeature(sc4conf, sc4meta, input$sc4_gem_drX, input$sc4_gem_drY, input$sc4_gem_inp, input$sc4_gem_sub1, input$sc4_gem_sub2, "sc4gexpr.h5", sc4gene, input$sc4_gem_siz, input$sc4_gem_col, input$sc4_gem_ord, input$sc4_gem_fsz, input$sc4_gem_asp, input$sc4_gem_txt, input$sc4_gem_ncol)
+  scFeature(vhconf, vhmeta, input$vh_gem_drX, input$vh_gem_drY, input$vh_gem_inp, input$vh_gem_sub1, input$vh_gem_sub2, "vhgexpr.h5", vhgene, input$vh_gem_siz, input$vh_gem_col, input$vh_gem_ord, input$vh_gem_fsz, input$vh_gem_asp, input$vh_gem_txt, input$vh_gem_ncol)
 })
 
-output$sc4_gem_oup1.ui <- renderUI({
-  show_progress(imageOutput("sc4_gem_oup1", height = pList[input$sc4_gem_psz]))
+output$vh_gem_oup1.ui <- renderUI({
+  show_progress(imageOutput("vh_gem_oup1", height = pList[input$vh_gem_psz]))
 })
 
-output$sc4_gem_oup1.pdf <- downloadHandler(
-  filename = function() { paste0("sc4", input$sc4_gem_drX, "_", input$sc4_gem_drY, "_expression.pdf") },
-  content = function(file) { ggsave(
-    file, device = "pdf", useDingbats = FALSE, height = input$sc4_gem_oup1.height, width = input$sc4_gem_oup1.width, units = "cm", bg = "white",
-    plot = scFeature(sc4conf, sc4meta, input$sc4_gem_drX, input$sc4_gem_drY, input$sc4_gem_inp, input$sc4_gem_sub1, input$sc4_gem_sub2, "sc4gexpr.h5", sc4gene, input$sc4_gem_siz, input$sc4_gem_col, input$sc4_gem_ord, input$sc4_gem_fsz, input$sc4_gem_asp, input$sc4_gem_txt, input$sc4_gem_ncol))
-})
-
-output$sc4_gem_oup1.png <- downloadHandler(
-  filename = function() { paste0("sc4", input$sc4_gem_drX, "_", input$sc4_gem_drY, "_expression.png") },
+output$vh_gem_oup1.png <- downloadHandler(
+  filename = function() { tolower(paste0("vh", "_", input$vh_gem_drX, "_", input$vh_gem_drY, "_expression.png")) },
   content = function(file) {
     ggsave(
-      file, device = "png", height = input$sc4_gem_oup1.height, width = input$sc4_gem_oup1.width, dpi = input$sc4_gem_oup1.res, units = "cm", bg = "white",
-      plot = scFeature(sc4conf, sc4meta, input$sc4_gem_drX, input$sc4_gem_drY, input$sc4_gem_inp, input$sc4_gem_sub1, input$sc4_gem_sub2, "sc4gexpr.h5", sc4gene, input$sc4_gem_siz, input$sc4_gem_col, input$sc4_gem_ord, input$sc4_gem_fsz, input$sc4_gem_asp, input$sc4_gem_txt, input$sc4_gem_ncol)
+      file, device = "png", height = input$vh_gem_oup1.height, width = input$vh_gem_oup1.width, dpi = input$vh_gem_oup1.res, units = "cm", bg = "white",
+      plot = scFeature(vhconf, vhmeta, input$vh_gem_drX, input$vh_gem_drY, input$vh_gem_inp, input$vh_gem_sub1, input$vh_gem_sub2, "vhgexpr.h5", vhgene, input$vh_gem_siz, input$vh_gem_col, input$vh_gem_ord, input$vh_gem_fsz, input$vh_gem_asp, input$vh_gem_txt, input$vh_gem_ncol)
     )
+}) 
+
+output$vh_gem_oup1.pdf <- downloadHandler(
+  filename = function() { tolower(paste0("vh", "_", input$vh_gem_drX, "_", input$vh_gem_drY, "_expression.pdf")) },
+  content = function(file) {
+  pdf(file, useDingbats = FALSE, height = input$vh_gem_oup1.height/2.54, width = input$vh_gem_oup1.width/2.54, bg = "white", onefile = TRUE)
+  showtext::showtext_begin()
+  print(scFeature(vhconf, vhmeta, input$vh_gem_drX, input$vh_gem_drY, input$vh_gem_inp, input$vh_gem_sub1, input$vh_gem_sub2, "vhgexpr.h5", vhgene, input$vh_gem_siz, input$vh_gem_col, input$vh_gem_ord, input$vh_gem_fsz, input$vh_gem_asp, input$vh_gem_txt, input$vh_gem_ncol))
+  showtext::showtext_end()
+  dev.off()
+})
+
+output$vh_gem_oup1.svg <- downloadHandler(
+  filename = function() { tolower(paste0("vh", "_", input$vh_gem_drX, "_", input$vh_gem_drY, "_expression.svg")) },
+  content = function(file) { ggsave(
+    file, device = "svg", height = input$vh_gem_oup1.height, width = input$vh_gem_oup1.width, units = "cm", bg = "white",
+    plot = scFeature(vhconf, vhmeta, input$vh_gem_drX, input$vh_gem_drY, input$vh_gem_inp, input$vh_gem_sub1, input$vh_gem_sub2, "vhgexpr.h5", vhgene, input$vh_gem_siz, input$vh_gem_col, input$vh_gem_ord, input$vh_gem_fsz, input$vh_gem_asp, input$vh_gem_txt, input$vh_gem_ncol))
 }) # End of tab gem
 
 
 
 ### Tab gec gene co-expression ----
 
-  output$sc4_gec_sub1.ui <- renderUI({
-    sub = strsplit(sc4conf[UI == input$sc4_gec_sub1]$fID, "\\|")[[1]]
-    checkboxGroupInput("sc4_gec_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
+  output$vh_gec_sub1.ui <- renderUI({
+    sub = strsplit(vhconf[UI == input$vh_gec_sub1]$fID, "\\|")[[1]]
+    checkboxGroupInput("vh_gec_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
   })
-  observeEvent(input$sc4_gec_sub1non, {
-    sub = strsplit(sc4conf[UI == input$sc4_gec_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc4_gec_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
+  observeEvent(input$vh_gec_sub1non, {
+    sub = strsplit(vhconf[UI == input$vh_gec_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "vh_gec_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
   })
-  observeEvent(input$sc4_gec_sub1all, {
-    sub = strsplit(sc4conf[UI == input$sc4_gec_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc4_gec_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
+  observeEvent(input$vh_gec_sub1all, {
+    sub = strsplit(vhconf[UI == input$vh_gec_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "vh_gec_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc4_gec_oup1 <- renderPlot({
-  scDRcoexFull(sc4conf, sc4meta, input$sc4_gec_drX, input$sc4_gec_drY, input$sc4_gec_inp1, input$sc4_gec_inp2, input$sc4_gec_sub1, input$sc4_gec_sub2, "sc4gexpr.h5", sc4gene, input$sc4_gec_siz, input$sc4_gec_col1, input$sc4_gec_ord1, input$sc4_gec_fsz, input$sc4_gec_asp, input$sc4_gec_txt)
+output$vh_gec_oup1 <- renderPlot({
+  scDRcoexFull(vhconf, vhmeta, input$vh_gec_drX, input$vh_gec_drY, input$vh_gec_inp1, input$vh_gec_inp2, input$vh_gec_sub1, input$vh_gec_sub2, "vhgexpr.h5", vhgene, input$vh_gec_siz, input$vh_gec_col1, input$vh_gec_ord1, input$vh_gec_fsz, input$vh_gec_asp, input$vh_gec_txt)
 })
 
-output$sc4_gec_oup1.ui <- renderUI({
-  show_progress(imageOutput("sc4_gec_oup1", height = pList2[input$sc4_gec_psz]))
+output$vh_gec_oup1.ui <- renderUI({
+  show_progress(imageOutput("vh_gec_oup1", height = pList2[input$vh_gec_psz]))
 })
 
-output$sc4_gec_oup1.pdf <- downloadHandler(
-  filename = function() { paste0("sc4", input$sc4_gec_drX, "_", input$sc4_gec_drY, "_", input$sc4_gec_inp1, "_", input$sc4_gec_inp2, ".pdf") },
+output$vh_gec_oup1.png <- downloadHandler(
+  filename = function() { tolower(paste0("vh", "_", input$vh_gec_drX, "_", input$vh_gec_drY, "_", input$vh_gec_inp1, "_", input$vh_gec_inp2, ".png")) },
+  content = function(file) { ggsave(
+    file, device = "png", bg = "white", dpi = input$vh_gec_oup1.res,
+    plot = scDRcoexFull(vhconf, vhmeta, input$vh_gec_drX, input$vh_gec_drY, input$vh_gec_inp1, input$vh_gec_inp2, input$vh_gec_sub1, input$vh_gec_sub2, "vhgexpr.h5", vhgene, input$vh_gec_siz, input$vh_gec_col1, input$vh_gec_ord1, input$vh_gec_fsz, input$vh_gec_asp, input$vh_gec_txt) )
+})
+
+output$vh_gec_oup1.pdf <- downloadHandler(
+  filename = function() { tolower(paste0("vh", "_", input$vh_gec_drX, "_", input$vh_gec_drY, "_", input$vh_gec_inp1, "_", input$vh_gec_inp2, ".pdf")) },
   content = function(file) {
     ggsave(
-    file, device = "pdf", useDingbats = FALSE, bg = "white",
-    plot = scDRcoexFull(sc4conf, sc4meta, input$sc4_gec_drX, input$sc4_gec_drY, input$sc4_gec_inp1, input$sc4_gec_inp2, input$sc4_gec_sub1, input$sc4_gec_sub2, "sc4gexpr.h5", sc4gene, input$sc4_gec_siz, input$sc4_gec_col1, input$sc4_gec_ord1, input$sc4_gec_fsz, input$sc4_gec_asp, input$sc4_gec_txt)
+    file, device = "pdf", useDingbats = FALSE, bg = "white", onefile = TRUE,
+    plot = scDRcoexFull(vhconf, vhmeta, input$vh_gec_drX, input$vh_gec_drY, input$vh_gec_inp1, input$vh_gec_inp2, input$vh_gec_sub1, input$vh_gec_sub2, "vhgexpr.h5", vhgene, input$vh_gec_siz, input$vh_gec_col1, input$vh_gec_ord1, input$vh_gec_fsz, input$vh_gec_asp, input$vh_gec_txt)
     )
 })
 
-output$sc4_gec_oup1.png <- downloadHandler(
-  filename = function() { paste0("sc4", input$sc4_gec_drX, "_", input$sc4_gec_drY, "_", input$sc4_gec_inp1, "_", input$sc4_gec_inp2, ".png") },
-  content = function(file) { ggsave(
-    file, device = "png", bg = "white", dpi = input$sc4_gec_oup1.res,
-    plot = scDRcoexFull(sc4conf, sc4meta, input$sc4_gec_drX, input$sc4_gec_drY, input$sc4_gec_inp1, input$sc4_gec_inp2, input$sc4_gec_sub1, input$sc4_gec_sub2, "sc4gexpr.h5", sc4gene, input$sc4_gec_siz, input$sc4_gec_col1, input$sc4_gec_ord1, input$sc4_gec_fsz, input$sc4_gec_asp, input$sc4_gec_txt) )
+output$vh_gec_oup1.svg <- downloadHandler(
+  filename = function() { tolower(paste0("vh", "_", input$vh_gec_drX, "_", input$vh_gec_drY, "_", input$vh_gec_inp1, "_", input$vh_gec_inp2, ".svg")) },
+  content = function(file) {
+    ggsave(
+    file, device = "svg", bg = "white",
+    plot = scDRcoexFull(vhconf, vhmeta, input$vh_gec_drX, input$vh_gec_drY, input$vh_gec_inp1, input$vh_gec_inp2, input$vh_gec_sub1, input$vh_gec_sub2, "vhgexpr.h5", vhgene, input$vh_gec_siz, input$vh_gec_col1, input$vh_gec_ord1, input$vh_gec_fsz, input$vh_gec_asp, input$vh_gec_txt)
+    )
 })
 
-output$sc4_gec_.dt <- renderDataTable({
-  ggData = scDRcoexNum(sc4conf, sc4meta, input$sc4_gec_inp1, input$sc4_gec_inp2, input$sc4_gec_sub1, input$sc4_gec_sub2, "sc4gexpr.h5", sc4gene)
+output$vh_gec_.dt <- renderDataTable({
+  ggData = scDRcoexNum(vhconf, vhmeta, input$vh_gec_inp1, input$vh_gec_inp2, input$vh_gec_sub1, input$vh_gec_sub2, "vhgexpr.h5", vhgene)
   datatable(ggData, rownames = FALSE, extensions = "Buttons", options = list(pageLength = -1, dom = "tB", buttons = c("copy", "csv", "excel"))) %>%
             formatRound(columns = c("percent"), digits = 2)
 }) # End of tab gec
@@ -2814,45 +3199,55 @@ output$sc4_gec_.dt <- renderDataTable({
 
 ### Tab vio violinplot / boxplot / lineplot ----
 
-  output$sc4_vio_sub1.ui <- renderUI({
-    sub = strsplit(sc4conf[UI == input$sc4_vio_sub1]$fID, "\\|")[[1]]
-    checkboxGroupInput("sc4_vio_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
+  output$vh_vio_sub1.ui <- renderUI({
+    sub = strsplit(vhconf[UI == input$vh_vio_sub1]$fID, "\\|")[[1]]
+    checkboxGroupInput("vh_vio_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
   })
-  observeEvent(input$sc4_vio_sub1non, {
-    sub = strsplit(sc4conf[UI == input$sc4_vio_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc4_vio_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
+  observeEvent(input$vh_vio_sub1non, {
+    sub = strsplit(vhconf[UI == input$vh_vio_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "vh_vio_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
   })
-  observeEvent(input$sc4_vio_sub1all, {
-    sub = strsplit(sc4conf[UI == input$sc4_vio_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc4_vio_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
+  observeEvent(input$vh_vio_sub1all, {
+    sub = strsplit(vhconf[UI == input$vh_vio_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "vh_vio_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc4_vio_oup <- renderPlot({
-  gh5 <- ifelse(input$sc4_vio_datatype == "normalised","sc4gexpr.h5","sc4gexpr2.h5")
-  scVioBox(sc4conf, sc4meta, input$sc4_vio_inp1, input$sc4_vio_inp2, input$sc4_vio_sub1, input$sc4_vio_sub2, gh5, sc4gene, input$sc4_vio_typ, input$sc4_vio_pts, input$sc4_vio_siz, input$sc4_vio_fsz, input$sc4_vio_barsz)
+output$vh_vio_oup <- renderPlot({
+  gh5 <- ifelse(input$vh_vio_datatype == "normalised","vhgexpr.h5","vhgexpr2.h5")
+  scVioBox(vhconf, vhmeta, input$vh_vio_inp1, input$vh_vio_inp2, input$vh_vio_sub1, input$vh_vio_sub2, gh5, vhgene, input$vh_vio_typ, input$vh_vio_pts, input$vh_vio_siz, input$vh_vio_fsz, input$vh_vio_barsz)
 })
 
-output$sc4_vio_oup.ui <- renderUI({
-  show_progress(imageOutput("sc4_vio_oup", height = pList2[input$sc4_vio_psz]))
+output$vh_vio_oup.ui <- renderUI({
+  show_progress(imageOutput("vh_vio_oup", height = pList2[input$vh_vio_psz]))
 })
 
-output$sc4_vio_oup.pdf <- downloadHandler(
-  filename = function() { paste0("sc4", input$sc4_vio_typ, "_", input$sc4_vio_inp1, "_", input$sc4_vio_inp2, ".pdf") },
+output$vh_vio_oup.png <- downloadHandler(
+  filename = function() { tolower(paste0("vh", "_", input$vh_vio_typ, "_", input$vh_vio_datatype, "_", input$vh_vio_inp1, "_", input$vh_vio_inp2,".png")) },
   content = function(file) {
-    gh5 <- ifelse(input$sc4_vio_datatype == "normalised","sc4gexpr.h5","sc4gexpr2.h5")
+    gh5 <- ifelse(input$vh_vio_datatype == "normalised","vhgexpr.h5","vhgexpr2.h5")
     ggsave(
-    file, device = "pdf", useDingbats = FALSE, bg = "white",
-    plot = scVioBox(sc4conf, sc4meta, input$sc4_vio_inp1, input$sc4_vio_inp2, input$sc4_vio_sub1, input$sc4_vio_sub2, gh5, sc4gene, input$sc4_vio_typ, input$sc4_vio_pts, input$sc4_vio_siz, input$sc4_vio_fsz, input$sc4_vio_barsz)
+    file, device = "png", bg = "white", dpi = input$vh_vio_oup.res,
+    plot = scVioBox(vhconf, vhmeta, input$vh_vio_inp1, input$vh_vio_inp2, input$vh_vio_sub1, input$vh_vio_sub2, gh5, vhgene, input$vh_vio_typ, input$vh_vio_pts, input$vh_vio_siz, input$vh_vio_fsz, input$vh_vio_barsz)
+    )
+}) 
+
+output$vh_vio_oup.pdf <- downloadHandler(
+  filename = function() { tolower(paste0("vh", "_", input$vh_vio_typ, "_", input$vh_vio_datatype, "_", input$vh_vio_inp1, "_", input$vh_vio_inp2, ".pdf")) },
+  content = function(file) {
+    gh5 <- ifelse(input$vh_vio_datatype == "normalised","vhgexpr.h5","vhgexpr2.h5")
+    ggsave(
+    file, device = "pdf", useDingbats = FALSE, bg = "white", onefile = TRUE,
+    plot = scVioBox(vhconf, vhmeta, input$vh_vio_inp1, input$vh_vio_inp2, input$vh_vio_sub1, input$vh_vio_sub2, gh5, vhgene, input$vh_vio_typ, input$vh_vio_pts, input$vh_vio_siz, input$vh_vio_fsz, input$vh_vio_barsz)
     )
 })
 
-output$sc4_vio_oup.png <- downloadHandler(
-  filename = function() { paste0("sc4", input$sc4_vio_typ, "_", input$sc4_vio_inp1, "_", input$sc4_vio_inp2,".png") },
+output$vh_vio_oup.svg <- downloadHandler(
+  filename = function() { tolower(paste0("vh", "_", input$vh_vio_typ, "_", input$vh_vio_datatype, "_", input$vh_vio_inp1, "_", input$vh_vio_inp2, ".svg")) },
   content = function(file) {
-    gh5 <- ifelse(input$sc4_vio_datatype == "normalised","sc4gexpr.h5","sc4gexpr2.h5")
+    gh5 <- ifelse(input$vh_vio_datatype == "normalised","vhgexpr.h5","vhgexpr2.h5")
     ggsave(
-    file, device = "png", bg = "white", dpi = input$sc4_vio_oup.res,
-    plot = scVioBox(sc4conf, sc4meta, input$sc4_vio_inp1, input$sc4_vio_inp2, input$sc4_vio_sub1, input$sc4_vio_sub2, gh5, sc4gene, input$sc4_vio_typ, input$sc4_vio_pts, input$sc4_vio_siz, input$sc4_vio_fsz, input$sc4_vio_barsz)
+    file, device = "svg", bg = "white",
+    plot = scVioBox(vhconf, vhmeta, input$vh_vio_inp1, input$vh_vio_inp2, input$vh_vio_sub1, input$vh_vio_sub2, gh5, vhgene, input$vh_vio_typ, input$vh_vio_pts, input$vh_vio_siz, input$vh_vio_fsz, input$vh_vio_barsz)
     )
 }) # End of tab vio
 
@@ -2861,42 +3256,51 @@ output$sc4_vio_oup.png <- downloadHandler(
 
 ### Tab pro proportion plot ----
 
-  output$sc4_pro_sub1.ui <- renderUI({
-    sub = strsplit(sc4conf[UI == input$sc4_pro_sub1]$fID, "\\|")[[1]]
-    checkboxGroupInput("sc4_pro_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
+  output$vh_pro_sub1.ui <- renderUI({
+    sub = strsplit(vhconf[UI == input$vh_pro_sub1]$fID, "\\|")[[1]]
+    checkboxGroupInput("vh_pro_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
   })
-  observeEvent(input$sc4_pro_sub1non, {
-    sub = strsplit(sc4conf[UI == input$sc4_pro_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc4_pro_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
+  observeEvent(input$vh_pro_sub1non, {
+    sub = strsplit(vhconf[UI == input$vh_pro_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "vh_pro_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
   })
-  observeEvent(input$sc4_pro_sub1all, {
-    sub = strsplit(sc4conf[UI == input$sc4_pro_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc4_pro_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
+  observeEvent(input$vh_pro_sub1all, {
+    sub = strsplit(vhconf[UI == input$vh_pro_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "vh_pro_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc4_pro_oup <- renderPlot({
-  scProp(sc4conf, sc4meta, input$sc4_pro_inp1, input$sc4_pro_inp2, input$sc4_pro_sub1, input$sc4_pro_sub2, input$sc4_pro_typ, input$sc4_pro_flp, input$sc4_pro_fsz)
+output$vh_pro_oup <- renderPlot({
+  scProp(vhconf, vhmeta, input$vh_pro_inp1, input$vh_pro_inp2, input$vh_pro_sub1, input$vh_pro_sub2, input$vh_pro_typ, input$vh_pro_flp, input$vh_pro_fsz)
 })
 
-output$sc4_pro_oup.ui <- renderUI({
-  show_progress(imageOutput("sc4_pro_oup", height = pList2[input$sc4_pro_psz]))
+output$vh_pro_oup.ui <- renderUI({
+  show_progress(imageOutput("vh_pro_oup", height = pList2[input$vh_pro_psz]))
 })
 
-output$sc4_pro_oup.pdf <- downloadHandler(
-  filename = function() { paste0("sc4", input$sc4_pro_typ, "_", input$sc4_pro_inp1, "_", input$sc4_pro_inp2, ".pdf") },
+output$vh_pro_oup.png <- downloadHandler(
+  filename = function() { tolower(paste0("vh", "_", input$vh_pro_typ, "_", input$vh_pro_inp1, "_", input$vh_pro_inp2, ".png")) },
   content = function(file) {
     ggsave(
-    file, device = "pdf", useDingbats = FALSE, bg = "white",
-    plot = scProp(sc4conf, sc4meta, input$sc4_pro_inp1, input$sc4_pro_inp2, input$sc4_pro_sub1, input$sc4_pro_sub2, input$sc4_pro_typ, input$sc4_pro_flp, input$sc4_pro_fsz)
+    file, device = "png", bg = "white", dpi = input$vh_pro_oup.res,
+    plot = scProp(vhconf, vhmeta, input$vh_pro_inp1, input$vh_pro_inp2, input$vh_pro_sub1, input$vh_pro_sub2, input$vh_pro_typ, input$vh_pro_flp, input$vh_pro_fsz)
+    )
+  }) 
+  
+output$vh_pro_oup.pdf <- downloadHandler(
+  filename = function() { tolower(paste0("vh", "_", input$vh_pro_typ, "_", input$vh_pro_inp1, "_", input$vh_pro_inp2, ".pdf")) },
+  content = function(file) {
+    ggsave(
+    file, device = "pdf", useDingbats = FALSE, bg = "white", onefile = TRUE,
+    plot = scProp(vhconf, vhmeta, input$vh_pro_inp1, input$vh_pro_inp2, input$vh_pro_sub1, input$vh_pro_sub2, input$vh_pro_typ, input$vh_pro_flp, input$vh_pro_fsz)
     )
   })
-
-output$sc4_pro_oup.png <- downloadHandler(
-  filename = function() { paste0("sc4", input$sc4_pro_typ, "_", input$sc4_pro_inp1, "_", input$sc4_pro_inp2, ".png") },
+  
+output$vh_pro_oup.svg <- downloadHandler(
+  filename = function() { tolower(paste0("vh", "_", input$vh_pro_typ, "_", input$vh_pro_inp1, "_", input$vh_pro_inp2, ".svg")) },
   content = function(file) {
     ggsave(
-    file, device = "png", bg = "white", dpi = input$sc4_pro_oup.res,
-    plot = scProp(sc4conf, sc4meta, input$sc4_pro_inp1, input$sc4_pro_inp2, input$sc4_pro_sub1, input$sc4_pro_sub2, input$sc4_pro_typ, input$sc4_pro_flp, input$sc4_pro_fsz)
+    file, device = "svg", bg = "white",
+    plot = scProp(vhconf, vhmeta, input$vh_pro_inp1, input$vh_pro_inp2, input$vh_pro_sub1, input$vh_pro_sub2, input$vh_pro_typ, input$vh_pro_flp, input$vh_pro_fsz)
     )
   }) # End of tab pro
 
@@ -2904,54 +3308,58 @@ output$sc4_pro_oup.png <- downloadHandler(
 
 ### Tab hea heatmap / dotplot ----
 
-  output$sc4_hea_sub1.ui <- renderUI({
-    sub = strsplit(sc4conf[UI == input$sc4_hea_sub1]$fID, "\\|")[[1]]
-    checkboxGroupInput("sc4_hea_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
+  output$vh_hea_sub1.ui <- renderUI({
+    sub = strsplit(vhconf[UI == input$vh_hea_sub1]$fID, "\\|")[[1]]
+    checkboxGroupInput("vh_hea_sub2", "Groups to display:", inline = TRUE, choices = sub, selected = sub)
   })
-  observeEvent(input$sc4_hea_sub1non, {
-    sub = strsplit(sc4conf[UI == input$sc4_hea_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc4_hea_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
+  observeEvent(input$vh_hea_sub1non, {
+    sub = strsplit(vhconf[UI == input$vh_hea_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "vh_hea_sub2", label = "Groups to display:", choices = sub, selected = NULL, inline = TRUE)
   })
-  observeEvent(input$sc4_hea_sub1all, {
-    sub = strsplit(sc4conf[UI == input$sc4_hea_sub1]$fID, "\\|")[[1]]
-    updateCheckboxGroupInput(session, inputId = "sc4_hea_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
+  observeEvent(input$vh_hea_sub1all, {
+    sub = strsplit(vhconf[UI == input$vh_hea_sub1]$fID, "\\|")[[1]]
+    updateCheckboxGroupInput(session, inputId = "vh_hea_sub2", label = "Groups to display:", choices = sub, selected = sub, inline = TRUE)
   })
 
-output$sc4_hea_oupTxt <- renderUI({
-  geneList = scGeneList(input$sc4_hea_inp, sc4gene)
+output$vh_hea_oupTxt <- renderUI({
+  geneList = scGeneList(input$vh_hea_inp, vhgene)
   if(nrow(geneList) > 50){
     HTML("More than 50 input genes! Please reduce the gene list!")
-  } else {
-    if(nrow(geneList[present == FALSE]) > 0){
-      oup = paste0(nrow(geneList[present == FALSE]), " genes not found (", paste0(geneList[present == FALSE]$gene, collapse = ", "), ")")
-      HTML(paste0("<span class='text-danger'>",oup,"</span>"))
-    }
   }
 })
 
-output$sc4_hea_oup <- renderPlot({
-  scBubbHeat(sc4conf, sc4meta, input$sc4_hea_inp, input$sc4_hea_grp, input$sc4_hea_plt, input$sc4_hea_sub1, input$sc4_hea_sub2, "sc4gexpr.h5", sc4gene, input$sc4_hea_scl, input$sc4_hea_row, input$sc4_hea_col, input$sc4_hea_cols, input$sc4_hea_fsz)
+output$vh_hea_oup <- renderPlot({
+  scBubbHeat(vhconf, vhmeta, input$vh_hea_inp, input$vh_hea_grp, input$vh_hea_plt, input$vh_hea_sub1, input$vh_hea_sub2, "vhgexpr.h5", vhgene, input$vh_hea_scl, input$vh_hea_row, input$vh_hea_col, input$vh_hea_cols, input$vh_hea_fsz)
 })
 
-output$sc4_hea_oup.ui <- renderUI({
-  show_progress(imageOutput("sc4_hea_oup", height = pList3[input$sc4_hea_psz]))
+output$vh_hea_oup.ui <- renderUI({
+  show_progress(imageOutput("vh_hea_oup", height = pList3[input$vh_hea_psz]))
 })
 
-output$sc4_hea_oup.pdf <- downloadHandler(
-  filename = function() { paste0("sc4",input$sc4_hea_plt,"_",input$sc4_hea_grp,".pdf") },
+output$vh_hea_oup.png <- downloadHandler(
+  filename = function() { tolower(paste0("vh", "_", input$vh_hea_plt,"_",input$vh_hea_grp,".png")) },
   content = function(file) {
     ggsave(
-    file, device = "pdf", useDingbats = FALSE, bg = "white",
-    plot = scBubbHeat(sc4conf, sc4meta, input$sc4_hea_inp, input$sc4_hea_grp, input$sc4_hea_plt, input$sc4_hea_sub1, input$sc4_hea_sub2, "sc4gexpr.h5", sc4gene, input$sc4_hea_scl, input$sc4_hea_row, input$sc4_hea_col, input$sc4_hea_cols, input$sc4_hea_fsz, save = TRUE)
+    file, device = "png", bg = "white", height = input$vh_hea_oup.height, width = input$vh_hea_oup.width, units = "cm", dpi = input$vh_hea_oup.res, plot = scBubbHeat(vhconf, vhmeta, input$vh_hea_inp, input$vh_hea_grp, input$vh_hea_plt, input$vh_hea_sub1, input$vh_hea_sub2, "vhgexpr.h5", vhgene, input$vh_hea_scl, input$vh_hea_row, input$vh_hea_col, input$vh_hea_cols, input$vh_hea_fsz)
     )
 })
 
-output$sc4_hea_oup.png <- downloadHandler(
-  filename = function() { paste0("sc4",input$sc4_hea_plt,"_",input$sc4_hea_grp,".png") },
+output$vh_hea_oup.pdf <- downloadHandler(
+  filename = function() { tolower(paste0("vh", "_", input$vh_hea_plt,"_",input$vh_hea_grp,".pdf")) },
+  content = function(file) {
+    pdf(file, useDingbats = FALSE, bg = "white", height = input$vh_hea_oup.height/2.54, width = input$vh_hea_oup.width/2.54, onefile = TRUE)
+    showtext::showtext_begin()
+    print(scBubbHeat(vhconf, vhmeta, input$vh_hea_inp, input$vh_hea_grp, input$vh_hea_plt, input$vh_hea_sub1, input$vh_hea_sub2, "vhgexpr.h5", vhgene, input$vh_hea_scl, input$vh_hea_row, input$vh_hea_col, input$vh_hea_cols, input$vh_hea_fsz))
+    showtext::showtext_end()
+    dev.off()
+})
+
+output$vh_hea_oup.svg <- downloadHandler(
+  filename = function() { tolower(paste0("vh", "_", input$vh_hea_plt,"_",input$vh_hea_grp,".svg")) },
   content = function(file) {
     ggsave(
-    file, device = "png", bg = "white", dpi = input$sc4_hea_oup.res,
-    plot = scBubbHeat(sc4conf, sc4meta, input$sc4_hea_inp, input$sc4_hea_grp, input$sc4_hea_plt, input$sc4_hea_sub1, input$sc4_hea_sub2, "sc4gexpr.h5", sc4gene, input$sc4_hea_scl, input$sc4_hea_row, input$sc4_hea_col, input$sc4_hea_cols, input$sc4_hea_fsz, save = TRUE)
+    file, device = "svg", bg = "white", height = input$vh_hea_oup.height, width = input$vh_hea_oup.width, units = "cm", 
+    plot = scBubbHeat(vhconf, vhmeta, input$vh_hea_inp, input$vh_hea_grp, input$vh_hea_plt, input$vh_hea_sub1, input$vh_hea_sub2, "vhgexpr.h5", vhgene, input$vh_hea_scl, input$vh_hea_row, input$vh_hea_col, input$vh_hea_cols, input$vh_hea_fsz)
     )
 }) # End of tab hea      
        
@@ -2959,9 +3367,9 @@ output$sc4_hea_oup.png <- downloadHandler(
 
 ### Tab markers ----
 
-output$sc4_mar_table <- renderDataTable({
-  req(input$sc4_mar_cls)
-  datatable(sc4mar[[input$sc4_mar_cls]], rownames = FALSE, extensions = "Buttons", options = list(dom = "lftiprB", buttons = c("copy", "csv", "excel")))
+output$vh_mar_table <- renderDataTable({
+  req(input$vh_mar_cls)
+  datatable(vhmar[[input$vh_mar_cls]], rownames = FALSE, extensions = "Buttons", options = list(dom = "lftiprB", buttons = c("copy", "csv", "excel")))
 }) # End of tab mar
 
 })

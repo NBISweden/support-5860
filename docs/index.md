@@ -43,14 +43,14 @@ docker run --rm -p 8787:8787 royfrancis/support-5860:latest
 
 <img loading="lazy" src="https://www.rstudio.com/assets/img/logo.svg" alt="rstudio" height="45">
 
-The shiny app can be installed as an R package and run locally. Install R first.
+The shiny app can be installed as an R package and run locally. Install R >= 4.0.0 first.
 
 ```{r,eval=FALSE}
 # run in R
 
 # install dependencies (only installs packages that are not installed)
 reqPkg = c("data.table", "DT", "ggdendro", "ggplot2", "ggplotify", "ggrepel", "glue",
-	   "gridExtra", "hdf5r", "magrittr", "Matrix", "RColorBrewer", "readr",
+	   "grid", "hdf5r", "magrittr", "Matrix", "patchwork", "RColorBrewer", "readr",
 	   "remotes", "reticulate", "R.utils", "Seurat", "shiny", "shinycssloaders",
 	   "shinyhelper", "showtext", "shinythemes", "remotes")
 newPkg = reqPkg[!(reqPkg %in% installed.packages()[,"Package"])]
