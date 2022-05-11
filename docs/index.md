@@ -52,7 +52,7 @@ The shiny app can be installed as an R package and run locally. Install R >= 4.0
 reqPkg = c("data.table", "DT", "ggdendro", "ggplot2", "ggplotify", "ggrepel", "glue",
 	   "grid", "hdf5r", "magrittr", "Matrix", "patchwork", "RColorBrewer", "readr",
 	   "remotes", "reticulate", "R.utils", "Seurat", "shiny", "shinycssloaders",
-	   "shinyhelper", "showtext", "shinythemes", "remotes")
+	   "shinyhelper", "shinythemes", "remotes")
 newPkg = reqPkg[!(reqPkg %in% installed.packages()[,"Package"])]
 
 if(length(newPkg)){

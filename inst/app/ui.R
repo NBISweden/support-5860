@@ -1,11 +1,11 @@
 library(shiny)
 library(shinyhelper)
 library(shinythemes)
-library(showtext)
 library(data.table)
 library(Matrix)
 library(DT)
 library(magrittr)
+
 if(!exists("lcconf")) lcconf = readRDS("lcconf.rds")
 if(!exists("lcdef")) lcdef  = readRDS("lcdef.rds")
 if(!exists("lcgene")) lcgene = readRDS("lcgene.rds")

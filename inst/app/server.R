@@ -13,10 +13,6 @@ library(grid)
 library(shinycssloaders)
 library(patchwork)
 
-# load font for plot
-sysfonts::font_add_google(name = "Lato", family = "Lato")
-showtext::showtext_auto()
-
 if(!exists("lcconf")) lcconf = readRDS("lcconf.rds")
 if(!exists("lcdef")) lcdef  = readRDS("lcdef.rds")
 if(!exists("lcgene")) lcgene = readRDS("lcgene.rds")
@@ -91,13 +87,12 @@ show_progress <- function(...){
 # @param Xang (Numeric) X axis text angle
 # @param XjusH (Numeric) X axis horizontal justification
 # @param lpos (Character) Position of Legend
-# @param font (Character) Google font
 # @param col_text (Character) Text colour
 # @param col_line (Character) Line colour
 #
-sctheme <- function(base_size = 24, XYval = TRUE, Xang = 0, XjusH = 0.5, lpos = "bottom", font = "Lato", col_text = "grey30", col_line = "grey60") {
+sctheme <- function(base_size = 24, XYval = TRUE, Xang = 0, XjusH = 0.5, lpos = "bottom", col_text = "grey30", col_line = "grey60") {
   oupTheme <- theme(
-    text = element_text(size = base_size, family = font),
+    text = element_text(size = base_size),
     panel.border = element_blank(),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
@@ -1346,11 +1341,9 @@ output$lc_gem_oup1.png <- downloadHandler(
 output$lc_gem_oup1.pdf <- downloadHandler(
   filename = function() { tolower(paste0("lc", "_", input$lc_gem_drX, "_", input$lc_gem_drY, "_expression.pdf")) },
   content = function(file) {
-  pdf(file, useDingbats = FALSE, height = input$lc_gem_oup1.height/2.54, width = input$lc_gem_oup1.width/2.54, bg = "white", onefile = TRUE)
-  showtext::showtext_begin()
-  print(scFeature(lcconf, lcmeta, input$lc_gem_drX, input$lc_gem_drY, input$lc_gem_inp, input$lc_gem_sub1, input$lc_gem_sub2, "lcgexpr.h5", lcgene, input$lc_gem_siz, input$lc_gem_col, input$lc_gem_ord, input$lc_gem_fsz, input$lc_gem_asp, input$lc_gem_txt, input$lc_gem_ncol))
-  showtext::showtext_end()
-  dev.off()
+  ggsave(
+  file, device = "pdf", useDingbats = FALSE, height = input$lc_gem_oup1.height/2.54, width = input$lc_gem_oup1.width/2.54, bg = "white", onefile = TRUE, plot = scFeature(lcconf, lcmeta, input$lc_gem_drX, input$lc_gem_drY, input$lc_gem_inp, input$lc_gem_sub1, input$lc_gem_sub2, "lcgexpr.h5", lcgene, input$lc_gem_siz, input$lc_gem_col, input$lc_gem_ord, input$lc_gem_fsz, input$lc_gem_asp, input$lc_gem_txt, input$lc_gem_ncol)
+  )
 })
 
 output$lc_gem_oup1.svg <- downloadHandler(
@@ -1568,11 +1561,9 @@ output$lc_hea_oup.png <- downloadHandler(
 output$lc_hea_oup.pdf <- downloadHandler(
   filename = function() { tolower(paste0("lc", "_", input$lc_hea_plt,"_",input$lc_hea_grp,".pdf")) },
   content = function(file) {
-    pdf(file, useDingbats = FALSE, bg = "white", height = input$lc_hea_oup.height/2.54, width = input$lc_hea_oup.width/2.54, onefile = TRUE)
-    showtext::showtext_begin()
-    print(scBubbHeat(lcconf, lcmeta, input$lc_hea_inp, input$lc_hea_grp, input$lc_hea_plt, input$lc_hea_sub1, input$lc_hea_sub2, "lcgexpr.h5", lcgene, input$lc_hea_scl, input$lc_hea_row, input$lc_hea_col, input$lc_hea_cols, input$lc_hea_fsz))
-    showtext::showtext_end()
-    dev.off()
+    ggsave(
+    file, device="pdf", useDingbats = FALSE, bg = "white", height = input$lc_hea_oup.height/2.54, width = input$lc_hea_oup.width/2.54, onefile = TRUE, plot = scBubbHeat(lcconf, lcmeta, input$lc_hea_inp, input$lc_hea_grp, input$lc_hea_plt, input$lc_hea_sub1, input$lc_hea_sub2, "lcgexpr.h5", lcgene, input$lc_hea_scl, input$lc_hea_row, input$lc_hea_col, input$lc_hea_cols, input$lc_hea_fsz)
+    )
 })
 
 output$lc_hea_oup.svg <- downloadHandler(
@@ -1939,11 +1930,9 @@ output$ld_gem_oup1.png <- downloadHandler(
 output$ld_gem_oup1.pdf <- downloadHandler(
   filename = function() { tolower(paste0("ld", "_", input$ld_gem_drX, "_", input$ld_gem_drY, "_expression.pdf")) },
   content = function(file) {
-  pdf(file, useDingbats = FALSE, height = input$ld_gem_oup1.height/2.54, width = input$ld_gem_oup1.width/2.54, bg = "white", onefile = TRUE)
-  showtext::showtext_begin()
-  print(scFeature(ldconf, ldmeta, input$ld_gem_drX, input$ld_gem_drY, input$ld_gem_inp, input$ld_gem_sub1, input$ld_gem_sub2, "ldgexpr.h5", ldgene, input$ld_gem_siz, input$ld_gem_col, input$ld_gem_ord, input$ld_gem_fsz, input$ld_gem_asp, input$ld_gem_txt, input$ld_gem_ncol))
-  showtext::showtext_end()
-  dev.off()
+  ggsave(
+  file, device = "pdf", useDingbats = FALSE, height = input$ld_gem_oup1.height/2.54, width = input$ld_gem_oup1.width/2.54, bg = "white", onefile = TRUE, plot = scFeature(ldconf, ldmeta, input$ld_gem_drX, input$ld_gem_drY, input$ld_gem_inp, input$ld_gem_sub1, input$ld_gem_sub2, "ldgexpr.h5", ldgene, input$ld_gem_siz, input$ld_gem_col, input$ld_gem_ord, input$ld_gem_fsz, input$ld_gem_asp, input$ld_gem_txt, input$ld_gem_ncol)
+  )
 })
 
 output$ld_gem_oup1.svg <- downloadHandler(
@@ -2161,11 +2150,9 @@ output$ld_hea_oup.png <- downloadHandler(
 output$ld_hea_oup.pdf <- downloadHandler(
   filename = function() { tolower(paste0("ld", "_", input$ld_hea_plt,"_",input$ld_hea_grp,".pdf")) },
   content = function(file) {
-    pdf(file, useDingbats = FALSE, bg = "white", height = input$ld_hea_oup.height/2.54, width = input$ld_hea_oup.width/2.54, onefile = TRUE)
-    showtext::showtext_begin()
-    print(scBubbHeat(ldconf, ldmeta, input$ld_hea_inp, input$ld_hea_grp, input$ld_hea_plt, input$ld_hea_sub1, input$ld_hea_sub2, "ldgexpr.h5", ldgene, input$ld_hea_scl, input$ld_hea_row, input$ld_hea_col, input$ld_hea_cols, input$ld_hea_fsz))
-    showtext::showtext_end()
-    dev.off()
+    ggsave(
+    file, device="pdf", useDingbats = FALSE, bg = "white", height = input$ld_hea_oup.height/2.54, width = input$ld_hea_oup.width/2.54, onefile = TRUE, plot = scBubbHeat(ldconf, ldmeta, input$ld_hea_inp, input$ld_hea_grp, input$ld_hea_plt, input$ld_hea_sub1, input$ld_hea_sub2, "ldgexpr.h5", ldgene, input$ld_hea_scl, input$ld_hea_row, input$ld_hea_col, input$ld_hea_cols, input$ld_hea_fsz)
+    )
 })
 
 output$ld_hea_oup.svg <- downloadHandler(
@@ -2532,11 +2519,9 @@ output$lh_gem_oup1.png <- downloadHandler(
 output$lh_gem_oup1.pdf <- downloadHandler(
   filename = function() { tolower(paste0("lh", "_", input$lh_gem_drX, "_", input$lh_gem_drY, "_expression.pdf")) },
   content = function(file) {
-  pdf(file, useDingbats = FALSE, height = input$lh_gem_oup1.height/2.54, width = input$lh_gem_oup1.width/2.54, bg = "white", onefile = TRUE)
-  showtext::showtext_begin()
-  print(scFeature(lhconf, lhmeta, input$lh_gem_drX, input$lh_gem_drY, input$lh_gem_inp, input$lh_gem_sub1, input$lh_gem_sub2, "lhgexpr.h5", lhgene, input$lh_gem_siz, input$lh_gem_col, input$lh_gem_ord, input$lh_gem_fsz, input$lh_gem_asp, input$lh_gem_txt, input$lh_gem_ncol))
-  showtext::showtext_end()
-  dev.off()
+  ggsave(
+  file, device = "pdf", useDingbats = FALSE, height = input$lh_gem_oup1.height/2.54, width = input$lh_gem_oup1.width/2.54, bg = "white", onefile = TRUE, plot = scFeature(lhconf, lhmeta, input$lh_gem_drX, input$lh_gem_drY, input$lh_gem_inp, input$lh_gem_sub1, input$lh_gem_sub2, "lhgexpr.h5", lhgene, input$lh_gem_siz, input$lh_gem_col, input$lh_gem_ord, input$lh_gem_fsz, input$lh_gem_asp, input$lh_gem_txt, input$lh_gem_ncol)
+  )
 })
 
 output$lh_gem_oup1.svg <- downloadHandler(
@@ -2754,11 +2739,9 @@ output$lh_hea_oup.png <- downloadHandler(
 output$lh_hea_oup.pdf <- downloadHandler(
   filename = function() { tolower(paste0("lh", "_", input$lh_hea_plt,"_",input$lh_hea_grp,".pdf")) },
   content = function(file) {
-    pdf(file, useDingbats = FALSE, bg = "white", height = input$lh_hea_oup.height/2.54, width = input$lh_hea_oup.width/2.54, onefile = TRUE)
-    showtext::showtext_begin()
-    print(scBubbHeat(lhconf, lhmeta, input$lh_hea_inp, input$lh_hea_grp, input$lh_hea_plt, input$lh_hea_sub1, input$lh_hea_sub2, "lhgexpr.h5", lhgene, input$lh_hea_scl, input$lh_hea_row, input$lh_hea_col, input$lh_hea_cols, input$lh_hea_fsz))
-    showtext::showtext_end()
-    dev.off()
+    ggsave(
+    file, device="pdf", useDingbats = FALSE, bg = "white", height = input$lh_hea_oup.height/2.54, width = input$lh_hea_oup.width/2.54, onefile = TRUE, plot = scBubbHeat(lhconf, lhmeta, input$lh_hea_inp, input$lh_hea_grp, input$lh_hea_plt, input$lh_hea_sub1, input$lh_hea_sub2, "lhgexpr.h5", lhgene, input$lh_hea_scl, input$lh_hea_row, input$lh_hea_col, input$lh_hea_cols, input$lh_hea_fsz)
+    )
 })
 
 output$lh_hea_oup.svg <- downloadHandler(
@@ -3125,11 +3108,9 @@ output$vh_gem_oup1.png <- downloadHandler(
 output$vh_gem_oup1.pdf <- downloadHandler(
   filename = function() { tolower(paste0("vh", "_", input$vh_gem_drX, "_", input$vh_gem_drY, "_expression.pdf")) },
   content = function(file) {
-  pdf(file, useDingbats = FALSE, height = input$vh_gem_oup1.height/2.54, width = input$vh_gem_oup1.width/2.54, bg = "white", onefile = TRUE)
-  showtext::showtext_begin()
-  print(scFeature(vhconf, vhmeta, input$vh_gem_drX, input$vh_gem_drY, input$vh_gem_inp, input$vh_gem_sub1, input$vh_gem_sub2, "vhgexpr.h5", vhgene, input$vh_gem_siz, input$vh_gem_col, input$vh_gem_ord, input$vh_gem_fsz, input$vh_gem_asp, input$vh_gem_txt, input$vh_gem_ncol))
-  showtext::showtext_end()
-  dev.off()
+  ggsave(
+  file, device = "pdf", useDingbats = FALSE, height = input$vh_gem_oup1.height/2.54, width = input$vh_gem_oup1.width/2.54, bg = "white", onefile = TRUE, plot = scFeature(vhconf, vhmeta, input$vh_gem_drX, input$vh_gem_drY, input$vh_gem_inp, input$vh_gem_sub1, input$vh_gem_sub2, "vhgexpr.h5", vhgene, input$vh_gem_siz, input$vh_gem_col, input$vh_gem_ord, input$vh_gem_fsz, input$vh_gem_asp, input$vh_gem_txt, input$vh_gem_ncol)
+  )
 })
 
 output$vh_gem_oup1.svg <- downloadHandler(
@@ -3347,11 +3328,9 @@ output$vh_hea_oup.png <- downloadHandler(
 output$vh_hea_oup.pdf <- downloadHandler(
   filename = function() { tolower(paste0("vh", "_", input$vh_hea_plt,"_",input$vh_hea_grp,".pdf")) },
   content = function(file) {
-    pdf(file, useDingbats = FALSE, bg = "white", height = input$vh_hea_oup.height/2.54, width = input$vh_hea_oup.width/2.54, onefile = TRUE)
-    showtext::showtext_begin()
-    print(scBubbHeat(vhconf, vhmeta, input$vh_hea_inp, input$vh_hea_grp, input$vh_hea_plt, input$vh_hea_sub1, input$vh_hea_sub2, "vhgexpr.h5", vhgene, input$vh_hea_scl, input$vh_hea_row, input$vh_hea_col, input$vh_hea_cols, input$vh_hea_fsz))
-    showtext::showtext_end()
-    dev.off()
+    ggsave(
+    file, device="pdf", useDingbats = FALSE, bg = "white", height = input$vh_hea_oup.height/2.54, width = input$vh_hea_oup.width/2.54, onefile = TRUE, plot = scBubbHeat(vhconf, vhmeta, input$vh_hea_inp, input$vh_hea_grp, input$vh_hea_plt, input$vh_hea_sub1, input$vh_hea_sub2, "vhgexpr.h5", vhgene, input$vh_hea_scl, input$vh_hea_row, input$vh_hea_col, input$vh_hea_cols, input$vh_hea_fsz)
+    )
 })
 
 output$vh_hea_oup.svg <- downloadHandler(
