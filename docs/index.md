@@ -26,7 +26,8 @@ This repository contains project reports and R shiny web application.
 
 <img loading="lazy" src="https://www.scilifelab.se/wp-content/uploads/2021/03/scilifelab_logo_email.png" alt="scilifelab" height="40">
 
-[`https://support5860.serve.scilifelab.se/`](https://support5860.serve.scilifelab.se/)
+- [`https://support5860.serve.scilifelab.se/`](https://support5860.serve.scilifelab.se/)
+- [`https://re84d02e3.serve.scilifelab.se/`](https://re84d02e3.serve.scilifelab.se/)
 
 ### Docker
 
