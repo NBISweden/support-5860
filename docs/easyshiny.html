@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>easyshiny workflow</title>
+
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #c4a000; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #000000; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #000000; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #000000; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+
+.sourceCode .row {
+  width: 100%;
+}
+.sourceCode {
+  overflow-x: auto;
+}
+.code-folding-btn {
+  margin-right: -30px;
+}
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<link rel="stylesheet" href="assets/report.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+#TOC {
+  display: none !important;
+}
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"><b>NBIS • Support 5860</b></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/nbisweden/support-5860">
+    <span class="fa fa-github"></span>
+     
+    GitHub
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">easyshiny workflow</h1>
+<h3 class="subtitle">12-May-2022</h3>
+
+</div>
+
+
+<!-- rmd lab header -->
+<p><br></p>
+<p><br></p>
+<div class="boxy">
+<p><strong>NBIS ID:</strong> 5860<br />
+<strong>Report Version:</strong> 1.0<br />
+<strong>Request by:</strong> Taija Mäkinen (<a href="mailto:taija.makinen@igp.uu.se" class="email">taija.makinen@igp.uu.se</a>)<br />
+<strong>Principal Investigator:</strong> Taija Mäkinen (<a href="mailto:taija.makinen@igp.uu.se" class="email">taija.makinen@igp.uu.se</a>)<br />
+<strong>Organisation:</strong> Uppsala University<br />
+<strong>NBIS Staff:</strong> Roy Francis (<a href="mailto:roy.francis@nbis.se" class="email">roy.francis@nbis.se</a>)</p>
+</div>
+<p><br></p>
+<p>Commands are to run in R unless otherwise specified.</p>
+<div id="overview" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Overview</h1>
+<pre><code>Analysed
+Seurat    -&gt;  clean-up  -&gt;  easyshiny  -&gt;          App
+data                                       (ui.R, server.R, ...)</code></pre>
+</div>
+<div id="clean-data" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Clean data</h1>
+<p>This step is cleaning up the analysed Seurat objects for the app. These steps may or may not be necessary. It can be customised as needed. The script as it is now does the following:</p>
+<ul>
+<li>Renames study labels with new labels</li>
+<li>Rename cluster grouping with new column names</li>
+<li>Pick only columns that are needed</li>
+<li>Rename columns such that they are readable and easy to understand</li>
+<li>Removes assays that are not needed</li>
+<li>Finds marker genes for all cluster groupings and adds that to the Seurat object</li>
+<li>When dual count tables are in use (raw, normalised) ensure that they have same number of cells and genes</li>
+<li>Finally save as new seurat objects</li>
+</ul>
+<div class="boxy">
+<p>Modify your paths as needed.</p>
+</div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Seurat)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Useful functions</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @description Find all markers by identity</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param ids Column name to used as identity (one or more)</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param obj Seurat object V4</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @return Returns a data.frame or a list of data.frames with marker genes.</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; </span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>fam <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">ids=</span><span class="cn">NULL</span>,obj){</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.character</span>(ids)) <span class="fu">stop</span>(<span class="st">&quot;Argument &#39;ids&#39; must be a character.&quot;</span>)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="st">&quot;Seurat&quot;</span> <span class="sc">%in%</span> <span class="fu">class</span>(obj)) <span class="fu">stop</span>(<span class="st">&quot;Argument &#39;obj&#39; must be a Seurat V4 object.&quot;</span>)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  fn <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">id=</span><span class="cn">NULL</span>,obj){</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(id)) {</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span>(<span class="sc">!</span>id <span class="sc">%in%</span> <span class="fu">colnames</span>(obj<span class="sc">@</span>meta.data)) <span class="fu">stop</span>(<span class="fu">paste0</span>(<span class="st">&quot;Following column does not exist: &quot;</span>,id,<span class="st">&quot;.&quot;</span>))</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>      <span class="fu">Idents</span>(obj) <span class="ot">&lt;-</span> obj<span class="sc">@</span>meta.data[,id]</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">FindAllMarkers</span>(obj,</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>                   <span class="at">test.use=</span><span class="st">&quot;MAST&quot;</span>,<span class="at">only.pos=</span><span class="cn">TRUE</span>,<span class="at">min.pct=</span><span class="fl">0.25</span>,</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>                   <span class="at">logfc.threshold=</span><span class="fl">0.25</span>,<span class="at">max.cells.per.ident=</span><span class="dv">200</span>,</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>                   <span class="at">min.cells.group=</span><span class="dv">10</span>,<span class="at">random.seed=</span><span class="dv">100</span>,</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>                   <span class="at">assay=</span><span class="st">&quot;RNA&quot;</span>,<span class="at">slot=</span><span class="st">&quot;data&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(p_val_adj<span class="sc">&lt;</span><span class="fl">0.05</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ranker_cluster</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>()</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(ids) <span class="sc">|</span> (<span class="fu">length</span>(ids)<span class="sc">==</span><span class="dv">1</span>)){</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">fn</span>(ids[<span class="dv">1</span>],obj))</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>  }<span class="cf">else</span>{</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">setNames</span>(<span class="fu">lapply</span>(ids,fn,<span class="at">obj=</span>obj),ids))</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @description Ranks gene from a FindMarkers() output</span></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param m Dataframe with columns for adjusted p value and log2 fold change</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param pv Character denoting column name for adjusted p val</span></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param lf Character denoting column name for log 2 fold change</span></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @return Returns a dataframe ordered by cluster and score</span></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; </span></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>ranker_cluster <span class="ot">&lt;-</span> <span class="cf">function</span>(m,<span class="at">pv=</span><span class="st">&quot;p_val_adj&quot;</span>,<span class="at">lf=</span><span class="st">&quot;avg_log2FC&quot;</span>) {</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>  m <span class="sc">%&gt;%</span></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">score=</span><span class="sc">-</span><span class="fu">log10</span>(<span class="sc">!!</span><span class="fu">sym</span>(pv))<span class="sc">*</span><span class="fu">abs</span>(<span class="sc">!!</span><span class="fu">sym</span>(lf))) <span class="sc">%&gt;%</span></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(cluster,<span class="sc">-</span>score) <span class="sc">%&gt;%</span></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>()</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>studies <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">breast =</span> <span class="st">&quot;Reynolds et al&quot;</span>, <span class="at">vascular =</span> <span class="st">&quot;Li et al&quot;</span>, <span class="at">aging =</span> <span class="st">&quot;Solé-Boldo et al&quot;</span>, <span class="at">psoriasis =</span> <span class="st">&quot;Gao et al&quot;</span>, <span class="at">dermatitis =</span> <span class="st">&quot;He et al&quot;</span>)</span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>lc <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">&quot;15032022_human_LEC_SCT_2.rds&quot;</span>)</span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>lc<span class="sc">$</span>study <span class="ot">&lt;-</span> <span class="fu">setNames</span>(<span class="fu">recode</span>(lc<span class="sc">$</span>study, <span class="sc">!!!</span>studies),<span class="fu">rownames</span>(lc[[]]))</span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>lc<span class="sc">$</span>Clusters_08 <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">as.integer</span>(lc<span class="sc">$</span>integrated_snn_res.<span class="fl">0.3</span>))</span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>lc<span class="sc">$</span>Clusters_09 <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">as.integer</span>(lc<span class="sc">$</span>integrated_snn_res.<span class="fl">0.4</span>))</span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>lc<span class="sc">$</span>Clusters_11 <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">as.integer</span>(lc<span class="sc">$</span>integrated_snn_res.<span class="fl">0.5</span>))</span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>lc<span class="sc">$</span>Clusters_12 <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">as.integer</span>(lc<span class="sc">$</span>integrated_snn_res.<span class="fl">0.6</span>))</span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>lc<span class="sc">@</span>meta.data <span class="ot">&lt;-</span> lc[[]][,<span class="fu">c</span>(<span class="st">&quot;nCount_RNA&quot;</span>,<span class="st">&quot;nFeature_RNA&quot;</span>,<span class="st">&quot;study&quot;</span>,<span class="st">&quot;condition&quot;</span>,<span class="st">&quot;sample&quot;</span>,<span class="st">&quot;Phase&quot;</span>,<span class="st">&quot;df_rate&quot;</span>,<span class="st">&quot;Clusters_08&quot;</span>,<span class="st">&quot;Clusters_09&quot;</span>,<span class="st">&quot;Clusters_11&quot;</span>,<span class="st">&quot;Clusters_12&quot;</span>)]</span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(lc<span class="sc">@</span>meta.data) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;UMIs&quot;</span>,<span class="st">&quot;Genes&quot;</span>,<span class="st">&quot;Study&quot;</span>,<span class="st">&quot;Condition&quot;</span>,<span class="st">&quot;Sample&quot;</span>,<span class="st">&quot;Phase&quot;</span>,<span class="st">&quot;Doublets&quot;</span>,<span class="st">&quot;Clusters_08&quot;</span>,<span class="st">&quot;Clusters_09&quot;</span>,<span class="st">&quot;Clusters_11&quot;</span>,<span class="st">&quot;Clusters_12&quot;</span>)</span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>lc<span class="sc">@</span>misc<span class="sc">$</span>mar <span class="ot">&lt;-</span> <span class="fu">fam</span>(<span class="fu">c</span>(<span class="st">&quot;Clusters_08&quot;</span>,<span class="st">&quot;Clusters_09&quot;</span>,<span class="st">&quot;Clusters_11&quot;</span>,<span class="st">&quot;Clusters_12&quot;</span>),lc)</span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>lc<span class="sc">@</span>assays<span class="sc">$</span>SCT <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a>shared_genes <span class="ot">&lt;-</span> <span class="fu">intersect</span>(<span class="fu">rownames</span>(lc<span class="sc">@</span>assays<span class="sc">$</span>RNA<span class="sc">@</span>counts),<span class="fu">rownames</span>(lc<span class="sc">@</span>assays<span class="sc">$</span>RNA<span class="sc">@</span>data))</span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>lc<span class="sc">@</span>assays<span class="sc">$</span>RNA<span class="sc">@</span>counts <span class="ot">&lt;-</span> lc<span class="sc">@</span>assays<span class="sc">$</span>RNA<span class="sc">@</span>counts[shared_genes,,drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a>lc<span class="sc">@</span>assays<span class="sc">$</span>RNA<span class="sc">@</span>data <span class="ot">&lt;-</span> lc<span class="sc">@</span>assays<span class="sc">$</span>RNA<span class="sc">@</span>data[shared_genes,,drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(lc,<span class="st">&quot;lec-combined.rds&quot;</span>)</span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a>ld <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">&quot;03012022_diseased_SCT_2.rds&quot;</span>)</span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a>ld<span class="sc">$</span>study <span class="ot">&lt;-</span> <span class="fu">setNames</span>(<span class="fu">recode</span>(ld<span class="sc">$</span>study, <span class="sc">!!!</span>studies),<span class="fu">rownames</span>(ld[[]]))</span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a>ld<span class="sc">$</span>Clusters_04 <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">as.integer</span>(ld<span class="sc">$</span>integrated_snn_res.<span class="fl">0.2</span>))</span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a>ld<span class="sc">$</span>Clusters_05 <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">as.integer</span>(ld<span class="sc">$</span>integrated_snn_res.<span class="fl">0.5</span>))</span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a>ld<span class="sc">$</span>Clusters_06 <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">as.integer</span>(ld<span class="sc">$</span>integrated_snn_res.<span class="fl">0.6</span>))</span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a>ld<span class="sc">$</span>Clusters_07 <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">as.integer</span>(ld<span class="sc">$</span>integrated_snn_res.<span class="fl">0.9</span>))</span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a>ld<span class="sc">@</span>meta.data <span class="ot">&lt;-</span> ld[[]][,<span class="fu">c</span>(<span class="st">&quot;nCount_RNA&quot;</span>,<span class="st">&quot;nFeature_RNA&quot;</span>,<span class="st">&quot;study&quot;</span>,<span class="st">&quot;condition&quot;</span>,<span class="st">&quot;sample&quot;</span>,<span class="st">&quot;disease&quot;</span>,<span class="st">&quot;Phase&quot;</span>,<span class="st">&quot;Clusters_04&quot;</span>,<span class="st">&quot;Clusters_05&quot;</span>,<span class="st">&quot;Clusters_06&quot;</span>,<span class="st">&quot;Clusters_07&quot;</span>)]</span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(ld<span class="sc">@</span>meta.data) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;UMIs&quot;</span>,<span class="st">&quot;Genes&quot;</span>,<span class="st">&quot;Study&quot;</span>,<span class="st">&quot;Condition&quot;</span>,<span class="st">&quot;Sample&quot;</span>,<span class="st">&quot;Disease&quot;</span>,<span class="st">&quot;Phase&quot;</span>,<span class="st">&quot;Clusters_04&quot;</span>,<span class="st">&quot;Clusters_05&quot;</span>,<span class="st">&quot;Clusters_06&quot;</span>,<span class="st">&quot;Clusters_07&quot;</span>)</span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a>ld<span class="sc">@</span>misc<span class="sc">$</span>mar <span class="ot">&lt;-</span> <span class="fu">fam</span>(<span class="fu">c</span>(<span class="st">&quot;Clusters_04&quot;</span>,<span class="st">&quot;Clusters_05&quot;</span>,<span class="st">&quot;Clusters_06&quot;</span>,<span class="st">&quot;Clusters_07&quot;</span>),ld)</span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a>ld<span class="sc">@</span>assays<span class="sc">$</span>SCT <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a>shared_genes <span class="ot">&lt;-</span> <span class="fu">intersect</span>(<span class="fu">rownames</span>(ld<span class="sc">@</span>assays<span class="sc">$</span>RNA<span class="sc">@</span>counts),<span class="fu">rownames</span>(ld<span class="sc">@</span>assays<span class="sc">$</span>RNA<span class="sc">@</span>data))</span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a>ld<span class="sc">@</span>assays<span class="sc">$</span>RNA<span class="sc">@</span>counts <span class="ot">&lt;-</span> ld<span class="sc">@</span>assays<span class="sc">$</span>RNA<span class="sc">@</span>counts[shared_genes,,drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a>ld<span class="sc">@</span>assays<span class="sc">$</span>RNA<span class="sc">@</span>data <span class="ot">&lt;-</span> ld<span class="sc">@</span>assays<span class="sc">$</span>RNA<span class="sc">@</span>data[shared_genes,,drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(ld,<span class="st">&quot;lec-diseased.rds&quot;</span>)</span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a>lh <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">&quot;15032022_human_LEC_SCT_Healthy_2.rds&quot;</span>)</span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a>lh<span class="sc">$</span>study <span class="ot">&lt;-</span> <span class="fu">setNames</span>(<span class="fu">recode</span>(lh<span class="sc">$</span>study, <span class="sc">!!!</span>studies),<span class="fu">rownames</span>(lh[[]]))</span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a>lh<span class="sc">$</span>Clusters_08 <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">as.integer</span>(lh<span class="sc">$</span>integrated_snn_res.<span class="fl">0.3</span>))</span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a>lh<span class="sc">$</span>Clusters_09 <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">as.integer</span>(lh<span class="sc">$</span>integrated_snn_res.<span class="fl">0.5</span>))</span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a>lh<span class="sc">$</span>Clusters_12 <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">as.integer</span>(lh<span class="sc">$</span>integrated_snn_res.<span class="fl">0.6</span>))</span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a>lh<span class="sc">@</span>meta.data <span class="ot">&lt;-</span> lh[[]][,<span class="fu">c</span>(<span class="st">&quot;nCount_RNA&quot;</span>,<span class="st">&quot;nFeature_RNA&quot;</span>,<span class="st">&quot;study&quot;</span>,<span class="st">&quot;condition&quot;</span>,<span class="st">&quot;sample&quot;</span>,<span class="st">&quot;Phase&quot;</span>,<span class="st">&quot;Clusters_08&quot;</span>,<span class="st">&quot;Clusters_09&quot;</span>,<span class="st">&quot;Clusters_12&quot;</span>)]</span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(lh<span class="sc">@</span>meta.data) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;UMIs&quot;</span>,<span class="st">&quot;Genes&quot;</span>,<span class="st">&quot;Study&quot;</span>,<span class="st">&quot;Condition&quot;</span>,<span class="st">&quot;Sample&quot;</span>,<span class="st">&quot;Phase&quot;</span>,<span class="st">&quot;Clusters_08&quot;</span>,<span class="st">&quot;Clusters_09&quot;</span>,<span class="st">&quot;Clusters_12&quot;</span>)</span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a>lh<span class="sc">@</span>misc<span class="sc">$</span>mar <span class="ot">&lt;-</span> <span class="fu">fam</span>(<span class="fu">c</span>(<span class="st">&quot;Clusters_08&quot;</span>,<span class="st">&quot;Clusters_09&quot;</span>,<span class="st">&quot;Clusters_12&quot;</span>),lh)</span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a>lh<span class="sc">@</span>assays<span class="sc">$</span>SCT <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a>shared_genes <span class="ot">&lt;-</span> <span class="fu">intersect</span>(<span class="fu">rownames</span>(lh<span class="sc">@</span>assays<span class="sc">$</span>RNA<span class="sc">@</span>counts),<span class="fu">rownames</span>(lh<span class="sc">@</span>assays<span class="sc">$</span>RNA<span class="sc">@</span>data))</span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a>lh<span class="sc">@</span>assays<span class="sc">$</span>RNA<span class="sc">@</span>counts <span class="ot">&lt;-</span> lh<span class="sc">@</span>assays<span class="sc">$</span>RNA<span class="sc">@</span>counts[shared_genes,,drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a>lh<span class="sc">@</span>assays<span class="sc">$</span>RNA<span class="sc">@</span>data <span class="ot">&lt;-</span> lh<span class="sc">@</span>assays<span class="sc">$</span>RNA<span class="sc">@</span>data[shared_genes,,drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
+<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(lh,<span class="st">&quot;lec-healthy.rds&quot;</span>)</span>
+<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a>vh <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">&quot;human.valve.integration_2.rds&quot;</span>)</span>
+<span id="cb2-98"><a href="#cb2-98" aria-hidden="true" tabindex="-1"></a>vh<span class="sc">$</span>study <span class="ot">&lt;-</span> <span class="fu">setNames</span>(<span class="fu">recode</span>(vh<span class="sc">$</span>study, <span class="sc">!!!</span>studies),<span class="fu">rownames</span>(vh[[]]))</span>
+<span id="cb2-99"><a href="#cb2-99" aria-hidden="true" tabindex="-1"></a>vh<span class="sc">$</span>Clusters_04 <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">as.integer</span>(vh<span class="sc">$</span>integrated_snn_res.<span class="fl">0.2</span>))</span>
+<span id="cb2-100"><a href="#cb2-100" aria-hidden="true" tabindex="-1"></a>vh<span class="sc">$</span>Clusters_06 <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">as.integer</span>(vh<span class="sc">$</span>integrated_snn_res.<span class="fl">0.5</span>))</span>
+<span id="cb2-101"><a href="#cb2-101" aria-hidden="true" tabindex="-1"></a>vh<span class="sc">$</span>Clusters_07 <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">as.integer</span>(vh<span class="sc">$</span>integrated_snn_res.<span class="fl">0.6</span>))</span>
+<span id="cb2-102"><a href="#cb2-102" aria-hidden="true" tabindex="-1"></a>vh<span class="sc">@</span>meta.data <span class="ot">&lt;-</span> vh[[]][,<span class="fu">c</span>(<span class="st">&quot;nCount_RNA&quot;</span>,<span class="st">&quot;nFeature_RNA&quot;</span>,<span class="st">&quot;study&quot;</span>,<span class="st">&quot;sample&quot;</span>,<span class="st">&quot;Phase&quot;</span>,<span class="st">&quot;Clusters_04&quot;</span>,<span class="st">&quot;Clusters_06&quot;</span>,<span class="st">&quot;Clusters_07&quot;</span>)]</span>
+<span id="cb2-103"><a href="#cb2-103" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(vh<span class="sc">@</span>meta.data) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;UMIs&quot;</span>,<span class="st">&quot;Genes&quot;</span>,<span class="st">&quot;Study&quot;</span>,<span class="st">&quot;Sample&quot;</span>,<span class="st">&quot;Phase&quot;</span>,<span class="st">&quot;Clusters_04&quot;</span>,<span class="st">&quot;Clusters_06&quot;</span>,<span class="st">&quot;Clusters_07&quot;</span>)</span>
+<span id="cb2-104"><a href="#cb2-104" aria-hidden="true" tabindex="-1"></a>vh<span class="sc">@</span>misc<span class="sc">$</span>mar <span class="ot">&lt;-</span> <span class="fu">fam</span>(<span class="fu">c</span>(<span class="st">&quot;Clusters_04&quot;</span>,<span class="st">&quot;Clusters_06&quot;</span>,<span class="st">&quot;Clusters_07&quot;</span>),vh)</span>
+<span id="cb2-105"><a href="#cb2-105" aria-hidden="true" tabindex="-1"></a>vh<span class="sc">@</span>assays<span class="sc">$</span>SCT <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb2-106"><a href="#cb2-106" aria-hidden="true" tabindex="-1"></a>shared_genes <span class="ot">&lt;-</span> <span class="fu">intersect</span>(<span class="fu">rownames</span>(vh<span class="sc">@</span>assays<span class="sc">$</span>RNA<span class="sc">@</span>counts),<span class="fu">rownames</span>(vh<span class="sc">@</span>assays<span class="sc">$</span>RNA<span class="sc">@</span>data))</span>
+<span id="cb2-107"><a href="#cb2-107" aria-hidden="true" tabindex="-1"></a>vh<span class="sc">@</span>assays<span class="sc">$</span>RNA<span class="sc">@</span>counts <span class="ot">&lt;-</span> vh<span class="sc">@</span>assays<span class="sc">$</span>RNA<span class="sc">@</span>counts[shared_genes,,drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
+<span id="cb2-108"><a href="#cb2-108" aria-hidden="true" tabindex="-1"></a>vh<span class="sc">@</span>assays<span class="sc">$</span>RNA<span class="sc">@</span>data <span class="ot">&lt;-</span> vh<span class="sc">@</span>assays<span class="sc">$</span>RNA<span class="sc">@</span>data[shared_genes,,drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
+<span id="cb2-109"><a href="#cb2-109" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(vh,<span class="st">&quot;valve-healthy.rds&quot;</span>)</span></code></pre></div>
+</div>
+<div id="install-easyshiny" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Install easyshiny</h1>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;royfrancis/easyshiny&quot;</span>,<span class="at">ref=</span><span class="st">&quot;dual-nofont&quot;</span>)</span></code></pre></div>
+</div>
+<div id="generate-app" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Generate app</h1>
+<div class="boxy">
+<p>Modify your paths as needed.</p>
+</div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(easyshiny)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>lc <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">&quot;lec-combined.rds&quot;</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>ld <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">&quot;lec-diseased.rds&quot;</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>lh <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">&quot;lec-healthy.rds&quot;</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>vh <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">&quot;valve-healthy.rds&quot;</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>lc_conf <span class="ot">=</span> <span class="fu">create_config</span>(lc)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="fu">make_file</span>(lc, lc_conf, <span class="at">assay1=</span><span class="st">&quot;RNA&quot;</span>, <span class="at">slot1=</span><span class="st">&quot;data&quot;</span>, <span class="at">assay2=</span><span class="st">&quot;RNA&quot;</span>, <span class="at">slot2=</span><span class="st">&quot;counts&quot;</span>, <span class="at">gene.mapping =</span> <span class="cn">FALSE</span>, <span class="at">shiny.prefix =</span> <span class="st">&quot;lc&quot;</span>, <span class="at">shiny.dir=</span><span class="st">&quot;app&quot;</span>, <span class="at">tabs =</span> <span class="fu">c</span>(<span class="st">&quot;civge&quot;</span>, <span class="st">&quot;civci&quot;</span>, <span class="st">&quot;gevge&quot;</span>, <span class="st">&quot;gem&quot;</span>, <span class="st">&quot;gec&quot;</span>, <span class="st">&quot;vio&quot;</span>, <span class="st">&quot;pro&quot;</span>, <span class="st">&quot;hea&quot;</span>, <span class="st">&quot;mar&quot;</span>))</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>ld_conf <span class="ot">=</span> <span class="fu">create_config</span>(ld)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="fu">make_file</span>(ld, ld_conf, <span class="at">assay1=</span><span class="st">&quot;RNA&quot;</span>, <span class="at">slot1=</span><span class="st">&quot;data&quot;</span>, <span class="at">assay2=</span><span class="st">&quot;RNA&quot;</span>, <span class="at">slot2=</span><span class="st">&quot;counts&quot;</span>, <span class="at">gene.mapping =</span> <span class="cn">FALSE</span>, <span class="at">shiny.prefix =</span> <span class="st">&quot;ld&quot;</span>, <span class="at">shiny.dir=</span><span class="st">&quot;app&quot;</span>, <span class="at">tabs =</span> <span class="fu">c</span>(<span class="st">&quot;civge&quot;</span>, <span class="st">&quot;civci&quot;</span>, <span class="st">&quot;gevge&quot;</span>, <span class="st">&quot;gem&quot;</span>, <span class="st">&quot;gec&quot;</span>, <span class="st">&quot;vio&quot;</span>, <span class="st">&quot;pro&quot;</span>, <span class="st">&quot;hea&quot;</span>, <span class="st">&quot;mar&quot;</span>))</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>lh_conf <span class="ot">=</span> <span class="fu">create_config</span>(lh)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="fu">make_file</span>(lh, lh_conf, <span class="at">assay1=</span><span class="st">&quot;RNA&quot;</span>, <span class="at">slot1=</span><span class="st">&quot;data&quot;</span>, <span class="at">assay2=</span><span class="st">&quot;RNA&quot;</span>, <span class="at">slot2=</span><span class="st">&quot;counts&quot;</span>, <span class="at">gene.mapping =</span> <span class="cn">FALSE</span>, <span class="at">shiny.prefix =</span> <span class="st">&quot;lh&quot;</span>, <span class="at">shiny.dir=</span><span class="st">&quot;app&quot;</span>, <span class="at">tabs =</span> <span class="fu">c</span>(<span class="st">&quot;civge&quot;</span>, <span class="st">&quot;civci&quot;</span>, <span class="st">&quot;gevge&quot;</span>, <span class="st">&quot;gem&quot;</span>, <span class="st">&quot;gec&quot;</span>, <span class="st">&quot;vio&quot;</span>, <span class="st">&quot;pro&quot;</span>, <span class="st">&quot;hea&quot;</span>, <span class="st">&quot;mar&quot;</span>))</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>vh_conf <span class="ot">=</span> <span class="fu">create_config</span>(vh)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="fu">make_file</span>(vh, vh_conf, <span class="at">assay1=</span><span class="st">&quot;RNA&quot;</span>, <span class="at">slot1=</span><span class="st">&quot;data&quot;</span>, <span class="at">assay2=</span><span class="st">&quot;RNA&quot;</span>, <span class="at">slot2=</span><span class="st">&quot;counts&quot;</span>, <span class="at">gene.mapping =</span> <span class="cn">FALSE</span>, <span class="at">shiny.prefix =</span> <span class="st">&quot;vh&quot;</span>, <span class="at">shiny.dir=</span><span class="st">&quot;app&quot;</span>, <span class="at">tabs =</span> <span class="fu">c</span>(<span class="st">&quot;civge&quot;</span>, <span class="st">&quot;civci&quot;</span>, <span class="st">&quot;gevge&quot;</span>, <span class="st">&quot;gem&quot;</span>, <span class="st">&quot;gec&quot;</span>, <span class="st">&quot;vio&quot;</span>, <span class="st">&quot;pro&quot;</span>, <span class="st">&quot;hea&quot;</span>, <span class="st">&quot;mar&quot;</span>))</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="fu">make_code_multi</span>(</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">shiny.title =</span> <span class="st">&quot;Support 8560&quot;</span>, <span class="at">shiny.prefix =</span> <span class="fu">c</span>(<span class="st">&quot;lc&quot;</span>, <span class="st">&quot;ld&quot;</span>, <span class="st">&quot;lh&quot;</span>, <span class="st">&quot;vh&quot;</span>),</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">shiny.headers =</span> <span class="fu">c</span>(<span class="st">&quot;LEC Combined&quot;</span>, <span class="st">&quot;LEC Diseased&quot;</span>, <span class="st">&quot;LEC Healthy&quot;</span>, <span class="st">&quot;Valve Healthy&quot;</span>), </span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">shiny.dir =</span> <span class="st">&quot;app&quot;</span>, <span class="at">tabs =</span> <span class="fu">c</span>(<span class="st">&quot;civge&quot;</span>, <span class="st">&quot;civci&quot;</span>, <span class="st">&quot;gevge&quot;</span>, <span class="st">&quot;gem&quot;</span>, <span class="st">&quot;gec&quot;</span>, <span class="st">&quot;vio&quot;</span>, <span class="st">&quot;pro&quot;</span>, <span class="st">&quot;hea&quot;</span>, <span class="st">&quot;mar&quot;</span>))</span></code></pre></div>
+</div>
+<div id="run-locally" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> Run locally</h1>
+<p>Lastly, launch the app by specifying the path to your app.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>shiny<span class="sc">::</span><span class="fu">runApp</span>(<span class="st">&quot;app&quot;</span>)</span></code></pre></div>
+<p>That’s it for now. Hosting and distribution will be covered later.</p>
+</div>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-flex">
+
+    <div class="footer-left">
+    <span class="small">
+    <b>2022</b> • <a href="https://nbis.se/">NBIS</a> • <a href="https://www.scilifelab.se/">SciLifeLab</a>
+    </span>
+    </div>
+
+    <div class="footer-right">
+      <span class="footericon" style="padding-right:4px; padding-left:4px">
+        <a href="https://nbis.se/">
+          <svg style="height:0.8em;top:.04em;position:relative;fill:#bdbdbd;" viewBox="0 0 496 512"><path d="M248 8C111.03 8 0 119.03 0 256s111.03 248 248 248 248-111.03 248-248S384.97 8 248 8zm82.29 357.6c-3.9 3.88-7.99 7.95-11.31 11.28-2.99 3-5.1 6.7-6.17 10.71-1.51 5.66-2.73 11.38-4.77 16.87l-17.39 46.85c-13.76 3-28 4.69-42.65 4.69v-27.38c1.69-12.62-7.64-36.26-22.63-51.25-6-6-9.37-14.14-9.37-22.63v-32.01c0-11.64-6.27-22.34-16.46-27.97-14.37-7.95-34.81-19.06-48.81-26.11-11.48-5.78-22.1-13.14-31.65-21.75l-.8-.72a114.792 114.792 0 0 1-18.06-20.74c-9.38-13.77-24.66-36.42-34.59-51.14 20.47-45.5 57.36-82.04 103.2-101.89l24.01 12.01C203.48 89.74 216 82.01 216 70.11v-11.3c7.99-1.29 16.12-2.11 24.39-2.42l28.3 28.3c6.25 6.25 6.25 16.38 0 22.63L264 112l-10.34 10.34c-3.12 3.12-3.12 8.19 0 11.31l4.69 4.69c3.12 3.12 3.12 8.19 0 11.31l-8 8a8.008 8.008 0 0 1-5.66 2.34h-8.99c-2.08 0-4.08.81-5.58 2.27l-9.92 9.65a8.008 8.008 0 0 0-1.58 9.31l15.59 31.19c2.66 5.32-1.21 11.58-7.15 11.58h-5.64c-1.93 0-3.79-.7-5.24-1.96l-9.28-8.06a16.017 16.017 0 0 0-15.55-3.1l-31.17 10.39a11.95 11.95 0 0 0-8.17 11.34c0 4.53 2.56 8.66 6.61 10.69l11.08 5.54c9.41 4.71 19.79 7.16 30.31 7.16s22.59 27.29 32 32h66.75c8.49 0 16.62 3.37 22.63 9.37l13.69 13.69a30.503 30.503 0 0 1 8.93 21.57 46.536 46.536 0 0 1-13.72 32.98zM417 274.25c-5.79-1.45-10.84-5-14.15-9.97l-17.98-26.97a23.97 23.97 0 0 1 0-26.62l19.59-29.38c2.32-3.47 5.5-6.29 9.24-8.15l12.98-6.49C440.2 193.59 448 223.87 448 256c0 8.67-.74 17.16-1.82 25.54L417 274.25z"></path>
+          </svg>
+        </a>
+        </span>
+        <span class="footericon" style="padding-right:4px; padding-left:4px">
+          <a href="https://twitter.com/NBISwe"><svg style="height:0.8em;top:.04em;position:relative;fill:#bdbdbd;" viewBox="0 0 512 512"><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"></path>
+        </svg>
+        </a>
+        </span>
+        <span class="footericon" style="padding-left:4px">
+          <a href="https://www.linkedin.com/company/nbisweden/">
+            <svg style="height:0.8em;top:.04em;position:relative;fill:#bdbdbd;" viewBox="0 0 448 512"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"></path>
+            </svg>
+        </a>
+        </span>
+    </div>
+    </div>
+  </div>
+</footer>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
